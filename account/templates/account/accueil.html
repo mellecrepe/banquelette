@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+{% block js %}
+<script src="../../../static/js/Chart.js"></script> 
+<script src="../../../static/js/Colors.js"></script> 
+{% endblock %}
+
+{% block title_h1 %} Accueil {% endblock %}
+{% block principal_section %}
+<article>
+<h3> Dépense 2015 </h3>
+<div class="width_all">
+	<canvas id="linechart" height="200" width=600"></canvas>
+</div>
+</article>
+
+<article class="piechart">
+<h3> Moyenne à l'année </h3>
+<div class="width_half">
+	<canvas id="piechart1" height="100" width="100"></canvas>
+</div>
+</article>
+
+<article class="piechart">
+<h3> Moyenne du mois </h3>
+<div class="width_half">
+	<canvas id="piechart2" height="100" width="100"></canvas>
+</div>
+</article>
+
+<script>
+(function(){
+	// Definition couleurs
+	var $id = function(id){
+		return document.getElementById(id);
+	    };
+
+	// paramètre graphique en ligne
+	var lineData = {
+	labels : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
+	datasets : [
+		{
+		label: "Necessaire",
+		fillColor: veryLightColors["necessaire"],
+		strokeColor: lightColors["necessaire"],
+		pointColor: colors["necessaire"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{necessaire.0}}, {{necessaire.1}}, {{necessaire.2}}, {{necessaire.3}}, {{necessaire.4}}, {{necessaire.5}}, {{necessaire.6}}, {{necessaire.7}}, {{necessaire.8}}, {{necessaire.9}}, {{necessaire.10}}, {{necessaire.11}}]
+		},
+		{
+		label: "Achat",
+		fillColor: veryLightColors["achat"],
+		strokeColor: lightColors["achat"],
+		pointColor: colors["achat"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{necessaire_achat.0}}, {{necessaire_achat.1}}, {{necessaire_achat.2}}, {{necessaire_achat.3}}, {{necessaire_achat.4}}, {{necessaire_achat.5}}, {{necessaire_achat.6}}, {{necessaire_achat.7}}, {{necessaire_achat.8}}, {{necessaire_achat.9}}, {{necessaire_achat.10}}, {{necessaire_achat.11}}]
+		},
+		{
+		label: "Sortie",
+		fillColor: veryLightColors["sortie"],
+		strokeColor: lightColors["sortie"],
+		pointColor: colors["sortie"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{necessaire_achat_sortie.0}}, {{necessaire_achat_sortie.1}}, {{necessaire_achat_sortie.2}}, {{necessaire_achat_sortie.3}}, {{necessaire_achat_sortie.4}}, {{necessaire_achat_sortie.5}}, {{necessaire_achat_sortie.6}}, {{necessaire_achat_sortie.7}}, {{necessaire_achat_sortie.8}}, {{necessaire_achat_sortie.9}}, {{necessaire_achat_sortie.10}}, {{necessaire_achat_sortie.11}}]
+		},
+		{
+		label: "Vacances",
+		fillColor: veryLightColors["vacances"],
+		strokeColor: lightColors["vacances"],
+		pointColor: colors["vacances"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{necessaire_achat_sortie_vacances.0}}, {{necessaire_achat_sortie_vacances.1}}, {{necessaire_achat_sortie_vacances.2}}, {{necessaire_achat_sortie_vacances.3}}, {{necessaire_achat_sortie_vacances.4}}, {{necessaire_achat_sortie_vacances.5}}, {{necessaire_achat_sortie_vacances.6}}, {{necessaire_achat_sortie_vacances.7}}, {{necessaire_achat_sortie_vacances.8}}, {{necessaire_achat_sortie_vacances.9}}, {{necessaire_achat_sortie_vacances.10}}, {{necessaire_achat_sortie_vacances.11}}]
+		},
+		{
+		label: "Gain",
+		fillColor: veryLightColors["gain"],
+		strokeColor: lightColors["gain"],
+		pointColor: colors["gain"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{gain.0}}, {{gain.1}}, {{gain.2}}, {{gain.3}}, {{gain.4}}, {{gain.5}}, {{gain.6}}, {{gain.7}}, {{gain.8}}, {{gain.9}}, {{gain.10}}, {{gain.11}}]
+		},
+		{
+		label: "Autre",
+		fillColor: veryLightColors["autre"],
+		strokeColor: lightColors["autre"],
+		pointColor: colors["autre"],
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: [{{total.0}}, {{total.1}}, {{total.2}}, {{total.3}}, {{total.4}}, {{total.5}}, {{total.6}}, {{total.7}}, {{total.8}}, {{total.9}}, {{total.10}}, {{total.11}}]
+		}
+	]
+};
+
+	var ctx1 = document.getElementById("linechart").getContext("2d");
+	myLine = new Chart(ctx1).Line(lineData, {
+			responsive: true, scaleShowGridLines : true
+	})
+
+	// Definitions camemberts
+	var canvas_pie1 = $id('piechart1'),
+	    canvas_pie2 = $id('piechart2'),
+	    legendPie1 = $id('pielegend1'),
+	    legendPie2 = $id('pielegend2'),
+	    helpers = Chart.helpers;
+
+	var pieDataYear = [
+    		{
+        	value: {{necessaire_average}},
+		color: colors["necessaire"],
+	        highlight: lightColors["necessaire"],
+	        label: "Necessaire"
+		},
+		{
+		value: {{achat_average}},
+		color: colors["achat"],
+	        highlight: lightColors["achat"],
+	        label: "Achat"
+		},
+		{
+	        value: {{sortie_average}},
+		color: colors["sortie"],
+	        highlight: lightColors["sortie"],
+	        label: "Sortie"
+		},
+		{
+	        value: {{vacances_average}},
+		color: colors["vacances"],
+	        highlight: lightColors["vacances"],
+	        label: "Vacances"
+		},
+		{
+	        value: {{autre_average}},
+		color: colors["autre"],
+	        highlight: lightColors["autre"],
+	        label: "Autre"
+		}
+	];
+
+	var pieDataMonth = [
+    		{
+        	value: {{necessaire_average_month}},
+		color: colors["necessaire"],
+	        highlight: lightColors["necessaire"],
+	        label: "Necessaire"
+		},
+		{
+		value: {{achat_average_month}},
+		color: colors["achat"],
+	        highlight: lightColors["achat"],
+	        label: "Achat"
+		},
+		{
+	        value: {{sortie_average_month}},
+		color: colors["sortie"],
+	        highlight: lightColors["sortie"],
+	        label: "Sortie"
+		},
+		{
+	        value: {{vacances_average_month}},
+		color: colors["vacances"],
+	        highlight: lightColors["vacances"],
+	        label: "Vacances"
+		},
+		{
+	        value: {{autre_average_month}},
+		color: colors["autre"],
+	        highlight: lightColors["autre"],
+	        label: "Autre"
+		}
+	];
+
+	pieOptions = { 
+		segmentStrokeColor: "#ebe8e4",
+		tooltipTemplate: "<\%if (label){\%><\%=label\%>: <\%}\%><\%= value \%>€"
+	};
+
+	
+	var myPie1 = new Chart(canvas_pie1.getContext('2d')).Pie(pieDataYear, pieOptions);
+	var legendHolder1 = document.createElement('div');
+	legendHolder1.innerHTML = myPie1.generateLegend();
+	// Include a html legend template after the module doughnut itself
+	helpers.each(legendHolder1.firstChild.childNodes, function(legendNode, index){
+		helpers.addEvent(legendNode, 'mouseover', function(){
+			var activeSegment = myPie1.segments[index];
+			activeSegment.save();
+			activeSegment.fillColor = activeSegment.highlightColor;
+			myPie1.showTooltip([activeSegment]);
+			activeSegment.restore();
+		});
+	});
+	helpers.addEvent(legendHolder1.firstChild, 'mouseout', function(){
+		myPie1.draw();
+	});
+	canvas_pie1.parentNode.parentNode.appendChild(legendHolder1.firstChild);
+
+	var myPie2 = new Chart(canvas_pie2.getContext('2d')).Pie(pieDataMonth, pieOptions);
+	var legendHolder2 = document.createElement('div');
+	legendHolder2.innerHTML = myPie2.generateLegend();
+	// Include a html legend template after the module doughnut itself
+	helpers.each(legendHolder2.firstChild.childNodes, function(legendNode, index){
+		helpers.addEvent(legendNode, 'mouseover', function(){
+			var activeSegment = myPie2.segments[index];
+			activeSegment.save();
+			activeSegment.fillColor = activeSegment.highlightColor;
+			myPie2.showTooltip([activeSegment]);
+			activeSegment.restore();
+		});
+	});
+	helpers.addEvent(legendHolder2.firstChild, 'mouseout', function(){
+		myPie2.draw();
+	});
+	canvas_pie2.parentNode.parentNode.appendChild(legendHolder2.firstChild);
+
+})();
+
+</script>
+{% endblock %}

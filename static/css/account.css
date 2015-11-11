@@ -1,0 +1,233 @@
+/* accueil */
+h3 {
+	text-align: center;
+	font-size: 22px;
+}
+
+article div.width_all {
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-bottom: 5%;
+}
+
+#linechart {
+	width: 100%;
+}
+
+article div.width_half {
+	display: inline-block; 
+	margin: 20px 0;
+	padding: 4px 0;
+	width: 40%;
+}
+
+.piechart {
+	display: inline-block;
+	width: 49%;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+article.piechart > div > canvas {
+	width: 100%;
+	height: 100%;
+
+}
+
+ul.pie-legend {
+	list-style: none;
+	display: inline-block;
+	vertical-align: top;
+	padding-left: 15px;
+	text-align: left;
+}
+
+.pie-legend li {
+	display: block;
+	position: relative;
+	margin-bottom: 4px;
+	padding: 2px 8px 2px 28px;
+	font-size: 14px;
+}
+
+.pie-legend li span {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 20px;
+	height: 100%;
+	border-radius: 5px;
+}
+
+
+/* couchdb_update */
+#formulaire {
+	font-size : medium;
+	font-color: rgb( 40, 44, 47 );
+	top: 145px;
+	left: 15%;
+	right: 15%;
+	bottom: 10%;
+	padding: 0;
+}
+
+#formulaire #new_data {
+	display: inline-block;
+	width: 50%;
+	height: 100%;
+	margin-bottom: 10px;
+}
+
+#formulaire #title_data {
+	display: inline-block;
+	margin-bottom: 15px;
+	font-style: italic;
+}
+
+#formulaire textarea {
+	width: 90%;
+	height: 90%;
+	border-color: rgb( 40, 44, 47 );
+}
+
+#formulaire #bank {
+	display: inline-block;
+	vertical-align: top;
+	width: 49%;
+	height: 100%;
+}
+
+#formulaire #id_bank {
+	margin-top: 20%;
+	margin-left: 20%;
+	margin-bottom: 10px;
+}
+
+#formulaire #bank > #submit {
+	margin-left: 21%;
+	margin-bottom: 10px;
+}
+
+
+/* couchdb_modify */
+#modify .submit {
+	display: inline-block; 
+	margin-left: 65%;
+	margin-bottom: 10px;
+}
+
+
+/* Tableaux */
+table {
+	min-width: 70%;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666;
+	font-size:12px;
+	text-shadow: 1px 1px 0px #fff;
+	background:#eaebec;
+	margin:20px;
+	border:#ccc 1px solid;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+	padding:21px 25px 22px 25px;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+}
+table th:first-child {
+	padding-left:20px;
+}
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+}
+table tr {
+	text-align: center;
+	padding-left:20px;
+}
+
+.necessaire {
+	color: #ff9c9c
+}
+
+.achat {
+	color: #ff90d3;
+}
+
+.sortie {
+	color: #c7a8e5;
+}
+
+.vacances {
+	color: #97d4ee;
+}
+
+.autre {
+	color: #ffdf7f;
+}
+
+.gain {
+	color: #5dcca2;
+}
+
+table td:first-child {
+	text-align: center;
+	border-left: 0;
+}
+table td {
+	padding:10px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+
+	background: #fafafa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+	background: #f6f6f6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+	border-bottom:0;
+}
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:3px;
+	-webkit-border-bottom-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:3px;
+	-webkit-border-bottom-right-radius:3px;
+	border-bottom-right-radius:3px;
+}
+table tr:hover td {
+	background: #f2f2f2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);	
+}
+
+table.totaux td {
+	width: 14%; 
+}
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="fr-FR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+	<title>{% block title %}Mes comptes{% endblock %}</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/style.css' %}" />
+	{% block extra_head_content %}{% endblock %}
+	{% block js %}{% endblock %}
+</head>
+<body>
+<!-- Begin Header -->
+<header>
+	<!-- Begin Logo -->
+	<div class="logo">
+	    <a href="/accueil"><img src="/static/img/banquelette-color2.jpg" height=100></a>
+	</div>
+	<!-- End Logo -->
+</header>
+<!-- End Header -->
+
+<section id="navigation">
+	<!-- Begin Title -->
+	<h1> {% block title_h1 %} {% endblock %} </h1> 
+	<!-- End Title -->
+
+	<!-- Begin Menu -->
+	<nav>
+	{% block nav %}
+	<ul class="horizontal_menu">
+		<li><a>Mise à jour</a>
+			<ul class="sub_menu">
+				<li><a href="/update">Ajout données d'un site bancaire</a></li>
+				<li><a href="/add">Ajout entrées manuelles</a></li>
+				<li><a href="/modify/nocheck">Dépenses non validées</a></li>
+				<li><a href="/modify/bymonth">Modification par mois</a></li>
+			</ul>
+		</li>
+		<li><a>2015</a>
+			<ul class="sub_menu">
+				<li><a href="/2015/01">Janvier</a></li>
+				<li><a href="/2015/02">Février</a></li>
+				<li><a href="/2015/03">Mars</a></li>
+				<li><a href="/2015/04">Avril</a></li>
+				<li><a href="/2015/05">Mai</a></li>
+				<li><a href="/2015/06">Juin</a></li>
+				<li><a href="/2015/07">Juillet</a></li>
+				<li><a href="/2015/08">Août</a></li>
+				<li><a href="/2015/09">Septembre</a></li>
+				<li><a href="/2015/10">Octobre</a></li>
+				<li><a href="/2015/11">Novembre</a></li>
+				<li><a href="/2015/12">Décembre</a></li>
+			</ul>
+		</li>
+		<li><a>2016</a>
+			<ul class="sub_menu">
+				<li><a href="/2016/01">Janvier</a></li>
+				<li><a href="/2016/02">Février</a></li>
+				<li><a href="/2016/03">Mars</a></li>
+				<li><a href="/2016/04">Avril</a></li>
+				<li><a href="/2016/05">Mai</a></li>
+				<li><a href="/2016/06">Juin</a></li>
+				<li><a href="/2016/07">Juillet</a></li>
+				<li><a href="/2016/08">Août</a></li>
+				<li><a href="/2016/09">Septembre</a></li>
+				<li><a href="/2016/10">Octobre</a></li>
+				<li><a href="/2016/11">Novembre</a></li>
+				<li><a href="/2016/12">Décembre</a></li>
+			</ul>
+		</li>
+	</ul>
+	{% endblock %}
+	</nav>
+	<!-- End Menu -->
+</section>
+
+<section id="principal">
+{% block principal_section %} {% endblock %}
+</section>
+
+<!-- Begin Footer -->
+<footer>
+<div id="div_footer">
+	<div id="version">
+		<h1><a href="/release">Version 1.2 </a></h1>
+		<p> date de création : mai 2015 _ dernière mise à jour : 8 novembre 2015 </p>
+	</div>
+</div>
+</footer>
+<!-- End Footer -->
+
+
+</body>
+</html>

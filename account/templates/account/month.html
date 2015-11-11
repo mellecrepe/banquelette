@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+{% block title_h1 %} {{ month_word }} {{ year }} {% endblock %}
+{% block principal_section %}
+
+<h2> Détails du mois </h2>
+<table>
+	<!-- Table Header -->
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Catégorie</th>
+			<th>Dépense</th>
+			<th>Check</th>
+		</tr>
+	</thead>
+	<!-- Table Header -->
+
+	<!-- Table Body -->
+	<tbody>
+	{% for a in account_all %}
+		<tr class="{{a.category}}">
+			<td> {{ a.date }} </td>
+			<td> {{ a.description }} </td>
+			<td> {{ a.subcategory | title }} </td>
+			<td> {{ a.expense }} </td>
+			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
+		</tr>
+	{% endfor %}
+	</tbody> 
+	<!-- Table Body -->
+</table> 
+
+<h2> Total des dépenses </h2>
+<table class="totaux">
+	<!-- Table Body -->
+	<tbody>
+		<tr>
+			<td>Nécessaire</td>
+			<td>Achat</td>
+			<td>Sortie</td>
+			<td>Vacances</td>
+			<td>Autre</td>
+			<td>Gains</td>
+			<td>Total</td>
+		</tr>
+		<tr>
+			<td class="necessaire">{{ category.necessaire }}</td>
+			<td class="achat">{{ category.achat}}</td>
+			<td class="sortie">{{ category.sortie}}</td>
+			<td class="vacances">{{ category.vacances}}</td>
+			<td class="autre">{{ category.autre}}</td>
+			<td class="gain">{{ category.gain}}</td>
+			<td class="">{{ category.all}}</td>
+		</tr>
+
+	</tbody>
+	<!-- Table Body -->
+</table> 
+
+{% endblock %}

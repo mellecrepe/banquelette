@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+
+{% block title_h1 %} Mise à jour de la base {% endblock %}
+{% block principal_section %}
+
+<form method="post" id="formulaire">
+	{% csrf_token %}
+	<div id="new_data">
+		<label id="title_data" >{{ form.data.label }} :</label> </br/>
+		{{ form.data }}
+	</div>
+	<div id="bank">
+		{{ form.bank }}
+		<br/>
+		<input id="submit" type="submit" value="Valider" />
+	</div>
+</form>
+{% endblock %}

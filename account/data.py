@@ -1,0 +1,53 @@
+#-*- coding: utf-8 -*-
+
+# dictionnaire pour modifier le descriptif
+# cle : description originale
+# valeur : nouvelle description
+auto_description = {
+    'SOJIDIS': 'CARREFOUR CITY',
+    'PICARD SA 0055': 'PICARD',
+    'PICARD SA 094': 'PICARD',
+    'AUTEUIL MARKET': 'G20',
+    'A2PAS': 'Auchan',
+    '1195MARKS SPENC': 'MARKS SPENCER',
+    'COJEAN BEAUGRENELL5': 'COJEAN',
+    'H & M 208': 'H & M',
+    'ETAM P.A.P': 'ETAM',
+    'REDOUTE AUB VAD - ROUBAIX': 'La Redoute',
+    'DECATHLON 0090': 'DECATHLON',
+    'A 4 PATTES': 'Rivolux',
+}
+
+# dictionnaire pour organiser les subcategory
+# automatiquement
+# cle: description (originale)
+# valeur: subcategory
+auto_subcategory = {
+    'E D F': 'electricite',
+    'MONOP': 'courses',
+    'CARREFOUR': 'courses',
+    'AUTEUIL MARKET': 'courses',
+    'G20': 'courses',
+    'AUCHAN': 'courses',
+    'INTERMARCHE': 'courses',
+    'PICARD': 'courses',
+    'CARREFOUR CITY': 'courses',
+    'Auchan': 'courses',
+    'MARKS SPENCER': 'repas-midi',
+    'COJEAN': 'repas-midi',
+    'QUINDICI': 'repas-midi',
+    'La Redoute': 'vetement',
+    'ETAM': 'vetement',
+    'H & M': 'vetement',
+    'STRADIVARIUS': 'vetement',
+    'DECATHLON': 'sport',
+    'MY LITTLE PARIS': 'box',
+    'GAMBETTES BOX': 'box',
+    'ARCHI BAR': 'bar',
+    'DERNIER METRO': 'bar',
+    'LE SEMAPHORE': 'bar',
+    'MC DONALDS': 'resto',
+    'CASTORAMA': 'decoration', 
+    'RETRAIT DAB': 'retrait',
+}
+

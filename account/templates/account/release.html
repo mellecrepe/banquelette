@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+
+{% block title_h1 %} Release {% endblock %}
+{% block principal_section %}
+<article>
+<h4>Version 1.2 : 8 novembre 2015</h4>
+<ul>
+	<li>Nom trouvé : Banquelette.</li>
+	<li>Ajout d'un logo</li>
+	<li>Possibilité de choisir pour chaque banque si les dépenses sont pour deux ou pour une personne plus ajout d'exeception.</li>
+	<li>Amélioration de l'automatisation du choix des sous catégories et renommage de certains descriptifs.</li>
+	<li>Ajout de nouvelles sous catégories.</li>
+	<li>Uniformisation des couleurs.</li>
+</ul>
+
+<h4>Version 1.1 : 27 septembre 2015</h4>
+<ul>
+	<li>Correction de bug concenant l'ajout manuel d'entrées.</li>
+	<li>Modification de l'analyse du jeu de données boursorama (l'affichage a changé sur le sie boursorama).</li>
+	<li>Ajout gestion d'erreur lors de l'ajout manuel de données.</li>
+	<li>Automatisation du choix des sous catégories et renommage de certains descriptifs lors de l'ajout de données Oney.</li>
+	<li>Ajout de nouveaux descriptifs à renommer automatiquement.</li>
+	<li>Ajout de nouvelles sous catégories.</li>
+</ul>
+
+<h4>Version 1.0 : 18 septembre 2015</h4>
+<ul>
+	<li>Page d'accueil créer avec un graphe et deux camemberts (à redéfinir avec l'usage).</li>
+	<li>Visualisation mois par mois des dépenses avec un tableau des totaux en bas de page.</li>
+	<li>Modification/suppression des données possible selon deux vues :
+	<ul>
+		<li>soit en choisissant un mois particulier,</li>
+		<li>soit l'affichage des entrées non validées.</li>
+	</ul>
+	<li>Deux façons d'ajouter des données possibles :
+	<ul>
+		<li>soit grâce à un jeu de données récupéré sur un site bancaire (Boursorama ou Oney),</li>
+		<li>soit en ajoutant des entrées manuelles.
+	</ul>
+	<li>Automatisation du choix des sous catégories et renommage de certains descriptifs lors de l'ajout de données Boursorama.</li>
+</ul>
+
+<h4>Version bêta : mai 2015</h4>
+<ul><li>Création du l'application</li></ul>
+</article>
+{% endblock %}

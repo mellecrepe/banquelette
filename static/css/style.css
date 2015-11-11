@@ -1,0 +1,179 @@
+/* Global au document */
+body {
+	background-color: #EBE8E4; /* Couleur pour du font */
+	color: #282C2F; /* Couleur du texte */
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 300; /* Epaisseur de l'ecriture : 300 = book */
+	font-size: 15px; /* Taille de l'ecriture */
+	margin: 0px;
+}
+
+/* Header (Logo + Nav) */
+header {
+	background-color: #fff;
+}
+
+/* Logo */
+.logo {
+	margin-left: 16px; /* marges de la box : top, right, bottom, left */
+	text-align: center;
+}
+
+.logo > a {
+	color: #aaa;
+	font-size: x-large;
+	font-style: italic;
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+}
+
+/* Section naviagation */ 
+#navigation {
+	background-color: #282C2F;
+	margin-left: 5%;
+	display: flex;
+	justify-content: space-between;
+	height: 50px;
+}
+
+/* Title */
+#navigation h1 {
+	display: inline-block;
+	color: #aaa;
+	font-size : x-large;
+	font-style: italic;
+	font-weight: bold;
+	padding-left: 24px;
+	padding-right: 24px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+/* Navigation */
+nav {
+	display: inline-block;
+}
+
+nav ul.horizontal_menu {
+	list-style-type: none; /* format liste */
+}
+
+nav ul li {
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	width: 110px;
+	height: 35px;
+	text-align: center;
+	
+	
+	-webkit-transition: all 0.2s; /* pour Chrome ou Safari */
+	-moz-transition: all 0.2s; /* pour Firefox */
+	-ms-transition: all 0.2s; /* pour Microsoft */
+	-o-transition: all 0.2s; /* pour Opera */
+	transition: all 0.2s; /* la transition est pour tout et dure 0.2s */
+}
+
+/* titre menu */
+nav > ul > li > a {
+	color: #aaa;
+	text-decoration: none;
+}
+
+/* style au passage de la souris (=etat final) */
+nav > ul > li:hover > a {
+	color: rgb( 255, 255, 255 );
+}
+
+/* on masque le sous-menu */
+ul.sub_menu {
+	list-style-type: none; /* format liste */
+	display: none;
+	position: absolute;
+	top: 35px;
+	margin: 0;
+	padding: 0;
+}
+
+/* qd on passe sur le menu affiche sub_menu */
+nav > ul > li:hover > ul.sub_menu {
+	display: block;
+	background-color: rgb( 40, 44, 47 );
+	border-top: 0;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.055);
+}
+
+ul.sub_menu > li {
+	display: block;
+	width: 110px;
+	height: auto;
+}
+
+ul.sub_menu > li > a {
+	display: block;
+	color: #fff;
+	padding: 8px 14px 8px 14px;
+	border-top: 1px dashed white;
+	text-decoration: none;
+	text-align: center;
+}
+
+ul.sub_menu > li:hover > a {
+	background-color: rgba( 255, 255, 255, 0.1);
+}
+
+
+/* section */
+#principal {
+	/* marges de la box : top, right, bottom, left */
+	display: block;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+h2 {
+	color: rgb( 40, 44, 47 );
+	font-size : large;
+	font-style: italic;
+	font-weight: bold;
+	left: 5%;
+	margin: 0px;
+	display: inline-block;
+	
+}
+
+/* Pied de page */
+footer {
+	background-color: rgb( 40, 44, 47 );
+	color: #aaa;
+	position: relative;
+	z-index: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 5%;
+	bottom: 0;
+	height: 28px;  
+	padding: 8px 24px;
+
+}
+footer h1 {
+	font-size : small;
+	font-style: italic;
+	margin: 0px;
+}
+
+footer h1 > a {
+	color: #aaa;
+	text-decoration: none;
+}
+
+footer p
+{
+	font-size: 0.8em;
+	margin: 0px;
+	margin-left: 20px;
+}

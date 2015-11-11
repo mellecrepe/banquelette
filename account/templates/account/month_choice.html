@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+
+{% block title_h1 %} {{ title }} {% endblock %}
+{% block principal_section %}
+
+<form method="post" id="formulaire">
+	{% csrf_token %}
+	<div>
+		{{ form.year }} 
+		{{ form.month }}
+		<input id="submit" type="submit" value="Valider" />
+	</div>
+</form>
+{% endblock %}

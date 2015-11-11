@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+
+{% block title_h1 %} {{ title }} {% endblock %}
+{% block principal_section %}
+
+<form method="post" id="modify">
+	{% csrf_token %}
+	<table>
+	<!-- Table Header -->
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Catégorie</th>
+			<th>Dépense</th>
+			<th>/2</th>
+			<th>Banque</th>
+			<th>Check</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<!-- Table Header -->
+
+	<!-- Table Body -->
+	<tbody>
+		{% for f in form_list %}
+			<tr><td> {{ f.date }} </td>
+			<td> {{ f.description }} </td>
+			<td> {{ f.subcategory }} </td>
+			<td> {{ f.expense }} </td>
+			<td> {{ f.halve }} </td>
+			<td> {{ f.bank }} </td>
+			<td> {{ f.check }} </td>
+			<td> {{ f.delete }} </td></tr>
+		{% endfor %}
+	</tbody> 
+	<!-- Table Body -->
+
+	</table> 
+	<input class="submit" type="submit" value="Valider" />
+</form>
+{% endblock %}
