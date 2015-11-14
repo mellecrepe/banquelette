@@ -72,6 +72,8 @@ MONTH_CHOICES = (
 
 
 class AccountForm(DocumentForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={'class': 'date'}))
+    expense = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'expense'}))
     subcategory = forms.CharField(widget=forms.Select(choices=CATEGORY_CHOICES), required=False)
     bank = forms.CharField(required = False, widget=forms.Select(choices=BANK_CHOICES))
     delete = forms.BooleanField(required=False)

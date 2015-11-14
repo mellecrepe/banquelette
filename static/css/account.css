@@ -111,6 +111,13 @@ ul.pie-legend {
 
 
 /* couchdb_modify */
+table .date{
+	width: 70px;
+}
+table .expense{
+	width: 80px;
+}
+
 #modify .submit {
 	display: inline-block; 
 	margin-left: 65%;
@@ -138,7 +145,7 @@ table {
 	box-shadow: 0 1px 2px #d1d1d1;
 }
 table th {
-	padding:21px 25px 22px 25px;
+	padding:21px 10px 22px 10px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 
@@ -161,7 +168,6 @@ table tr:first-child th:last-child {
 }
 table tr {
 	text-align: center;
-	padding-left:20px;
 }
 
 .necessaire {

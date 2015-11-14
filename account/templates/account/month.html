@@ -16,6 +16,7 @@
 			<th>Catégorie</th>
 			<th>Dépense</th>
 			<th>Check</th>
+			{% if comment == True %} <th>Commentaire</th> {% endif %}
 		</tr>
 	</thead>
 	<!-- Table Header -->
@@ -29,6 +30,7 @@
 			<td> {{ a.subcategory | title }} </td>
 			<td> {{ a.expense }} </td>
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
+			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}
 		</tr>
 	{% endfor %}
 	</tbody> 

@@ -134,7 +134,17 @@ def month_view(request, year, month):
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
     startkey = ''.join([year, "-", month, "-01"])
     endkey = ''.join([year, "-", month, "-", str(calendar.monthrange(int(year), int(month))[1])])
+
     account_all = Account.view("all/by_date", startkey=startkey, endkey=endkey)
+    for a in account_all:
+        try:
+            a.comment
+        except AttributeError:
+            comment = False
+        else: 
+            comment = True
+            continue
+
     category={'necessaire': '0', 'achat' : '0', 'sortie': '0', 'vacances': '0', 'autre' : '0', 'gain': '0', 'all': '0'}
     for c in category:
         category_view = Account.view("sum/"+c, startkey=startkey, endkey=endkey).first()

@@ -9,6 +9,7 @@ class Account(Document):
     bank = StringProperty()
     check = BooleanProperty()
     halve = BooleanProperty()
+    comment = StringProperty()
     
     def save(self, *args, **kwargs):
         necessaire = ['necessaire','courses', 'transport', 'electricite', 'loyer', 'repas-midi', 'sante', 'impot-taxe', 'assurance', 'telephone-box', 'necessaire-autre']
