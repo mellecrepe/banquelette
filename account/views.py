@@ -20,104 +20,41 @@ def home(request):
     year = str(now.year)
     month = str(now.month).rjust(2, '0')
 
-    # 1e partie : graph des dépense de l'annee
-    total = [ 0 for i in range(0,12) ]
-    gain = [ 0 for i in range(0,12) ]
-    necessaire = [ 0 for i in range(0,12) ]
-    necessaire_achat =  [ 0 for i in range(0,12) ]
-    necessaire_achat_sortie =  [ 0 for i in range(0,12) ]
-    necessaire_achat_sortie_vacances =  [ 0 for i in range(0,12) ]
+    # 1e partie : graph des dépenses de l'annee
+    total_by_month = {"all": [], "gain": [], "necessaire": [], "achat": [], "sortie": [], "vacances": [], "autre": []} 
 
     # 2e partie : variable pour 1e camembert
-    necessaire_average = 0
-    achat_average = 0
-    sortie_average = 0
-    vacances_average = 0
-    autre_average = 0
-
+    average = {"all": 0, "gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
+    month_average = {"all": 0, "gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
 
     for i in range(0,12):
         str_i = str(i+1).rjust(2, '0')
         startkey = ''.join([year, "-", str_i, "-01"])
         endkey = ''.join([year, "-", str_i, "-", str(calendar.monthrange(int(2015), i+1)[1])])
 
-        tmp = Account.view("sum/all", startkey=startkey, endkey=endkey).first()
-        if tmp is not None:
-            total[i] = int(tmp["value"])
-        tmp = Account.view("sum/gain", startkey=startkey, endkey=endkey).first()
-        if tmp is not None:
-            gain[i] = int(tmp["value"])
-            necessaire[i] = int(tmp["value"])
-            necessaire_achat[i] = int(tmp["value"])
-            necessaire_achat_sortie[i] = int(tmp["value"])
-            necessaire_achat_sortie_vacances[i] = int(tmp["value"])
-
-        tmp_necessaire = Account.view("sum/necessaire", startkey=startkey, endkey=endkey).first()
-        tmp_achat = Account.view("sum/achat", startkey=startkey, endkey=endkey).first()
-        tmp_sortie = Account.view("sum/sortie", startkey=startkey, endkey=endkey).first()
-        tmp_vacances = Account.view("sum/vacances", startkey=startkey, endkey=endkey).first()
-        tmp_autre = Account.view("sum/autre", startkey=startkey, endkey=endkey).first()
-
-        if tmp_necessaire is not None:
-            necessaire[i] = necessaire[i] + (int(tmp_necessaire["value"]))
-            necessaire_achat[i] = necessaire_achat[i] + (int(tmp_necessaire["value"]))
-            necessaire_achat_sortie[i] = necessaire_achat_sortie[i] + (int(tmp_necessaire["value"]))
-            necessaire_achat_sortie_vacances[i] = necessaire_achat_sortie_vacances[i] + (int(tmp_necessaire["value"]))
-            necessaire_average = necessaire_average + (int(tmp_necessaire["value"]))
-        if tmp_achat is not None:
-            necessaire_achat[i] = necessaire_achat[i] + (int(tmp_achat["value"]))
-            necessaire_achat_sortie[i] = necessaire_achat_sortie[i] + (int(tmp_achat["value"]))
-            necessaire_achat_sortie_vacances[i] = necessaire_achat_sortie_vacances[i] + (int(tmp_achat["value"]))
-            achat_average = achat_average + (int(tmp_achat["value"]))
-        if tmp_sortie is not None:
-            necessaire_achat_sortie[i] = necessaire_achat_sortie[i] + (int(tmp_sortie["value"]))
-            necessaire_achat_sortie_vacances[i] = necessaire_achat_sortie_vacances[i] + (int(tmp_sortie["value"]))
-            sortie_average = sortie_average + (int(tmp_sortie["value"]))
-        if tmp_vacances is not None:
-            necessaire_achat_sortie_vacances[i] = necessaire_achat_sortie_vacances[i] + (int(tmp_vacances["value"]))
-            vacances_average = vacances_average + (int(tmp_vacances["value"]))
-        if tmp_autre is not None:
-            autre_average = autre_average + (int(tmp_autre["value"]))
+        for k in total_by_month.keys():
+            try: 
+                tmp = int(Account.view(''.join(["sum/", k]), startkey=startkey, endkey=endkey).first()["value"])
+                total_by_month[k].append(abs(tmp))
+                average[k] = average[k] + tmp
+                
+            except:
+                total_by_month[k].append(0)
 
     # 2e partie : camemberts
-    necessaire_average = necessaire_average/12
-    achat_average = achat_average/12
-    sortie_average = sortie_average/12
-    vacances_average = vacances_average/12
-    autre_average = autre_average/12
+    for k in average.keys():
+        average[k] = average[k]/12
 
     # 2e camembert : moyenne sur le mois
     startkey = ''.join([year, "-", month, "-01"])
     endkey = ''.join([year, "-", month, "-", str(calendar.monthrange(int(2015), i+1)[1])])
-    tmp = Account.view("sum/necessaire", startkey=startkey, endkey=endkey).first()
-    if tmp is None:
-        necessaire_average_month = 0
-    else:
-        necessaire_average_month = int(tmp["value"])
 
-    tmp = Account.view("sum/achat", startkey=startkey, endkey=endkey).first()
-    if tmp is None:
-        achat_average_month = 0
-    else:
-        achat_average_month = int(tmp["value"])
-    
-    tmp = Account.view("sum/sortie", startkey=startkey, endkey=endkey).first()
-    if tmp is None:
-        sortie_average_month = 0    
-    else:
-        sortie_average_month = int(tmp["value"])
-    
-    tmp = Account.view("sum/vacances", startkey=startkey, endkey=endkey).first()
-    if tmp is None:
-        vacances_average_month = 0    
-    else:
-        vacances_average_month = int(tmp["value"])
-
-    tmp = Account.view("sum/autre", startkey=startkey, endkey=endkey).first()
-    if tmp is None:
-        autre_average_month = 0    
-    else:
-        autre_average_month = int(tmp["value"])
+    for k in month_average.keys():
+        try:
+            tmp = Account.view(''.join(["sum/", k]), startkey=startkey, endkey=endkey).first()
+            month_average[k] = int(tmp["value"])
+        except:
+            month_average[k] = 0
 
     return render(request, 'account/accueil.html', locals())
 
