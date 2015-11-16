@@ -1,9 +1,13 @@
 #-*- coding: utf-8 -*-
 
+from account import settings
+
 # dictionnaire pour modifier le descriptif
 # cle : description originale
 # valeur : nouvelle description
 auto_description = {
+    settings.old_desc_salary: settings.new_desc_salary,
+    settings.old_desc_rent: settings.new_desc_rent,
     'SOJIDIS': 'CARREFOUR CITY',
     'PICARD SA 0055': 'PICARD',
     'PICARD SA 094': 'PICARD',
@@ -23,6 +27,8 @@ auto_description = {
 # cle: description (originale)
 # valeur: subcategory
 auto_subcategory = {
+    settings.new_desc_salary: 'paye',
+    settings.new_desc_rent: 'loyer',
     'E D F': 'electricite',
     'MONOP': 'courses',
     'CARREFOUR': 'courses',

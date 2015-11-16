@@ -8,9 +8,18 @@ oney_halve = False
 oney_except = []
 
 # Banque Boursorama
-bs_halve = True
-bs_except = ['DRFIP PARIS TRESOR']
+bs_halve = False
+bs_except = []
 
 # Banque Societe Generale
 sg_halve = False
 sg_except = []
+
+
+# Paye & loyer
+# Attention ces valeurs ne doivent pas être vides
+old_desc_salary = 'Paye'
+new_desc_salary = 'Paye'
+
+old_desc_rent = 'Loyer'
+new_desc_rent = 'Loyer'
