@@ -70,8 +70,17 @@ fi
 
 
 # Replace settings according to env variables
-sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py
-sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/" projet/settings.py
+if [ -e "projet/settings.py" ]; then
+    sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"                            projet/settings.py
+    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                                                   projet/settings.py
+else
+    sed "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py.template > projet/settings.py
+    sed "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                        projet/settings.py.template > projet/settings.py
+fi
+
+if ! [ -e "account/settings.py" ]; then
+    cp account/settings.py.template account/settings.py
+fi
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
