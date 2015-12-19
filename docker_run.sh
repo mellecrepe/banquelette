@@ -27,10 +27,22 @@ print(json.load(sys.stdin)['$arg_field'])
 
 } # get_json_field()
 
-########################################
-# Check env variables
-[ -z "$COUCHDB_HOST" ] && COUCHDB_HOST="db:5984"
-[ -z "$SECRET_KEY" ]   && SECRET_KEY="123456789abcdef"
+
+# Generate a random byte key from /dev/urandom
+# You have to pass the keysize as parameter
+get_urandom_key()
+{
+    local arg_keysize="$1"
+
+    [ -z "$arg_keysize" ] && return 0
+
+    cat "/dev/random"             \
+        | head -c "$arg_keysize"  \
+        | hexdump -e '1/2 "%x"'
+
+    return 0
+} # get_urandom_key()
+
 
 ########################################
 cd "/home/banquelette"
@@ -70,10 +82,20 @@ fi
 
 
 # Replace settings according to env variables
+
+[ -z "$COUCHDB_HOST" ] && COUCHDB_HOST="db:5984"
+
 if [ -e "projet/settings.py" ]; then
-    sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"                            projet/settings.py
-    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                                                   projet/settings.py
+
+    [ -n "$COUCHDB_HOST" ] && sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"  projet/settings.py
+    [ -n "$SECRET_KEY" ]   && sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                         projet/settings.py
+
 else
+
+    if [ -z "$SECRET_KEY" ]; then
+        SECRET_KEY="$(get_urandom_key 30)"
+    fi
+
     sed "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py.template > projet/settings.py
     sed "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                        projet/settings.py.template > projet/settings.py
 fi
