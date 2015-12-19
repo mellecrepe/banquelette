@@ -32,6 +32,9 @@ COPY   initdb.sh     /home/banquelette/initdb.sh
 COPY   initdb_data   /home/banquelette/initdb_data
 COPY   docker_run.sh /docker_run.sh
 
+ENV COUCHDB_HOST="db:5984" \
+    SECRET_KEY=""
+
 EXPOSE 80
 
 CMD [ "/docker_run.sh" ]
