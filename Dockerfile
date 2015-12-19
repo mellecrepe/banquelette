@@ -5,7 +5,7 @@ MAINTAINER Lertsenem <lertsenem@lertsenem.com>
 RUN    apk update     \
     && apk add        \
            bash       \
-	   sed        \
+	   sed            \
            gcc        \
            git        \
            libc-dev   \
@@ -13,9 +13,9 @@ RUN    apk update     \
            python-dev \
            py-pip
 
-RUN    pip install    \
-           django     \
-           couchdbkit
+RUN    pip install      \
+           "django<1.9" \
+           "couchdbkit"
 
 RUN    echo "Doing some ugly things because couchdbkit is no longer maintained" >&2    \
     && sed -i "24d" '/usr/lib/python2.7/site-packages/couchdbkit/ext/django/schema.py' \
