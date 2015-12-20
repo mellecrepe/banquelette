@@ -5,6 +5,7 @@ from account.data import auto_subcategory,auto_description
 from account import settings
 import datetime
 import re
+import StringIO
 
 
 def import_data(data, bank):
@@ -12,6 +13,8 @@ def import_data(data, bank):
         import_boursorama(data)
     elif bank == 'oney':
         import_oney(data)
+    elif bank == 'ingdirect':
+        import_ingdirect(data)
 
 def change_description(description):
     """ Renommage du champs description """
@@ -31,9 +34,23 @@ def halve_or_not(bank, description):
     if bank == 'boursorama':
         settings_halve = settings.bs_halve
         settings_except = settings.bs_except
+
     elif bank == 'oney':
         settings_halve = settings.oney_halve
         settings_except = settings.oney_except
+
+    elif bank == 'ingdirect':
+        try:
+            settings_halve  = settings.ingdirect_halve
+        except AttributeError:
+            # Not defined? Use default value.
+            settings_halve  = False
+
+        try:
+            settings_except = settings.ingdirect_except
+        except AttributeError:
+            # Not defined? Use default value.
+            settings_except = []
 
     if settings_halve is True:
         halve = True
@@ -42,6 +59,7 @@ def halve_or_not(bank, description):
                 halve = False
     else:
         halve = False
+
     return halve
 
 
@@ -140,10 +158,10 @@ def import_boursorama(data):
         halve = halve_or_not('boursorama', description)
         if halve is True:
             expense = expense/2
-                    
+
         account = Account(date = date, description = description, expense = expense, subcategory = subcategory, bank = 'boursorama', check = False, halve = halve)  
         account.save()
-        
+
 
 def import_oney(data):
     """ Parsing des données pour Oney """
@@ -188,6 +206,92 @@ def import_oney(data):
         halve = halve_or_not('oney', description)
         if halve is True:
             expense = expense/2
-                    
+
         account = Account(date = date, description = description.decode('utf-8'), expense = expense, subcategory = subcategory, bank = 'oney', check = False, halve = halve)
         account.save()
+
+
+def import_ingdirect(data):
+    """ Parsing des données pour ING Direct.
+
+        ING Direct propose de télécharger ses données bancaires dans plusieurs
+        formats différents : xls, csv ou qif. Pour le parsing, on se base sur
+        le format csv.
+
+        Exemples d'entrées CSV d'un relevé ING Direct :
+
+         09/12/2015;CARTE 05/12/2015 LE RUBAN BLEU;;-17,50;EUR;
+         25/11/2015;VIREMENT SEPA RECU RPC ESPIONNAGE;;10000;EUR;
+
+        soit, dans l'ordre, les champs suivants :
+
+        * DATE DE PRISE EN COMPTE (au format JJ/MM/AAAA) ;
+        * TYPE DE TRANSACTION (et date pour un paiement par carte) ET INFOS ;
+        * ??? ;
+        * MONTANT (positif ou négatif);
+        * DEVISE ;
+    """
+
+    # data contient toutes les données collées depuis le CSV. On va donc les
+    # traiter ligne par ligne. Pour cela on utilise StringIO.
+    buf = StringIO.StringIO(data)
+
+    # Start by reading the first line and loop
+    line = buf.readline()
+    while line != "":
+
+        # We parse the line here !
+        csvline = line.split(';')
+
+        raw_date        = csvline[0]
+        raw_description = csvline[1]
+        raw_expense      = csvline[3]
+        raw_currency    = csvline[4]
+
+        # 1 - the date
+        # Nothing to do but assume DD/MM/YYYY conventions here.
+        date = datetime.datetime.strptime(raw_date, "%d/%m/%Y").date()
+
+        # 2 - the expense
+        # First, try to convert directly. If that fails, that's probably
+        # because of the coma used as decimal point. Vive la France \o/.
+        try:
+            expense = float(raw_expense)
+        except ValueError:
+            expense = float(raw_expense.replace(',', '.'))
+
+        # 3 - the currency
+        # For now we suppose it is always in €, and raise an exception
+        # otherwise. TODO But maybe we could do better?
+        if raw_currency != "EUR":
+            raise ValueError("Currency is not EUR in transaction: %s" % line)
+
+        # 4 - the description
+        # Last but not least. TODO We could do a lot of parsing here, to auto
+        # select a matching subcategory, to remove useless infos, etc.
+        # Or we could just parse it as is. Heh.
+        description = raw_description
+        subcategory = None
+
+        # Modifications automatiques de la description et de la subcategory
+        description = change_description(description)
+        subcategory = change_subcategory(subcategory, description)
+
+        # halve or not
+        halve = halve_or_not('ingdirect', description)
+        if halve is True:
+            expense = expense/2
+
+        # Save the transaction in database
+        account = Account( date        = date,
+                           description = description,
+                           expense     = expense,
+                           subcategory = subcategory,
+                           bank        = 'ingdirect',
+                           check       = False,
+                           halve       = halve )
+        account.save()
+
+
+        # Read next line
+        line = buf.readline()
