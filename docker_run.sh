@@ -92,14 +92,17 @@ if [ -e "projet/settings.py" ]; then
 
 else
 
+    cp projet/settings.py.template projet/settings.py
+
     if [ -z "$SECRET_KEY" ]; then
         echo "Creating random SECRET_KEY, please keep calm & generate entropy..."
         SECRET_KEY="$(get_urandom_key 20)"
         echo "SECRET_KEY generated!"
     fi
 
-    sed "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py.template > projet/settings.py
-    sed "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                        projet/settings.py.template > projet/settings.py
+    sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"                            projet/settings.py
+    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                                                   projet/settings.py
+    sed -i "s/DEBUG *=.*/DEBUG = True/"                                                                                      projet/settings.py # Ouch, that one is ugly. :/ TODO We should use a real webserver + wsgi server
 fi
 
 if ! [ -e "account/settings.py" ]; then

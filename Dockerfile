@@ -5,7 +5,7 @@ MAINTAINER Lertsenem <lertsenem@lertsenem.com>
 RUN    apk update     \
     && apk add        \
            bash       \
-	   sed            \
+           sed        \
            gcc        \
            git        \
            libc-dev   \
