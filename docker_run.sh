@@ -93,7 +93,9 @@ if [ -e "projet/settings.py" ]; then
 else
 
     if [ -z "$SECRET_KEY" ]; then
-        SECRET_KEY="$(get_urandom_key 30)"
+        echo "Creating random SECRET_KEY, please keep calm & generate entropy..."
+        SECRET_KEY="$(get_urandom_key 20)"
+        echo "SECRET_KEY generated!"
     fi
 
     sed "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py.template > projet/settings.py
