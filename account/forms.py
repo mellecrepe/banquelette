@@ -45,9 +45,10 @@ CATEGORY_CHOICES = (
 
 BANK_CHOICES = (
     (None, ''),
-    ('oney', 'Oney'),
+    ('oney',       'Oney'),
     ('boursorama', 'Boursorama'),
-    ('soge', 'Société Générale'),
+    ('soge',       'Société Générale'),
+    ('ingdirect',  'ING Direct'),
 )
 
 YEAR_CHOICES = (
