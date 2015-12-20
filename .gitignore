@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+
+account/settings.py
+projet/settings.py

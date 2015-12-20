@@ -27,10 +27,22 @@ print(json.load(sys.stdin)['$arg_field'])
 
 } # get_json_field()
 
-########################################
-# Check env variables
-[ -z "$COUCHDB_HOST" ] && COUCHDB_HOST="db:5984"
-[ -z "$SECRET_KEY" ]   && SECRET_KEY="123456789abcdef"
+
+# Generate a random byte key from /dev/urandom
+# You have to pass the keysize as parameter
+get_urandom_key()
+{
+    local arg_keysize="$1"
+
+    [ -z "$arg_keysize" ] && return 0
+
+    cat "/dev/random"             \
+        | head -c "$arg_keysize"  \
+        | hexdump -e '1/2 "%x"'
+
+    return 0
+} # get_urandom_key()
+
 
 ########################################
 cd "/home/banquelette"
@@ -70,8 +82,32 @@ fi
 
 
 # Replace settings according to env variables
-sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_" projet/settings.py
-sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/" projet/settings.py
+
+[ -z "$COUCHDB_HOST" ] && COUCHDB_HOST="db:5984"
+
+if [ -e "projet/settings.py" ]; then
+
+    [ -n "$COUCHDB_HOST" ] && sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"  projet/settings.py
+    [ -n "$SECRET_KEY" ]   && sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                         projet/settings.py
+
+else
+
+    cp projet/settings.py.template projet/settings.py
+
+    if [ -z "$SECRET_KEY" ]; then
+        echo "Creating random SECRET_KEY, please keep calm & generate entropy..."
+        SECRET_KEY="$(get_urandom_key 20)"
+        echo "SECRET_KEY generated!"
+    fi
+
+    sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"                            projet/settings.py
+    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                                                   projet/settings.py
+    sed -i "s/DEBUG *=.*/DEBUG = True/"                                                                                      projet/settings.py # Ouch, that one is ugly. :/ TODO We should use a real webserver + wsgi server
+fi
+
+if ! [ -e "account/settings.py" ]; then
+    cp account/settings.py.template account/settings.py
+fi
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
