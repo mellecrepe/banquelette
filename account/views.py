@@ -98,14 +98,14 @@ def month_choice(request):
         if form.is_valid():
             year = form.cleaned_data['year']
             month = form.cleaned_data['month']
-            return redirect(couchdb_modify, year=year, month=month)
+            return redirect(db_modify, year=year, month=month)
     else:
         form=MonthChoiceForm()
 
     return render(request, 'account/month_choice.html', locals())
     
     
-def couchdb_modify(request, year=None, month=None):
+def db_modify(request, year=None, month=None):
     """ Modification par mois ou les non check"""
     # definition des variables
     if year == None:
@@ -127,10 +127,10 @@ def couchdb_modify(request, year=None, month=None):
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         formset = AccountFormSet(queryset=account_all)
-    return render(request, 'account/couchdb_modify.html', locals())
+    return render(request, 'account/db_modify.html', locals())
 
 	
-def couchdb_add(request):
+def db_add(request):
     """ Ajout d'entrées manuelles """
     title = "Ajout d'entrées manuelles"
     n = 5
@@ -144,10 +144,10 @@ def couchdb_add(request):
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         formset = AccountFormSet(queryset=Account.objects.none())
 
-    return render(request, 'account/couchdb_add.html', locals())
+    return render(request, 'account/db_add.html', locals())
     
 
-def couchdb_update(request):
+def db_update(request):
     """ Mise à jour de la base de donnée avec de nouvelles données """
     if request.method == 'POST':
         form = UpdateDbForm(request.POST)
@@ -156,8 +156,8 @@ def couchdb_update(request):
             bank = form.cleaned_data['bank']
             # Analyse des données stockées dans une liste
             import_data(data, bank)
-            return redirect(couchdb_modify)
+            return redirect(db_modify)
     else:
         form=UpdateDbForm()
 
-    return render(request, 'account/couchdb_update.html', locals())
+    return render(request, 'account/db_update.html', locals())

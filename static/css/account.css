@@ -61,7 +61,7 @@ ul.pie-legend {
 }
 
 
-/* couchdb_update */
+/* db_update */
 #formulaire {
 	font-size : medium;
 	font-color: rgb( 40, 44, 47 );
@@ -110,7 +110,7 @@ ul.pie-legend {
 }
 
 
-/* couchdb_modify */
+/* db_modify */
 table .date{
 	width: 70px;
 }
