@@ -4,6 +4,9 @@
 Banquelette est un outil pour gérer ces comptes.
 
 ## Lancement via Docker
+Attention cette partie n'est plus à jour. Couchdb n'est plus utilisé et a été 
+remplacé par une base sqlite
+
 Banquelette est packagée pour Docker. Vous pouvez directement télécharger une
 image Docker fonctionnelle ou construire vous-même votre image (si vous
 souhaitez être certain d'avoir les tous derniers commits, par exemple).
@@ -66,11 +69,10 @@ klaemo. Remplacez-la par ce que vous souhaitez.
 
 ## Lancement manuel
 ### Installation 
-Paquets à installer : *python2.7*, *couchdb*, *django1.8*, *couchdbkit*
+Paquets à installer : *python2.7*, *django1.8*
 Par exemple, sous debian/ubuntu :
 ```
-	apt-get install couchdb python-django 
-        pip install couchdbkit
+	apt-get install python-django 
 ```
 
 Assurez-vous d'avoir la version 1.8 grâce à cette commande :
@@ -83,27 +85,8 @@ Si la version de django est inférieur à 1.8, upgradez via cette commande :
 	pip install django --upgrade
 ```
 
-Couchdbkit est une bibliotheque qui n'est plus maintenue et qui utilise une
-bibliotheque obsolete de django.
-Pour corriger ça, editer le fichier suivant :
-```
-	vim /usr/local/lib/python2.7/dist-packages/couchdbkit/ext/django/schema.py
-```
-
-Puis commenter les lignes **24** et **64** (références à la fonction *get_verbose_name*)
-```
-	#from django.db.models.options import get_verbose_name
-```
-
 
 ### Configuration
-#### configuration couchdb
-Créer une database nommée : **account**
-
-Afin que l'application fontionne un certain nombre de views doivent être créées
-dans cette database. Le plus simple pour ce faire et d'utiliser le script
-*initdb.sh* (une aide sucinte est incluse).
-
 #### configuration de l'application banquelette
 Il existe trois fichiers de configuration :
 
