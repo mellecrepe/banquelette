@@ -1,4 +1,0 @@
-This directory contains json files used by the 'initdb.sh' script to initialize
-CouchDB.
-
-Note that only the files ending with '.json' will be parsed.
