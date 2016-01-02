@@ -10,6 +10,7 @@
 
 <form method="post" id="modify">
 	{% csrf_token %}
+	{{ formset.management_form }}
 	<table>
 	<!-- Table Header -->
 	<thead>
@@ -22,14 +23,20 @@
 			<th>Banque</th>
 			<th>Check</th>
 			<th>Commentaire</th>
+			{% if formset.can_delete %}
 			<th>Supprimer</th>
+			{% endif %}
+			{% if formset.errors %}			
+			<th>Erreur sur les champs</th>
+			{% endif %}
 		</tr>
 	</thead>
 	<!-- Table Header -->
 
 	<!-- Table Body -->
 	<tbody>
-		{% for f in form_list %}
+		{% for f in formset %}
+			{{ f.id }}
 			<tr><td> {{ f.date }} </td>
 			<td> {{ f.description }} </td>
 			<td> {{ f.subcategory }} </td>
@@ -38,7 +45,13 @@
 			<td> {{ f.bank }} </td>
 			<td> {{ f.check }} </td>
 			<td> {{ f.comment }} </td>
-			<td> {{ f.delete }} </td></tr>
+			{% if formset.can_delete %}
+			<td> {{ f.DELETE }} </td>
+			{% endif %}
+			{% if formset.errors %}			
+			<td> {% for error in f.errors %} <div>{{error}}</div> {% endfor %}</td>
+			{% endif %}
+			</tr>
 		{% endfor %}
 	</tbody> 
 	<!-- Table Body -->

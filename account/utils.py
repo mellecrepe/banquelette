@@ -59,7 +59,6 @@ def halve_or_not(bank, description):
                 halve = False
     else:
         halve = False
-
     return halve
 
 
@@ -151,17 +150,17 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = None
+        subcategory = settings.subcategory_default
         subcategory = change_subcategory(subcategory, description)
 
         # halve or not
         halve = halve_or_not('boursorama', description)
         if halve is True:
             expense = expense/2
-
+                    
         account = Account(date = date, description = description, expense = expense, subcategory = subcategory, bank = 'boursorama', check = False, halve = halve)  
         account.save()
-
+        
 
 def import_oney(data):
     """ Parsing des données pour Oney """
@@ -193,7 +192,7 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = None
+        subcategory = settings.subcategory_default
         subcategory = change_subcategory(subcategory, description)
 
         # expense : on récupère la dépense positive ou négtive
@@ -206,7 +205,7 @@ def import_oney(data):
         halve = halve_or_not('oney', description)
         if halve is True:
             expense = expense/2
-
+                    
         account = Account(date = date, description = description.decode('utf-8'), expense = expense, subcategory = subcategory, bank = 'oney', check = False, halve = halve)
         account.save()
 
@@ -271,7 +270,7 @@ def import_ingdirect(data):
         # select a matching subcategory, to remove useless infos, etc.
         # Or we could just parse it as is. Heh.
         description = raw_description
-        subcategory = None
+        subcategory = settings.subcategory_default
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)

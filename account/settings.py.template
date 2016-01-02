@@ -1,4 +1,21 @@
-#-*- coding: utf-8 -*-
+#-*- coding: utf-9 -*-
+# Fichiers de variables
+###
+
+
+# Parametrage lié aux categories
+subcategory_default = 'autre'
+
+
+# Parametrage lié aux banques
+BANK_CHOICES = (
+    (None, ''),
+    ('oney',       'Oney'),
+    ('boursorama', 'Boursorama'),
+    ('soge',       'Société Générale'),
+    ('ingdirect',  'ING Direct'),
+    ('espece',     'Liquide/Espèce'),
+)
 
 # $bank_halve True si c'est un compte commun et la depense doit être divisé par 2 False sinon
 # Si $bank_halve = True, $bank_except peut contenir une liste d'exception (contenu dans la description de la depense)

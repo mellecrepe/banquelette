@@ -20,6 +20,7 @@ auto_description = {
     'REDOUTE AUB VAD - ROUBAIX': 'La Redoute',
     'DECATHLON 0090': 'DECATHLON',
     'A 4 PATTES': 'Rivolux',
+    'REST.KEVIK': 'Bagelstein',
 }
 
 # dictionnaire pour organiser les subcategory
@@ -42,9 +43,11 @@ auto_subcategory = {
     'MARKS SPENCER': 'repas-midi',
     'COJEAN': 'repas-midi',
     'QUINDICI': 'repas-midi',
+    'SNCF': 'transport',
     'La Redoute': 'vetement',
     'ETAM': 'vetement',
     'H & M': 'vetement',
+    'ZARA': 'vetement',
     'STRADIVARIUS': 'vetement',
     'DECATHLON': 'sport',
     'MY LITTLE PARIS': 'box',
@@ -52,8 +55,11 @@ auto_subcategory = {
     'ARCHI BAR': 'bar',
     'DERNIER METRO': 'bar',
     'LE SEMAPHORE': 'bar',
+    'BAR': 'bar',
+    'bar': 'bar',
     'MC DONALDS': 'resto',
     'CASTORAMA': 'decoration', 
     'RETRAIT DAB': 'retrait',
+    'retrait': 'retrait',
 }
 
