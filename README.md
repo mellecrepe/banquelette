@@ -69,10 +69,10 @@ klaemo. Remplacez-la par ce que vous souhaitez.
 
 ## Lancement manuel
 ### Installation 
-Paquets à installer : *python2.7*, *django1.8*
+Paquets à installer : *python2.7*, *django1.8*, *sqlite*"
 Par exemple, sous debian/ubuntu :
 ```
-	apt-get install python-django 
+	apt-get install python-django sqlite
 ```
 
 Assurez-vous d'avoir la version 1.8 grâce à cette commande :
@@ -87,6 +87,14 @@ Si la version de django est inférieur à 1.8, upgradez via cette commande :
 
 
 ### Configuration
+#### Configuration du schema de la base de données
+Django crée lui-même la base de données et les modifications de schéma.
+Afin d'appliquer les modifications de schéma, exécutez cette commande
+```
+        python manage.py migrate
+```
+
+
 #### configuration de l'application banquelette
 Il existe trois fichiers de configuration :
 
