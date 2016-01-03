@@ -11,10 +11,11 @@ RUN    apk update     \
            libc-dev   \
            python     \
            python-dev \
-           py-pip
+           py-pip     \
+           sqlite
 
 RUN    pip install      \
-           "django<1.9" \
+           django
 
 RUN    mkdir /home/banquelette/
 
