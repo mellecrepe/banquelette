@@ -3,3 +3,4 @@
 
 account/settings.py
 projet/settings.py
+db.sqlite3.account
