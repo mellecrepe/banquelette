@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# ======================================
 get_json_field()
 {
 	local arg_field="$1"
@@ -30,6 +31,7 @@ print(json.load(sys.stdin)['$arg_field'])
 
 # Generate a random byte key from /dev/urandom
 # You have to pass the keysize as parameter
+# ======================================
 get_urandom_key()
 {
     local arg_keysize="$1"
@@ -47,51 +49,25 @@ get_urandom_key()
 ########################################
 cd "/home/banquelette"
 
-# Check database initialization
-couchdb_version="$( curl -sX GET "$COUCHDB_HOST" \
-			| get_json_field "version" )"
 
-if [ "$?" -ne 0 ] || [ -z "$couchdb_version" ]; then
-	echo "Fatal: unable to get CouchDB version at '$COUCHDB_HOST'" >&2
-	echo "Please check the CouchDB connection"                     >&2
-	
-	exit 1
-fi
-
-
-couchdb_account="$( curl -sX GET "$COUCHDB_HOST/account" \
-			| get_json_field "db_name" )"
-
-if [ "$?" -ne 0 ]; then
-	echo "No 'account' database found on CouchDB instance '$COUCHDB_HOST'"
-	echo "Launching initialization script now"
-
-	./initdb.sh "$COUCHDB_HOST"
-
-	if [ "$?" -ne 0 ]; then
-		echo "Fatal: something went wrong during database initialisation" >&2
-		echo "I have no idea what to do, sorry" >&2
-		echo "Please contact a developper"      >&2
-
-		exit 1
-	fi
-else
-	echo "'account' database exist on CouchDB instance '$COUCHDB_HOST'"
-	echo "Skipping database initialization"
+# Check for misconfigurations
+# ======================================
+if [ -n "$COUCHDB_HOST" ]; then
+    echo "WARNING: You defined the env variable COUCHDB_HOST"
+    echo "WARNING: It seems you are trying to use an older"
+    echo "WARNING: version of Banquelette. Banquelette now"
+    echo "WARNING: uses sqlite as database backend."
 fi
 
 
 # Replace settings according to env variables
-
-[ -z "$COUCHDB_HOST" ] && COUCHDB_HOST="db:5984"
-
+# ======================================
 if [ -e "projet/settings.py" ]; then
-
-    [ -n "$COUCHDB_HOST" ] && sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"  projet/settings.py
-    [ -n "$SECRET_KEY" ]   && sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                         projet/settings.py
-
+    [ -n "$SECRET_KEY" ] &&                                    \
+        sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/" \
+               "projet/settings.py"
 else
-
+    echo "Copying projet settings template..."
     cp projet/settings.py.template projet/settings.py
 
     if [ -z "$SECRET_KEY" ]; then
@@ -100,14 +76,24 @@ else
         echo "SECRET_KEY generated!"
     fi
 
-    sed -i "s_('djangoapp.account', '.*')_('djangoapp.account', 'http://$COUCHDB_HOST/account')_"                            projet/settings.py
-    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"                                                                   projet/settings.py
-    sed -i "s/DEBUG *=.*/DEBUG = True/"                                                                                      projet/settings.py # Ouch, that one is ugly. :/ TODO We should use a real webserver + wsgi server
+    sed -i "s/SECRET_KEY *=.*/SECRET_KEY = '$SECRET_KEY'/"    \
+           "projet/settings.py"
+
+   # Ouch, that one is ugly. :/ TODO We should use a real webserver + wsgi
+   # server
+   sed -i "s/DEBUG *=.*/DEBUG = True/"                       \
+          "projet/settings.py"
 fi
 
 if ! [ -e "account/settings.py" ]; then
+    echo "Copying account settings template..."
     cp account/settings.py.template account/settings.py
 fi
+
+# Initialize database
+# ======================================
+echo "Database initialization..."
+./manage.py migrate
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
