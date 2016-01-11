@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+class Category():
+    """Une étiquette permettant de classer une dépense"""
+
+    SEPARATOR = u'/'
+
+    def __init__(self, name, parent=None):
+        """Définir nune catégorie parente permet de définir une
+        sous-catégorie."""
+
+        self.parent = parent
+        
+        self.name = name
+
+
+    def __str__(self):
+        return unicode(self).encode('utf8')
+
+
+    def __unicode__(self):
+
+        rv = u'' 
+
+        if self.parent is not None:
+            rv = unicode(self.parent)
+            rv += Category.SEPARATOR
+
+        rv += unicode(self.name)
+
+        return rv
