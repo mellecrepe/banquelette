@@ -1,0 +1,44 @@
+# Test at YAML categories config file
+
+Nécessaire:
+    - Courses
+    - Transport
+    - Électricité
+    - Loyer
+    - "Repas de midi"
+    - Santé
+    - "Impôts et taxes"
+    - Assurance
+    - "Téléphone et Internet"
+
+Achats:
+    - Vêtements
+    - Cadeaux
+    - Décoration
+    - Box
+    - Beauté
+
+Sorties:
+    - Restaurant
+    - Bar
+    - Gourmandise
+    - Soirée
+    - Concert
+    - Cinéma
+    - Théâtre
+    - "Expo et Musée"
+    - Sport
+
+Vacances:
+    - Week-end
+
+Gain:
+    - Paye
+    - Remboursement
+    - Cadeau
+
+Autre:
+    - Retrait
+    - Nicolas
+
+Non-classé:
