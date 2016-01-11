@@ -26,6 +26,10 @@ def load_categories(data, categories_dict={}, parent=None):
     # { "catégorie" : [ "sous-catégorie", "souscatégories", ... ] ... }
 
     for category in data:
+
+        if Category.SEPARATOR in unicode(category):
+            raise SeparatorUsedInCategoryNameError(category)
+
         cat = Category(name=category, parent=parent)
         categories_dict[ unicode(cat) ] = cat
 
