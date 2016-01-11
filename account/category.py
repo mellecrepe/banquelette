@@ -30,3 +30,13 @@ class Category():
         rv += unicode(self.name)
 
         return rv
+
+class SeparatorUsedInCategoryNameError(Exception):
+    """A custom exception to alert that the Category.SEPARATOR was used in a
+    Category name."""
+
+    def __init__(self, category_name):
+        Exception.__init__( self,
+                            "The Category name %s contains the Category " \
+                            "separator character '%s'"                    \
+                            % ( category_name, Category.SEPARATOR ) )
