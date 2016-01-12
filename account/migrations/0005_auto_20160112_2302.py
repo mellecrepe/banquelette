@@ -16,9 +16,4 @@ class Migration(migrations.Migration):
             name='bank',
             field=models.CharField(max_length=50, choices=[(None, b''), (b'oney', b'Oney'), (b'boursorama', b'Boursorama'), (b'soge', b'Soci\xc3\xa9t\xc3\xa9 G\xc3\xa9n\xc3\xa9rale'), (b'ingdirect', b'ING Direct'), (b'espece', b'Liquide/Esp\xc3\xa8ce')]),
         ),
-        migrations.AlterField(
-            model_name='account',
-            name='comment',
-            field=models.CharField(max_length=200, null=True, blank=True),
-        ),
     ]

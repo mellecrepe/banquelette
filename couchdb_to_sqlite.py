@@ -52,7 +52,7 @@ for d in all_docs :
     except KeyError:
             doc['comment'] = "" 
 
-    data = (i, doc['date'], doc['description'], doc['expense'], doc['category'], doc['bank'], doc['check'], doc['halve'], doc['comment'], doc['subcategory'])
+    data = (i, doc['date'], doc['description'], doc['expense'], doc['category'], doc['subcategory'], doc['check'], doc['halve'], doc['comment'], doc['bank'])
 
     cursor.execute("""
         INSERT INTO account_account VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", data)
