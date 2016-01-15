@@ -19,7 +19,10 @@ def home(request):
 
     year = datetime.now().year
     month = datetime.now().month
-    account_filter_year = Account.objects.filter(date__year=year)
+    months = year * 12 + month - 1
+    triples = [{"year": (months - i) // 12, "month" : (months - i) % 12 + 1} for i in reversed(range(12))]
+    for t in triples:
+	t["month_word"] = date(t["year"], t["month"], 1).strftime('%B').capitalize()
 
     # 1e partie : graph des dépenses de l'annee
     total_by_month = {"all": [], "gain": [], "necessaire": [], "achat": [], "sortie": [], "vacances": [], "autre": []} 
@@ -28,36 +31,34 @@ def home(request):
     average = {"gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
     average_month = {"gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
 
-    for k in total_by_month.keys():
-        if k == "all":
-            for i in range(1,13):
-                account_filter_month = account_filter_year.filter(date__month=i)
+    for t in triples :
+        account_filter_year = Account.objects.filter(date__year=t["year"])
+        account_filter_month = account_filter_year.filter(date__month=t["month"])
+        for k in total_by_month.keys():
+            if k == "all":
                 try: 
                     total_by_month["all"].append(abs(account_filter_month.aggregate(Sum('expense'))['expense__sum']))
                 except:
                     total_by_month["all"].append(0)
-            continue
+                continue
 
-        account_filter_category = account_filter_year.filter(category__exact=k)
-        average_tmp = account_filter_category.aggregate(Avg('expense'))['expense__avg']
-        if average_tmp is None:
-            average[k] = 0
-        else:
-            average[k] = int(average_tmp)
-
-        average_tmp = account_filter_category.filter(date__month=month).aggregate(Avg('expense'))['expense__avg']
-        if average_tmp is None:
-            average_month[k] = 0
-        else:
-            average_month[k] = int(average_tmp)
-
-        for i in range(1,13):
-            account_filter_month = account_filter_year.filter(date__month=i)
             try: 
                 total_by_month[k].append(abs(account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum']))
             except:
                 total_by_month[k].append(0)
 
+            account_filter_category = account_filter_year.filter(category__exact=k)
+            average_tmp = account_filter_category.aggregate(Avg('expense'))['expense__avg']
+            if average_tmp is None:
+                average[k] = 0
+            else:
+                average[k] = int(average_tmp)
+
+            average_tmp = account_filter_category.filter(date__month=t["month"]).aggregate(Avg('expense'))['expense__avg']
+            if average_tmp is None:
+                average_month[k] = 0
+            else:
+                average_month[k] = int(average_tmp)
 
     return render(request, 'account/accueil.html', locals())
 

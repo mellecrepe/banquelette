@@ -11,7 +11,7 @@
 {% block title_h1 %} Accueil {% endblock %}
 {% block principal_section %}
 <article>
-<h3> Dépense {{year}} </h3>
+<h3> Dépense des 12 derniers mois </h3>
 <div class="width_all">
 	<canvas id="linechart" height="200" width=600"></canvas>
 	<canvas id="barchart" height="200" width=600"></canvas>
@@ -41,7 +41,7 @@
 
 	// paramètre graphique en ligne
 	var lineData = {
-	labels : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
+	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
 	datasets : [
 		{
 		label: "Gain",
@@ -73,7 +73,7 @@
 
 	// paramètre graphique en bar
 	var barData = {
-	labels : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
+	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
 	datasets : [
 		{
 		label: "Necessaire",
