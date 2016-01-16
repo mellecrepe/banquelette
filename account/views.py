@@ -20,6 +20,7 @@ def home(request):
     year = datetime.now().year
     month = datetime.now().month
     months = year * 12 + month - 1
+    print months
     triples = [{"year": (months - i) // 12, "month" : (months - i) % 12 + 1} for i in reversed(range(12))]
     for t in triples:
 	t["month_word"] = date(t["year"], t["month"], 1).strftime('%B').capitalize()
@@ -37,13 +38,13 @@ def home(request):
         for k in total_by_month.keys():
             if k == "all":
                 try: 
-                    total_by_month["all"].append(abs(account_filter_month.aggregate(Sum('expense'))['expense__sum']))
+                    total_by_month["all"].append(abs(int(account_filter_month.aggregate(Sum('expense'))['expense__sum'])))
                 except:
                     total_by_month["all"].append(0)
                 continue
 
             try: 
-                total_by_month[k].append(abs(account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum']))
+                total_by_month[k].append(abs(int(account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum'])))
             except:
                 total_by_month[k].append(0)
 
