@@ -28,11 +28,7 @@ def load_categories(data, categories_dict={}, parent=None):
     for category in data:
 
         if Category.SEPARATOR in unicode(category):
-            raise SeparatorUsedInCategoryNameError(
-                    u"The Category names %s contains the Category separator " \
-                    u"character '%s'"                                         \
-                    % (unicode(category), Category.Separator)
-                    )
+            raise SeparatorUsedInCategoryNameError(category)
 
         cat = Category(name=category, parent=parent)
         categories_dict[ unicode(cat) ] = cat
