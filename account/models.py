@@ -2,6 +2,8 @@
 from django.db import models
 from account.settings import *
 
+import yamlload
+
 CATEGORY_CHOICES = (
     (None, ''),
     ('necessaire','Nécessaire'),
@@ -12,44 +14,10 @@ CATEGORY_CHOICES = (
     ('autre','Autre'),
 )
 
-SUBCATEGORY_CHOICES = (
-    (None, ''),
-    ('courses', 'Nécessaire/Courses'),
-    ('transport', 'Nécessaire/Transport'),
-    ('electricite', 'Nécessaire/Eléctricité'),
-    ('loyer', 'Nécessaire/Loyer'),
-    ('repas-midi', 'Nécessaire/Repas midi'),
-    ('sante', 'Nécessaire/Santé'),
-    ('impot-taxe', 'Nécessaire/Impôt - Taxe'),
-    ('assurance', 'Nécessaire/Assurance'),
-    ('telephone-box', 'Nécessaire/Téléphone - Box'),
-    ('necessaire-autre', 'Nécessaire/Autre'),
-    ('vetement', 'Achat/Vêtement'),
-    ('cadeau', 'Achat/Cadeau'),
-    ('decoration', 'Achat/Décoration'),
-    ('box', 'Achat/Box'),
-    ('beaute', 'Achat/Beauté'),
-    ('achat-divers', 'Achat/Divers'),
-    ('resto', 'Sortie/Resto'),
-    ('bar', 'Sortie/Bar'),
-    ('gourmandise', 'Sortie/Gourmandise'),
-    ('soiree', 'Sortie/Soirée'),
-    ('concert', 'Sortie/Concerts'),
-    ('cine', 'Sortie/Ciné'),
-    ('theatre', 'Sortie/Théatre'),
-    ('expo-musee', 'Sortie/Expo - Musée'),
-    ('sport', 'Sortie/Sport'),
-    ('sortie-autre', 'Sortie/Autre'),
-    ('vacances', 'Vacances'),
-    ('weekend', 'Vacances/Weekend'),
-    ('paye', 'Gain/Paye'),
-    ('remboursement', 'Gain/Remboursement'),
-    ('argent-cadeau', 'Gain/Argent (cadeau)'),
-    ('gain-autre', 'Gain/Autre'),
-    ('autre', 'Autre'),
-    ('retrait', 'Autre/Retrait'),
-    ('nicolas', 'Autre/Nicolas'),
-)
+SUBCATEGORY_CHOICES = [ (c,c) for c in yamlload.load_categories(
+    yamlload.load_yaml( "account/categories.yaml" )
+    ) ]
+SUBCATEGORY_CHOICES.sort()
 
 class Account(models.Model):
     date = models.DateField()
