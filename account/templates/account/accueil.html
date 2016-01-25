@@ -55,22 +55,20 @@
                "{{triples.11.month_word}} {{triples.11.year}}", ],
 
 	datasets : [
-
     {% for cat, vals in total_by_month.items %}
-               {% if cat.name == "Gain" or cat.name == "Total" %}
-		{
-            label: "{{ cat.name }}",
-            fillColor: "{{ cat.metadata.colors.verylight }}",
-            strokeColor: "{{ cat.metadata.colors.light }}",
-            pointColor: "{{ cat.metadata.colors.normal }}",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: {{ vals }},
-		},
-               {% endif %}
+    {% if cat.name == "Gain" or cat.name == "Total" %}
+    {
+        label: "{{ cat.name }}",
+        fillColor: "{{ cat.metadata.colors.verylight }}",
+        strokeColor: "{{ cat.metadata.colors.light }}",
+        pointColor: "{{ cat.metadata.colors.normal }}",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)",
+        data: {{ vals }},
+    },
+    {% endif %}
     {% endfor %}
-
 	]
 };
 
