@@ -112,14 +112,15 @@ def home(request):
             totalcat = [ c for c in total_by_month if c.name == "Total" ][0]
             total_by_month[totalcat].append(this_month_total)
         except:
-            totalcat = category.Category( "Total",
-                                          metadata = {
-                                            "colors": {
-                                              "normal"     : "#000",
-                                              "light"    : "#666",
-                                              "verylight": "#aaa",
-                                                }
-                                            } )
+            totalcat = category.Category(
+                    "Total",
+                    metadata = {
+                        "colors": {
+                            "normal"   : "rgba(0,0,0,1)",
+                            "light"    : "rgba(0,0,0,0.6)",
+                            "verylight": "rgba(0,0,0,0.1)",
+                            }
+                        } )
             total_by_month[totalcat] = [this_month_total]
 
     # And done!

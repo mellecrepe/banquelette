@@ -41,28 +41,36 @@
 
 	// paramètre graphique en ligne
 	var lineData = {
-	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
+	labels : [ "{{triples.0.month_word}} {{triples.0.year}}",
+               "{{triples.1.month_word}} {{triples.1.year}}",
+               "{{triples.2.month_word}} {{triples.2.year}}",
+               "{{triples.3.month_word}} {{triples.3.year}}",
+               "{{triples.4.month_word}} {{triples.4.year}}",
+               "{{triples.5.month_word}} {{triples.5.year}}",
+               "{{triples.6.month_word}} {{triples.6.year}}",
+               "{{triples.7.month_word}} {{triples.7.year}}",
+               "{{triples.8.month_word}} {{triples.8.year}}",
+               "{{triples.9.month_word}} {{triples.9.year}}",
+               "{{triples.10.month_word}} {{triples.10.year}}",
+               "{{triples.11.month_word}} {{triples.11.year}}", ],
+
 	datasets : [
+
+    {% for cat, vals in total_by_month.items %}
+               {% if cat.name == "Gain" or cat.name == "Total" %}
 		{
-		label: "Gain",
-		fillColor: veryLightColors["gain"],
-		strokeColor: lightColors["gain"],
-		pointColor: colors["gain"],
-		pointStrokeColor: "#fff",
-		pointHighlightFill: "#fff",
-		pointHighlightStroke: "rgba(220,220,220,1)",
-		data: [{{total_by_month.Gain.0}}, {{total_by_month.Gain.1}}, {{total_by_month.Gain.2}}, {{total_by_month.Gain.3}}, {{total_by_month.Gain.4}}, {{total_by_month.Gain.5}}, {{total_by_month.Gain.6}}, {{total_by_month.Gain.7}}, {{total_by_month.Gain.8}}, {{total_by_month.Gain.9}}, {{total_by_month.Gain.10}}, {{total_by_month.Gain.11}}]
+            label: "{{ cat.name }}",
+            fillColor: "{{ cat.metadata.colors.verylight }}",
+            strokeColor: "{{ cat.metadata.colors.light }}",
+            pointColor: "{{ cat.metadata.colors.normal }}",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: {{ vals }},
 		},
-		{
-		label: "Depense",
-		fillColor: veryLightColors["all"],
-		strokeColor: lightColors["all"],
-		pointColor: colors["all"],
-		pointStrokeColor: "#fff",
-		pointHighlightFill: "#fff",
-		pointHighlightStroke: "rgba(220,220,220,1)",
-		data: [{{total_by_month.Total.0}}, {{total_by_month.Total.1}}, {{total_by_month.Total.2}}, {{total_by_month.Total.3}}, {{total_by_month.Total.4}}, {{total_by_month.Total.5}}, {{total_by_month.Total.6}}, {{total_by_month.Total.7}}, {{total_by_month.Total.8}}, {{total_by_month.Total.9}}, {{total_by_month.Total.10}}, {{total_by_month.Total.11}}]
-		}
+               {% endif %}
+    {% endfor %}
+
 	]
 };
 
