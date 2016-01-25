@@ -12,6 +12,7 @@ from datetime import date, time, datetime
 import calendar
 import locale
 
+import category
 import categories
 
 locale.setlocale(locale.LC_TIME,'')
@@ -20,6 +21,7 @@ locale.setlocale(locale.LC_TIME,'')
 def home(request):
     """ Page d'accueil """
 
+    # List the 12 last months in triples
     current_year   = datetime.now().year
     current_month  = datetime.now().month
     months         = current_year * 12 + current_month - 1
@@ -32,6 +34,9 @@ def home(request):
 	t["month_word"] = date( t["year"],
                                 t["month"],
                                 1           ).strftime('%B').capitalize()
+
+    # Get the FIRST_LEVEL_CATEGORIES
+    first_level_categories = categories.FIRST_LEVEL_CATEGORIES
 
     # 1e partie : graph des dépenses de l'annee
     total_by_month = {}
@@ -48,7 +53,7 @@ def home(request):
                 .filter( date__month=t["month"] )
 
         # Iterate over each category
-        for k in categories.FIRST_LEVEL_CATEGORIES:
+        for k,cat in first_level_categories.items():
 
             # Append this month total to the total_by_month[category] list
             try:
@@ -64,9 +69,9 @@ def home(request):
             # (Try to append, if it doesn't work, it's because the key does not
             # exist yet).
             try:
-                total_by_month[k].append(this_month_total)
+                total_by_month[cat].append(this_month_total)
             except KeyError:
-                total_by_month[k] = [ this_month_total ]
+                total_by_month[cat] = [ this_month_total ]
 
 
             # Save this year category average
@@ -77,9 +82,9 @@ def home(request):
                     ['expense__avg']
 
             try :
-                average[k] = int(category_average_year)
+                average[cat] = int(category_average_year)
             except TypeError:
-                average[k] = 0
+                average[cat] = 0
 
             # Save this month category average
             category_average_month = account_filter_month \
@@ -88,9 +93,9 @@ def home(request):
                     ['expense__avg']
 
             try :
-                average_month[k] = int(category_average_month)
+                average_month[cat] = int(category_average_month)
             except TypeError:
-                average_month[k] = 0
+                average_month[cat] = 0
 
         # We finished looping over the first-level categories, let's add a
         # 'Total' category:
@@ -104,9 +109,18 @@ def home(request):
             this_month_total = 0
 
         try:
-            total_by_month["Total"].append(this_month_total)
-        except KeyError:
-            total_by_month["Total"] = [this_month_total]
+            totalcat = [ c for c in total_by_month if c.name == "Total" ][0]
+            total_by_month[totalcat].append(this_month_total)
+        except:
+            totalcat = category.Category( "Total",
+                                          metadata = {
+                                            "colors": {
+                                              "normal"     : "#000",
+                                              "light"    : "#666",
+                                              "verylight": "#aaa",
+                                                }
+                                            } )
+            total_by_month[totalcat] = [this_month_total]
 
     # And done!
     return render(request, 'account/accueil.html', locals())

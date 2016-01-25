@@ -73,60 +73,31 @@
 
 	// paramètre graphique en bar
 	var barData = {
-	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
+	labels : [ "{{triples.0.month_word}} {{triples.0.year}}",
+               "{{triples.1.month_word}} {{triples.1.year}}",
+               "{{triples.2.month_word}} {{triples.2.year}}",
+               "{{triples.3.month_word}} {{triples.3.year}}",
+               "{{triples.4.month_word}} {{triples.4.year}}",
+               "{{triples.5.month_word}} {{triples.5.year}}",
+               "{{triples.6.month_word}} {{triples.6.year}}",
+               "{{triples.7.month_word}} {{triples.7.year}}",
+               "{{triples.8.month_word}} {{triples.8.year}}",
+               "{{triples.9.month_word}} {{triples.9.year}}",
+               "{{triples.10.month_word}} {{triples.10.year}}",
+               "{{triples.11.month_word}} {{triples.11.year}}" ],
 	datasets : [
 
     {% for cat, vals in total_by_month.items %}
     {
-        label           : "{{ cat }}",
-		fillColor       : colors["necessaire"],
-		strokeColor     : lightColors["necessaire"],
-		highlightFill   : lightColors["necessaire"],
-		highlightStroke : veryLightColors["necessaire"],
+        label           : "{{ cat.name }}",
+        fillColor       : "{{ cat.metadata.colors.normal }}",
+		strokeColor     : "{{ cat.metadata.colors.light }}",
+		highlightFill   : "{{ cat.metadata.colors.light }}",
+		highlightStroke : "{{ cat.metadata.colors.verylight }}",
         data            : {{ vals }}
         
     },
     {% endfor %}
-//		{
-//		label: "Necessaire",
-//		fillColor: colors["necessaire"],
-//		strokeColor: lightColors["necessaire"],
-//		highlightFill: lightColors["necessaire"],
-//		highlightStroke: veryLightColors["necessaire"],
-//		data: [{{total_by_month.necessaire.0}}, {{total_by_month.necessaire.1}}, {{total_by_month.necessaire.2}}, {{total_by_month.necessaire.3}}, {{total_by_month.necessaire.4}}, {{total_by_month.necessaire.5}}, {{total_by_month.necessaire.6}}, {{total_by_month.necessaire.7}}, {{total_by_month.necessaire.8}}, {{total_by_month.necessaire.9}}, {{total_by_month.necessaire.10}}, {{total_by_month.necessaire.11}}]
-//		},
-//		{
-//		label: "Achat",
-//		fillColor: colors["achat"],
-//		strokeColor: lightColors["achat"],
-//		highlightFill: lightColors["achat"],
-//		highlightStroke: colors["achat"],
-//		data: [{{total_by_month.achat.0}}, {{total_by_month.achat.1}}, {{total_by_month.achat.2}}, {{total_by_month.achat.3}}, {{total_by_month.achat.4}}, {{total_by_month.achat.5}}, {{total_by_month.achat.6}}, {{total_by_month.achat.7}}, {{total_by_month.achat.8}}, {{total_by_month.achat.9}}, {{total_by_month.achat.10}}, {{total_by_month.achat.11}}]
-//		},
-//		{
-//		label: "Sortie",
-//		fillColor: colors["sortie"],
-//		strokeColor: lightColors["sortie"],
-//		highlightFill: lightColors["sortie"],
-//		highlightStroke: veryLightColors["sortie"],
-//		data: [{{total_by_month.sortie.0}}, {{total_by_month.sortie.1}}, {{total_by_month.sortie.2}}, {{total_by_month.sortie.3}}, {{total_by_month.sortie.4}}, {{total_by_month.sortie.5}}, {{total_by_month.sortie.6}}, {{total_by_month.sortie.7}}, {{total_by_month.sortie.8}}, {{total_by_month.sortie.9}}, {{total_by_month.sortie.10}}, {{total_by_month.sortie.11}}]
-//		},
-//		{
-//		label: "Vacances",
-//		fillColor: colors["vacances"],
-//		strokeColor: lightColors["vacances"],
-//		highlightFill: lightColors["vacances"],
-//		highlightStroke: veryLightColors["vacances"],
-//		data: [{{total_by_month.vacances.0}}, {{total_by_month.vacances.1}}, {{total_by_month.vacances.2}}, {{total_by_month.vacances.3}}, {{total_by_month.vacances.4}}, {{total_by_month.vacances.5}}, {{total_by_month.vacances.6}}, {{total_by_month.vacances.7}}, {{total_by_month.vacances.8}}, {{total_by_month.vacances.9}}, {{total_by_month.vacances.10}}, {{total_by_month.vacances.11}}]
-//		},
-//		{
-//		label: "Autre",
-//		fillColor: colors["autre"],
-//		strokeColor: lightColors["autre"],
-//		highlightFill: lightColors["autre"],
-//		highlightStroke: veryLightColors["autre"],
-//		data: [{{total_by_month.autre.0}}, {{total_by_month.autre.1}}, {{total_by_month.autre.2}}, {{total_by_month.autre.3}}, {{total_by_month.autre.4}}, {{total_by_month.autre.5}}, {{total_by_month.autre.6}}, {{total_by_month.autre.7}}, {{total_by_month.autre.8}}, {{total_by_month.autre.9}}, {{total_by_month.autre.10}}, {{total_by_month.autre.11}}]
-//		}
 	]
 };
 
@@ -146,86 +117,26 @@
 
         {% for cat, val in average.items %}
         {
-            label      : "{{ cat }}",
+            label      : "{{ cat.name }}",
             value      :  {{ val }},
-            color      : colors["necessaire"],
-            highlight  : lightColors["necessaire"]
+            color      : "{{ cat.metadata.colors.normal }}",
+            highlight  : "{{ cat.metadata.colors.light }}",
         },
         {% endfor %}
 
-//    	{
-//       	    value: {{average.necessaire}},
-//		    color: colors["necessaire"],
-//	        highlight: lightColors["necessaire"],
-//	        label: "Necessaire"
-//		},
-//		{
-//		value: {{average.achat}},
-//		color: colors["achat"],
-//	        highlight: lightColors["achat"],
-//	        label: "Achat"
-//		},
-//		{
-//	        value: {{average.sortie}},
-//		color: colors["sortie"],
-//	        highlight: lightColors["sortie"],
-//	        label: "Sortie"
-//		},
-//		{
-//	        value: {{average.vacances}},
-//		color: colors["vacances"],
-//	        highlight: lightColors["vacances"],
-//	        label: "Vacances"
-//		},
-//		{
-//	        value: {{average.autre}},
-//		color: colors["autre"],
-//	        highlight: lightColors["autre"],
-//	        label: "Autre"
-//		}
 	];
 
 	var pieDataMonth = [
 
         {% for cat, val in average_month.items %}
         {
-            label      : "{{ cat }}",
+            label      : "{{ cat.name }}",
             value      :  {{ val }},
-            color      : colors["necessaire"],
-            highlight  : lightColors["necessaire"]
+            color      : "{{ cat.metadata.colors.normal }}",
+            highlight  : "{{ cat.metadata.colors.light }}",
         },
         {% endfor %}
 
-//    		{
-//        	value: {{average_month.necessaire}},
-//		color: colors["necessaire"],
-//	        highlight: lightColors["necessaire"],
-//	        label: "Necessaire"
-//		},
-//		{
-//		value: {{average_month.achat}},
-//		color: colors["achat"],
-//	        highlight: lightColors["achat"],
-//	        label: "Achat"
-//		},
-//		{
-//	        value: {{average_month.sortie}},
-//		color: colors["sortie"],
-//	        highlight: lightColors["sortie"],
-//	        label: "Sortie"
-//		},
-//		{
-//	        value: {{average_month.vacances}},
-//		color: colors["vacances"],
-//	        highlight: lightColors["vacances"],
-//	        label: "Vacances"
-//		},
-//		{
-//	        value: {{average_month.autre}},
-//		color: colors["autre"],
-//	        highlight: lightColors["autre"],
-//	        label: "Autre"
-//		}
 	];
 
 	pieOptions = { 
