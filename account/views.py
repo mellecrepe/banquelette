@@ -12,50 +12,81 @@ from datetime import date, time, datetime
 import calendar
 import locale
 
+import categories
+
 locale.setlocale(locale.LC_TIME,'')
 
 def home(request):
     """ Page d'accueil """
 
-    year = datetime.now().year
-    month = datetime.now().month
-    months = year * 12 + month - 1
-    print months
-    triples = [{"year": (months - i) // 12, "month" : (months - i) % 12 + 1} for i in reversed(range(12))]
+    current_year   = datetime.now().year
+    current_month  = datetime.now().month
+    months         = current_year * 12 + current_month - 1
+
+    triples = [ { "year"  : ((months - i) // 12),
+                  "month" : ((months - i) %  12) +1 }
+                    for i in reversed(range(12))      ]
+
     for t in triples:
-	t["month_word"] = date(t["year"], t["month"], 1).strftime('%B').capitalize()
+	t["month_word"] = date( t["year"],
+                                t["month"],
+                                1           ).strftime('%B').capitalize()
 
     # 1e partie : graph des dépenses de l'annee
-    total_by_month = {"all": [], "gain": [], "necessaire": [], "achat": [], "sortie": [], "vacances": [], "autre": []} 
+    total_by_month = { "all"        : [],
+                       "gain"       : [],
+                       "necessaire" : [],
+                       "achat"      : [],
+                       "sortie"     : [],
+                       "vacances"   : [],
+                       "autre"      : [] } 
 
     # 2e partie : variable pour les camemberts
-    average = {"gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
-    average_month = {"gain": 0, "necessaire": 0, "achat": 0, "sortie": 0, "vacances": 0, "autre": 0} 
+    average       = { "gain"       : 0,
+                      "necessaire" : 0,
+                      "achat"      : 0,
+                      "sortie"     : 0,
+                      "vacances"   : 0,
+                      "autre"      : 0 } 
+    average_month = { "gain"       : 0,
+                      "necessaire" : 0,
+                      "achat"      : 0,
+                      "sortie"     : 0,
+                      "vacances"   : 0,
+                      "autre"      : 0 } 
 
     for t in triples :
-        account_filter_year = Account.objects.filter(date__year=t["year"])
-        account_filter_month = account_filter_year.filter(date__month=t["month"])
-        for k in total_by_month.keys():
+        account_filter_year  = Account.objects.filter(     date__year=t["year"]   )
+        account_filter_month = account_filter_year.filter( date__month=t["month"] )
+
+        for k in total_by_month:
             if k == "all":
                 try: 
-                    total_by_month["all"].append(abs(int(account_filter_month.aggregate(Sum('expense'))['expense__sum'])))
+                    total_by_month["all"].append(
+                            abs(int( account_filter_month.aggregate(Sum('expense'))['expense__sum'] ))
+                            )
                 except:
                     total_by_month["all"].append(0)
+
                 continue
 
             try: 
-                total_by_month[k].append(abs(int(account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum'])))
+                total_by_month[k].append(
+                        abs(int( account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum'] ))
+                        )
             except:
                 total_by_month[k].append(0)
 
             account_filter_category = account_filter_year.filter(category__exact=k)
             average_tmp = account_filter_category.aggregate(Avg('expense'))['expense__avg']
+
             if average_tmp is None:
                 average[k] = 0
             else:
                 average[k] = int(average_tmp)
 
-            average_tmp = account_filter_category.filter(date__month=t["month"]).aggregate(Avg('expense'))['expense__avg']
+            average_tmp = account_filter_category.filter( date__month=t["month"] ).aggregate(Avg('expense'))['expense__avg']
+
             if average_tmp is None:
                 average_month[k] = 0
             else:
@@ -68,6 +99,7 @@ def release(request):
     return render(request, 'account/release.html')
     
 
+# =============================================================================
 def month_view(request, year, month):
     """ Résumé par mois """
     if not year or not month:
@@ -75,21 +107,37 @@ def month_view(request, year, month):
 
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
 
-    account_objects = Account.objects.order_by('date').filter(date__year=int(year)).filter(date__month=int(month))
-    count_comment = account_objects.exclude(comment__exact="").count()
-    if count_comment == 0 :
-        comment = False
-    else: 
-        comment = True
+    # Get all objects (transactions) with the right date (year+month) and order
+    # them by date.
+    account_objects = Account.objects        \
+            .order_by('date')                \
+            .filter(date__year = int(year) ) \
+            .filter(date__month= int(month))
 
-    category={'necessaire': '0', 'achat' : '0', 'sortie': '0', 'vacances': '0', 'autre' : '0', 'gain': '0'}
-    for c in category:
-        category_sum = account_objects.filter(category__exact=c).aggregate(Sum('expense'))
-        if category_sum['expense__sum'] is None:
-            continue
-        category[c] = category_sum['expense__sum']
-    category["all"] = account_objects.aggregate(Sum('expense'))['expense__sum']
-    category
+    # Get the first-level categories (those without a parent category)
+    first_level_categories = { c : 0
+            for c in categories.CATEGORIES
+            if categories.CATEGORIES[c].parent is None }
+
+    # For each first-level category, we are going to find the relevant objects
+    # (transactions) and sum them.
+    for c in first_level_categories:
+
+        # Sum the relevant account object 'expense' property
+        category_sum = account_objects               \
+                .filter(subcategory__startswith = c) \
+                .aggregate(Sum('expense'))
+
+        # Save the result
+        if category_sum['expense__sum'] is not None:
+            first_level_categories[c] = category_sum['expense__sum']
+
+    # We got the sum of expenses for each category, now we can add a 'Total'
+    # category:
+    first_level_categories["Total"] = account_objects    \
+            .aggregate(Sum('expense'))['expense__sum']
+
+    # And done!
     return render(request, 'account/month.html', locals())
 
 def month_choice(request):
