@@ -34,67 +34,81 @@ def home(request):
                                 1           ).strftime('%B').capitalize()
 
     # 1e partie : graph des dépenses de l'annee
-    total_by_month = { "all"        : [],
-                       "gain"       : [],
-                       "necessaire" : [],
-                       "achat"      : [],
-                       "sortie"     : [],
-                       "vacances"   : [],
-                       "autre"      : [] } 
+    total_by_month = {}
+    
+    # 2e partie : variables pour les camemberts
+    average       = {}
+    average_month = {}
 
-    # 2e partie : variable pour les camemberts
-    average       = { "gain"       : 0,
-                      "necessaire" : 0,
-                      "achat"      : 0,
-                      "sortie"     : 0,
-                      "vacances"   : 0,
-                      "autre"      : 0 } 
-    average_month = { "gain"       : 0,
-                      "necessaire" : 0,
-                      "achat"      : 0,
-                      "sortie"     : 0,
-                      "vacances"   : 0,
-                      "autre"      : 0 } 
-
+    # Iterate over each of the 12 last months
     for t in triples :
         account_filter_year  = Account.objects  \
                 .filter( date__year=t["year"] )
         account_filter_month = account_filter_year \
                 .filter( date__month=t["month"] )
 
-        for k in total_by_month:
-            if k == "all":
-                try: 
-                    total_by_month["all"].append(
-                            abs(int( account_filter_month.aggregate(Sum('expense'))['expense__sum'] ))
-                            )
-                except:
-                    total_by_month["all"].append(0)
+        # Iterate over each category
+        for k in categories.FIRST_LEVEL_CATEGORIES:
 
-                continue
+            # Append this month total to the total_by_month[category] list
+            try:
+                this_month_total = account_filter_month      \
+                        .filter(subcategory__startswith = k) \
+                        .aggregate( Sum('expense') )         \
+                        ['expense__sum']
+                this_month_total = abs(int( this_month_total ))
 
-            try: 
-                total_by_month[k].append(
-                        abs(int( account_filter_month.filter(category__exact=k).aggregate(Sum('expense'))['expense__sum'] ))
-                        )
             except:
-                total_by_month[k].append(0)
+                this_month_total = 0
 
-            account_filter_category = account_filter_year.filter(category__exact=k)
-            average_tmp = account_filter_category.aggregate(Avg('expense'))['expense__avg']
+            # (Try to append, if it doesn't work, it's because the key does not
+            # exist yet).
+            try:
+                total_by_month[k].append(this_month_total)
+            except KeyError:
+                total_by_month[k] = [ this_month_total ]
 
-            if average_tmp is None:
+
+            # Save this year category average
+            # TODO Put out of the loop
+            category_average_year = account_filter_year  \
+                    .filter(subcategory__startswith = k) \
+                    .aggregate( Avg('expense') )         \
+                    ['expense__avg']
+
+            try :
+                average[k] = int(category_average_year)
+            except TypeError:
                 average[k] = 0
-            else:
-                average[k] = int(average_tmp)
 
-            average_tmp = account_filter_category.filter( date__month=t["month"] ).aggregate(Avg('expense'))['expense__avg']
+            # Save this month category average
+            category_average_month = account_filter_month \
+                    .filter(subcategory__startswith = k)  \
+                    .aggregate( Avg('expense') )          \
+                    ['expense__avg']
 
-            if average_tmp is None:
+            try :
+                average_month[k] = int(category_average_month)
+            except TypeError:
                 average_month[k] = 0
-            else:
-                average_month[k] = int(average_tmp)
 
+        # We finished looping over the first-level categories, let's add a
+        # 'Total' category:
+        try:
+            this_month_total = account_filter_month      \
+                    .aggregate( Sum('expense') )         \
+                    ['expense__sum']
+            this_month_total = abs(int( this_month_total ))
+
+        except:
+            this_month_total = 0
+
+        try:
+            total_by_month["Total"].append(this_month_total)
+        except KeyError:
+            total_by_month["Total"] = [this_month_total]
+
+    # And done!
     return render(request, 'account/accueil.html', locals())
 
 # =============================================================================
