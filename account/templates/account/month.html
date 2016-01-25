@@ -42,22 +42,14 @@
 	<!-- Table Body -->
 	<tbody>
 		<tr>
-			<td>Nécessaire</td>
-			<td>Achat</td>
-			<td>Sortie</td>
-			<td>Vacances</td>
-			<td>Autre</td>
-			<td>Gains</td>
-			<td>Total</td>
+            {% for cat in first_level_categories %}
+            <td>{{ cat }}</td>
+            {% endfor %}
 		</tr>
 		<tr>
-			<td class="necessaire">{{ category.necessaire }}</td>
-			<td class="achat">{{ category.achat}}</td>
-			<td class="sortie">{{ category.sortie}}</td>
-			<td class="vacances">{{ category.vacances}}</td>
-			<td class="autre">{{ category.autre}}</td>
-			<td class="gain">{{ category.gain}}</td>
-			<td class="">{{ category.all}}</td>
+            {% for cat, exp in first_level_categories.items %}
+            <td>{{ exp }}</td>
+            {% endfor %}
 		</tr>
 
 	</tbody>
