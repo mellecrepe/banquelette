@@ -9,6 +9,7 @@ class Category():
 
     MDKW_STARTCHAR = u'_'
     MDKW_PATTERN   = MDKW_STARTCHAR + u'pattern'
+    MDKW_DEFAULT   = MDKW_STARTCHAR + u'default'
 
     def __init__(self, name, parent=None):
         """Définir nune catégorie parente permet de définir une
@@ -22,17 +23,27 @@ class Category():
 
 
     def matches_string(self, string):
-        if not Category.MDKW_PATTERN in self.metadata:
-            return False
 
-        lowstring = string.lower()
+        try:
+            lowstring = string.lower()
 
-        for p in self.metadata[Category.MDKW_PATTERN]:
+            for p in self.metadata[Category.MDKW_PATTERN]:
 
-            if p.lower() in lowstring:
-                return True
+                if p.lower() in lowstring:
+                    return True
+
+        except KeyError:
+            pass
 
         return False
+
+
+    def is_default(self):
+
+        try:
+            return self.metadata[Category.MDKW_DEFAULT]
+        except KeyError:
+            return False
 
 
     def __str__(self):

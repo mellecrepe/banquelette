@@ -3,10 +3,6 @@
 ###
 
 
-# Parametrage lié aux categories
-subcategory_default = 'autre'
-
-
 # Parametrage lié aux banques
 BANK_CHOICES = (
     (None, ''),

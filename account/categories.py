@@ -5,6 +5,9 @@ from category import Category, SeparatorUsedInCategoryNameError
 
 import yamlload
 
+import sys
+import pprint
+
 # CONSTANTS
 # =============================================================================
 
@@ -74,12 +77,27 @@ def load_categories(
 # VARIABLES
 # =============================================================================
 
-CATEGORIES = load_categories( yamlload.load_yaml(YAMLFILE) )
+try:
+    CATEGORIES = load_categories( yamlload.load_yaml(YAMLFILE) )
+except:
+    CATEGORIES = load_categories( yamlload.load_yaml(sys.argv[1]) )
+
+try:
+    DEFAULT_CATEGORY = [ c for c in CATEGORIES
+            if CATEGORIES[c].is_default()
+            ][0]
+except:
+    DEFAULT_CATEGORY = None
+
 
 # =============================================================================
-def autoset_category(string, category_list=CATEGORIES, default_category=None):
+def autoset_category(
+        string,
+        category_list=CATEGORIES,
+        default_category=DEFAULT_CATEGORY
+        ):
     """Determine automatically the category matching a given string."""
-    
+
     for c in CATEGORIES:
         if CATEGORIES[c].matches_string(string):
             return c
@@ -87,3 +105,7 @@ def autoset_category(string, category_list=CATEGORIES, default_category=None):
     return default_category
 
 
+
+if __name__ == '__main__':
+    pprint.pprint(CATEGORIES)
+    pprint.pprint(DEFAULT_CATEGORY)
