@@ -81,7 +81,7 @@ def autoset_category(string, category_list=CATEGORIES, default_category=None):
     """Determine automatically the category matching a given string."""
     
     for c in CATEGORIES:
-        if c.matches_string(string):
+        if CATEGORIES[c].matches_string(string):
             return c
 
     return default_category

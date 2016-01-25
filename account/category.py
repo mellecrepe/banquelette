@@ -27,7 +27,7 @@ class Category():
 
         lowstring = string.lower()
 
-        for p in self.metadata[MDKW_PATTERN]:
+        for p in self.metadata[Category.MDKW_PATTERN]:
 
             if p.lower() in lowstring:
                 return True
