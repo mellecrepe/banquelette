@@ -3,12 +3,16 @@
 Nécessaire:
     _pattern:
         - "nécessaire"
-        - "vital"
+
     Courses:
         _pattern:
-            - "courses"
+            - "auteuil market"
+            - "auchan"
+            - "carrefour"
+            - "g20"
+            - "intermarche"
             - "monop"
-            - "lafayette"
+            - "picard"
     Transport:
         _pattern:
             - "ratp"
@@ -16,13 +20,16 @@ Nécessaire:
     Électricité:
         _pattern:
             - "edf"
+            - "e d f"
     Loyer:
         _pattern:
             - "loyer"
     "Repas de midi":
         _pattern:
+            - "cojean"
             - "le ruban bleu"
-            - "mark&spencer"
+            - "marks spencer"
+            - "quindici"
     Santé:
         _pattern:
             - "pharma"
@@ -40,22 +47,43 @@ Nécessaire:
             - "sfr"
 
 Achats:
-    - Vêtements
-    - Cadeaux
-    - Décoration
-    - Box
-    - Beauté
+    Vêtements:
+        _pattern:
+            - "la redoute"
+            - "etam"
+            - "H & M"
+            - "zara"
+            - "stradivarius"
+    Cadeaux:
+    Décoration:
+        _pattern:
+            - "castorama"
+    Box:
+        _pattern:
+            - "my little paris"
+            - "gambettes box"
+    Beauté:
 
 Sorties:
-    - Restaurant
-    - Bar
-    - Gourmandise
-    - Soirée
-    - Concert
-    - Cinéma
-    - Théâtre
-    - "Expo et Musée"
-    - Sport
+    Restaurant:
+        _pattern:
+            - "mc donalds"
+    Bar:
+        _pattern:
+            - "archi bar"
+            - "dernier metro"
+            - "le semaphore"
+            - "bar"
+    Gourmandise:
+    Soirée:
+    Concert:
+    Cinéma:
+    Théâtre:
+    "Expo et Musée":
+    Sport:
+        _pattern:
+            - decathlon
+
 
 Vacances:
     - Week-end
@@ -66,7 +94,10 @@ Gain:
     - Cadeau
 
 Autre:
-    - Retrait
-    - Nicolas
+    Retrait:
+        _pattern:
+            - retrait
+    Nicolas:
 
 Non-classé:
+    _default: True
