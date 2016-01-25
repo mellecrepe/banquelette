@@ -42,12 +42,12 @@
 	<!-- Table Body -->
 	<tbody>
 		<tr>
-            {% for cat in categories %}
+            {% for cat in first_level_categories %}
             <td>{{ cat }}</td>
             {% endfor %}
 		</tr>
 		<tr>
-            {% for cat, exp in categories.items %}
+            {% for cat, exp in first_level_categories.items %}
             <td>{{ exp }}</td>
             {% endfor %}
 		</tr>

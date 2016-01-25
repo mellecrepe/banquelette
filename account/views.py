@@ -119,11 +119,12 @@ def month_view(request, year, month):
             .filter(date__month= int(month))
 
     # Get the first-level categories (those without a parent category)
-    categories = { c : 0 for c in categories.FIRST_LEVEL_CATEGORIES }
+    first_level_categories = { c : 0
+            for c in categories.FIRST_LEVEL_CATEGORIES }
 
     # For each first-level category, we are going to find the relevant objects
     # (transactions) and sum them.
-    for c in categories:
+    for c in first_level_categories:
 
         # Sum the relevant account object 'expense' property
         category_sum = account_objects               \
@@ -132,11 +133,11 @@ def month_view(request, year, month):
 
         # Save the result
         if category_sum['expense__sum'] is not None:
-            categories[c] = category_sum['expense__sum']
+            first_level_categories[c] = category_sum['expense__sum']
 
     # We got the sum of expenses for each category, now we can add a 'Total'
     # category:
-    categories["Total"] = account_objects    \
+    first_level_categories["Total"] = account_objects    \
             .aggregate(Sum('expense'))['expense__sum']
 
     # And done!
