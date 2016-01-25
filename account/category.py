@@ -14,6 +14,8 @@ class Category():
         
         self.name = name
 
+        self.metadata = {}
+
 
     def __str__(self):
         return unicode(self).encode('utf8')
