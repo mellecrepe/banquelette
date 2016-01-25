@@ -16,9 +16,9 @@ def load_yaml(filename):
     return data
  
 
-def load_categories(data, categories_dict={}, parent=None):
+def load_categories(data, md_startchar=u'_', categories_dict={}, parent=None):
     """Recursive function
-    Charge les catgégories depuis un dictionnaire (comme celui parsé depuis le
+    Charge les catégories depuis un dictionnaire (comme celui parsé depuis le
     fichier YAML).
     Retourne un dictionnaire des catégories que l'on peut utiliser."""
 
@@ -27,17 +27,31 @@ def load_categories(data, categories_dict={}, parent=None):
 
     for category in data:
 
+        # Treat metadata entries
+        if category.startswith(md_startchar):
+            if parent is not None:
+                # TODO add checks for data[category] type ?
+                # Add to the metadata
+                parent.metadata[category] = data[category]
+
+            continue
+
+        # Check for a malformed category name
         if Category.SEPARATOR in unicode(category):
             raise SeparatorUsedInCategoryNameError(category)
 
+        # Create category !
         cat = Category(name=category, parent=parent)
         categories_dict[ unicode(cat) ] = cat
 
+        # Decide what to do next depending on category type
         if   type(data[category]) is type(dict()):
 
+            # Recursion !
             load_categories( data            = data[category],
-                           categories_dict = categories_dict,
-                           parent          = cat )
+                             md_startchar    = md_startchar,
+                             categories_dict = categories_dict,
+                             parent          = cat )
 
         elif type(data[category]) is type(list()):
 
@@ -53,7 +67,9 @@ def load_categories(data, categories_dict={}, parent=None):
         elif type(data[category]) is type(None):
             pass
 
+    # If there's nothing more to iterate on, we parsed the data !
     return categories_dict
 
 if __name__ == '__main__':
-    pprint.pprint( load_categories( load_yaml( sys.argv[1] ) ) )
+    categories_dict = load_categories( load_yaml( sys.argv[1] ) )
+    pprint.pprint( categories_dict )
