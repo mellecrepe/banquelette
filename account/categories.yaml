@@ -1,15 +1,43 @@
 # Test at YAML categories config file
 
 Nécessaire:
-    - Courses
-    - Transport
-    - Électricité
-    - Loyer
-    - "Repas de midi"
-    - Santé
-    - "Impôts et taxes"
-    - Assurance
-    - "Téléphone et Internet"
+    _pattern:
+        - "nécessaire"
+        - "vital"
+    Courses:
+        _pattern:
+            - "courses"
+            - "monop"
+            - "lafayette"
+    Transport:
+        _pattern:
+            - "ratp"
+            - "sncf"
+    Électricité:
+        _pattern:
+            - "edf"
+    Loyer:
+        _pattern:
+            - "loyer"
+    "Repas de midi":
+        _pattern:
+            - "le ruban bleu"
+            - "mark&spencer"
+    Santé:
+        _pattern:
+            - "pharma"
+    "Impôts et taxes":
+        _pattern:
+            - "dgfip"
+    Assurance:
+        _pattern:
+            - "maif"
+            - "mma"
+    "Téléphone et Internet":
+        _pattern:
+            - "free"
+            - "orange"
+            - "sfr"
 
 Achats:
     - Vêtements
