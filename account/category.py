@@ -10,7 +10,9 @@ class Category():
     MDKW_STARTCHAR = u'_'
     MDKW_PATTERN   = MDKW_STARTCHAR + u'pattern'
     MDKW_DEFAULT   = MDKW_STARTCHAR + u'default'
+    MDKW_COLORS    = MDKW_STARTCHAR + u'colors'
 
+    # -------------------------------------------------------------------------
     def __init__(self, name, parent=None):
         """Définir nune catégorie parente permet de définir une
         sous-catégorie."""
@@ -22,6 +24,7 @@ class Category():
         self.metadata = {}
 
 
+    # -------------------------------------------------------------------------
     def matches_string(self, string):
 
         try:
@@ -38,6 +41,7 @@ class Category():
         return False
 
 
+    # -------------------------------------------------------------------------
     def is_default(self):
 
         try:
@@ -46,10 +50,12 @@ class Category():
             return False
 
 
+    # -------------------------------------------------------------------------
     def __str__(self):
         return unicode(self).encode('utf8')
 
 
+    # -------------------------------------------------------------------------
     def __unicode__(self):
 
         rv = u'' 
@@ -67,6 +73,7 @@ class SeparatorUsedInCategoryNameError(Exception):
     """A custom exception to alert that the Category.SEPARATOR was used in a
     Category name."""
 
+    # -------------------------------------------------------------------------
     def __init__(self, category_name):
         Exception.__init__( self,
                             "The Category name %s contains the Category " \
