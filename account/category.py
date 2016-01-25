@@ -8,12 +8,12 @@ class Category():
     SEPARATOR = u'/'
 
     MDKW_STARTCHAR = u'_'
-    MDKW_PATTERN   = MDKW_STARTCHAR + u'pattern'
-    MDKW_DEFAULT   = MDKW_STARTCHAR + u'default'
-    MDKW_COLORS    = MDKW_STARTCHAR + u'colors'
+    MDKW_PATTERN   = u'pattern'
+    MDKW_DEFAULT   = u'default'
+    MDKW_COLORS    = u'colors'
 
     # -------------------------------------------------------------------------
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent=None, metadata=None):
         """Définir nune catégorie parente permet de définir une
         sous-catégorie."""
 
@@ -21,7 +21,11 @@ class Category():
         
         self.name = name
 
-        self.metadata = {}
+        if metadata is None:
+            self.metadata = {}
+        else:
+            self.metadata = metadata
+
 
 
     # -------------------------------------------------------------------------

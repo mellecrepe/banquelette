@@ -19,12 +19,16 @@ YAMLFILE = u"account/categories.yaml"
 # =============================================================================
 def load_categories(
         data,
-        categories_dict={},
+        categories_dict=None,
         parent=None ):
     """Recursive function
     Charge les catégories depuis un dictionnaire (comme celui parsé depuis le
     fichier YAML).
     Retourne un dictionnaire des catégories que l'on peut utiliser."""
+
+
+    if categories_dict is None:
+        categories_dict = {}
 
     # À ce stade, les données yaml sont généralement un dict de la forme :
     # { "catégorie" : [ "sous-catégorie", "souscatégories", ... ] ... }
@@ -35,8 +39,8 @@ def load_categories(
         if category.startswith(Category.MDKW_STARTCHAR):
             if parent is not None:
                 # TODO add checks for data[category] type ?
-                # Add to the metadata
-                parent.metadata[category] = data[category]
+                # Add to the metadata (without the first char)
+                parent.metadata[category[1:]] = data[category]
 
             continue
 
@@ -89,8 +93,8 @@ try:
 except:
     DEFAULT_CATEGORY = None
 
-FIRST_LEVEL_CATEGORIES = [ c  for c in CATEGORIES
-                              if CATEGORIES[c].parent is None ]
+FIRST_LEVEL_CATEGORIES = { c:v  for c,v in CATEGORIES.items()
+                                if CATEGORIES[c].parent is None }
 
 
 # =============================================================================
@@ -111,4 +115,8 @@ def autoset_category(
 
 if __name__ == '__main__':
     pprint.pprint(CATEGORIES)
-    pprint.pprint(DEFAULT_CATEGORY)
+    pprint.pprint("default: %s" % DEFAULT_CATEGORY)
+
+    for c in FIRST_LEVEL_CATEGORIES:
+        print(c)
+        pprint.pprint(FIRST_LEVEL_CATEGORIES[c].metadata)
