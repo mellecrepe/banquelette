@@ -89,6 +89,9 @@ try:
 except:
     DEFAULT_CATEGORY = None
 
+FIRST_LEVEL_CATEGORIES = [ c  for c in CATEGORIES
+                              if CATEGORIES[c].parent is None ]
+
 
 # =============================================================================
 def autoset_category(

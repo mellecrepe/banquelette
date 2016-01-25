@@ -16,6 +16,7 @@ import categories
 
 locale.setlocale(locale.LC_TIME,'')
 
+# =============================================================================
 def home(request):
     """ Page d'accueil """
 
@@ -56,8 +57,10 @@ def home(request):
                       "autre"      : 0 } 
 
     for t in triples :
-        account_filter_year  = Account.objects.filter(     date__year=t["year"]   )
-        account_filter_month = account_filter_year.filter( date__month=t["month"] )
+        account_filter_year  = Account.objects  \
+                .filter( date__year=t["year"] )
+        account_filter_month = account_filter_year \
+                .filter( date__month=t["month"] )
 
         for k in total_by_month:
             if k == "all":
@@ -94,6 +97,7 @@ def home(request):
 
     return render(request, 'account/accueil.html', locals())
 
+# =============================================================================
 def release(request):
     """ Release """
     return render(request, 'account/release.html')
@@ -115,13 +119,11 @@ def month_view(request, year, month):
             .filter(date__month= int(month))
 
     # Get the first-level categories (those without a parent category)
-    first_level_categories = { c : 0
-            for c in categories.CATEGORIES
-            if categories.CATEGORIES[c].parent is None }
+    categories = { c : 0 for c in categories.FIRST_LEVEL_CATEGORIES }
 
     # For each first-level category, we are going to find the relevant objects
     # (transactions) and sum them.
-    for c in first_level_categories:
+    for c in categories:
 
         # Sum the relevant account object 'expense' property
         category_sum = account_objects               \
@@ -130,16 +132,17 @@ def month_view(request, year, month):
 
         # Save the result
         if category_sum['expense__sum'] is not None:
-            first_level_categories[c] = category_sum['expense__sum']
+            categories[c] = category_sum['expense__sum']
 
     # We got the sum of expenses for each category, now we can add a 'Total'
     # category:
-    first_level_categories["Total"] = account_objects    \
+    categories["Total"] = account_objects    \
             .aggregate(Sum('expense'))['expense__sum']
 
     # And done!
     return render(request, 'account/month.html', locals())
 
+# =============================================================================
 def month_choice(request):
     """ Choix du mois """
     title = "Choix du mois"
