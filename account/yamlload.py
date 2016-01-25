@@ -16,60 +16,7 @@ def load_yaml(filename):
     return data
  
 
-def load_categories(data, md_startchar=u'_', categories_dict={}, parent=None):
-    """Recursive function
-    Charge les catégories depuis un dictionnaire (comme celui parsé depuis le
-    fichier YAML).
-    Retourne un dictionnaire des catégories que l'on peut utiliser."""
-
-    # À ce stade, les données yaml sont généralement un dict de la forme :
-    # { "catégorie" : [ "sous-catégorie", "souscatégories", ... ] ... }
-
-    for category in data:
-
-        # Treat metadata entries
-        if category.startswith(md_startchar):
-            if parent is not None:
-                # TODO add checks for data[category] type ?
-                # Add to the metadata
-                parent.metadata[category] = data[category]
-
-            continue
-
-        # Check for a malformed category name
-        if Category.SEPARATOR in unicode(category):
-            raise SeparatorUsedInCategoryNameError(category)
-
-        # Create category !
-        cat = Category(name=category, parent=parent)
-        categories_dict[ unicode(cat) ] = cat
-
-        # Decide what to do next depending on category type
-        if   type(data[category]) is type(dict()):
-
-            # Recursion !
-            load_categories( data            = data[category],
-                             md_startchar    = md_startchar,
-                             categories_dict = categories_dict,
-                             parent          = cat )
-
-        elif type(data[category]) is type(list()):
-
-            for subcategory in data[category]:
-                subcat = Category(name=subcategory, parent=cat)
-                categories_dict[ unicode(subcat) ] = subcat
-
-        elif type(data[category]) is type(str()):
-
-            subcat = Category( name=data[category], parent=cat )
-            categories_dict[ unicode(subcat) ] = subcat
-
-        elif type(data[category]) is type(None):
-            pass
-
-    # If there's nothing more to iterate on, we parsed the data !
-    return categories_dict
 
 if __name__ == '__main__':
-    categories_dict = load_categories( load_yaml( sys.argv[1] ) )
-    pprint.pprint( categories_dict )
+    yaml_dict = load_yaml( sys.argv[1] )
+    pprint.pprint( yaml_dict )

@@ -2,7 +2,7 @@
 from django.db import models
 from account.settings import *
 
-import yamlload
+import categories
 
 CATEGORY_CHOICES = (
     (None, ''),
@@ -14,9 +14,7 @@ CATEGORY_CHOICES = (
     ('autre','Autre'),
 )
 
-SUBCATEGORY_CHOICES = [ (c,c) for c in yamlload.load_categories(
-    yamlload.load_yaml( "account/categories.yaml" )
-    ) ]
+SUBCATEGORY_CHOICES = [ (c,c) for c in categories.CATEGORIES ]
 SUBCATEGORY_CHOICES.sort()
 
 class Account(models.Model):
