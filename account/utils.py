@@ -6,8 +6,10 @@ from account import settings
 import datetime
 import re
 import StringIO
+import categories
 
 
+# =============================================================================
 def import_data(data, bank):
     if bank == 'boursorama':
         import_boursorama(data)
@@ -16,6 +18,7 @@ def import_data(data, bank):
     elif bank == 'ingdirect':
         import_ingdirect(data)
 
+# =============================================================================
 def change_description(description):
     """ Renommage du champs description """
     for old_d, new_d in auto_description.items():
@@ -23,6 +26,7 @@ def change_description(description):
             description = new_d 
     return description
 
+# =============================================================================
 def change_subcategory(subcategory, description):
     """ Automatisation du choix des sous categorie """
     for d, c in auto_subcategory.items():
@@ -30,6 +34,7 @@ def change_subcategory(subcategory, description):
             subcategory = c 
     return subcategory
 
+# =============================================================================
 def halve_or_not(bank, description):
     if bank == 'boursorama':
         settings_halve = settings.bs_halve
@@ -62,6 +67,7 @@ def halve_or_not(bank, description):
     return halve
 
 
+# =============================================================================
 def import_boursorama(data):
     """ Parsing des données pour Boursorama """
     # mise en forme pour obtenir une liste sans tabulation, espace superflux, ...
@@ -150,8 +156,10 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = settings.subcategory_default
-        subcategory = change_subcategory(subcategory, description)
+        subcategory = categories.autoset_category(
+                description,
+                default_category=settings.subcategory_default
+                )
 
         # halve or not
         halve = halve_or_not('boursorama', description)
@@ -162,6 +170,7 @@ def import_boursorama(data):
         account.save()
         
 
+# =============================================================================
 def import_oney(data):
     """ Parsing des données pour Oney """
     form_list = []
@@ -170,7 +179,14 @@ def import_oney(data):
     for e in list_data:
         # une liste de chacun ligne est faite
         e_list = e.split('\t')
-        # format_ex : [u'26/02/2015', u'PAYPAL - 0800 942 890 - traite le 27/02', u' ', u'45,80', u' \r'] 
+
+        # format_ex :
+        # [ u'26/02/2015',
+        #   u'PAYPAL - 0800 942 890 - traite le 27/02',
+        #   u' ',
+        #   u'45,80',
+        #   u' \r' ] 
+
         if len(e_list) < 4: # si e_list a moins de 4 éléments dernier élément
             continue
         description = e_list[1].encode('utf-8')
@@ -180,6 +196,7 @@ def import_oney(data):
             continue
         if "Intérêts" in description :
             continue
+
         # on definit chaque valeur d'un objet Account
 	# on définit la date comme un objet datetime
         date = datetime.datetime.strptime(e_list[0], "%d/%m/%Y").date()
@@ -192,8 +209,10 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = settings.subcategory_default
-        subcategory = change_subcategory(subcategory, description)
+        subcategory = categories.autoset_category(
+                description,
+                default_category=settings.subcategory_default
+                )
 
         # expense : on récupère la dépense positive ou négtive
         if e_list[2] == ' ':
@@ -206,10 +225,19 @@ def import_oney(data):
         if halve is True:
             expense = expense/2
                     
-        account = Account(date = date, description = description.decode('utf-8'), expense = expense, subcategory = subcategory, bank = 'oney', check = False, halve = halve)
+        account = Account(
+                date        = date,
+                description = description.decode('utf-8'),
+                expense     = expense,
+                subcategory = subcategory,
+                bank        = 'oney',
+                check       = False,
+                halve       = halve
+                )
         account.save()
 
 
+# =============================================================================
 def import_ingdirect(data):
     """ Parsing des données pour ING Direct.
 
@@ -274,7 +302,10 @@ def import_ingdirect(data):
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
-        subcategory = change_subcategory(subcategory, description)
+        subcategory = categories.autoset_category(
+                description,
+                default_category=settings.subcategory_default
+                )
 
         # halve or not
         halve = halve_or_not('ingdirect', description)
