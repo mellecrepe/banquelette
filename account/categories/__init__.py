@@ -14,7 +14,7 @@ import loader
 
 try:
     CATEGORIES = loader.load_categories(
-            yamlloader.load_yaml(settings.YAMLFILE)
+            yamlloader.load_yaml(settings.CATEGORIES_YAMLFILE)
             )
 except:
     CATEGORIES = loader.load_categories( yamlloader.load_yaml(sys.argv[1]) )
