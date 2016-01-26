@@ -32,6 +32,13 @@
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
 			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}
 		</tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">
+                Aucune transaction à afficher. Faites chauffer la carte bleue !
+                ;)
+            </td>
+        </tr>
 	{% endfor %}
 	</tbody> 
 	<!-- Table Body -->
