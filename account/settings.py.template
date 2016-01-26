@@ -10,11 +10,12 @@ subcategory_default = 'autre'
 # Parametrage lié aux banques
 BANK_CHOICES = (
     (None, ''),
-    ('oney',       'Oney'),
-    ('boursorama', 'Boursorama'),
-    ('soge',       'Société Générale'),
-    ('ingdirect',  'ING Direct'),
-    ('espece',     'Liquide/Espèce'),
+    ('oney',             'Oney'),
+    ('boursorama',       'Boursorama'),
+    ('soge',             'Société Générale'),
+    ('ingdirect',        'ING Direct'),
+    ('banquepopulaire',  'Banque Populaire'),
+    ('espece',           'Liquide/Espèce'),
 )
 
 # $bank_halve True si c'est un compte commun et la depense doit être divisé par 2 False sinon
