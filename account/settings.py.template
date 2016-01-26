@@ -2,6 +2,9 @@
 # Fichiers de variables
 ###
 
+# The name of the YAML file containing all informations about the user-defined
+# categories.
+YAMLFILE = u"account/categories.yaml"
 
 # Parametrage lié aux banques
 BANK_CHOICES = (
