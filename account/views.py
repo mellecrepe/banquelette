@@ -12,7 +12,6 @@ from datetime import date, time, datetime
 import calendar
 import locale
 
-import category
 import categories
 
 locale.setlocale(locale.LC_TIME,'')
@@ -112,7 +111,7 @@ def home(request):
             totalcat = [ c for c in total_by_month if c.name == "Total" ][0]
             total_by_month[totalcat].append(this_month_total)
         except:
-            totalcat = category.Category(
+            totalcat = categories.category.Category(
                     "Total",
                     metadata = {
                         "colors": {

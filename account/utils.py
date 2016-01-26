@@ -6,6 +6,7 @@ from account import settings
 import datetime
 import re
 import StringIO
+
 import categories
 
 
@@ -156,7 +157,7 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.autoset_category(
+        subcategory = categories.utils.autoset_category(
                 description,
                 default_category=settings.subcategory_default
                 )
@@ -209,7 +210,7 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.autoset_category(
+        subcategory = categories.utils.autoset_category(
                 description,
                 default_category=settings.subcategory_default
                 )
@@ -302,7 +303,7 @@ def import_ingdirect(data):
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
-        subcategory = categories.autoset_category(
+        subcategory = categories.utils.autoset_category(
                 description,
                 default_category=settings.subcategory_default
                 )

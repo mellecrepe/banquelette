@@ -4,7 +4,7 @@
 import sys
 import pprint
 
-import yamlloader
+import account.yamlloader as yamlloader
 
 from category import Category, SeparatorUsedInCategoryNameError
 

@@ -5,8 +5,7 @@ import sys
 import yaml
 import pprint
 
-from category import Category
-
+# =============================================================================
 def load_yaml(filename):
     """Parse et charge Un fichier de config YAML."""
 
@@ -15,8 +14,7 @@ def load_yaml(filename):
 
     return data
  
-
-
+# =============================================================================
 if __name__ == '__main__':
     yaml_dict = load_yaml( sys.argv[1] )
     pprint.pprint( yaml_dict )

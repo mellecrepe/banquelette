@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import settings
-import yamlloader
+import sys
+import os
+
+import account.settings   as settings
+import account.yamlloader as yamlloader
 
 import loader
 
 # VARIABLES
 # =============================================================================
+
 try:
     CATEGORIES = loader.load_categories(
             yamlloader.load_yaml(settings.YAMLFILE)
