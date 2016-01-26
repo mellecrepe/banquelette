@@ -165,8 +165,7 @@ def month_view(request, year, month):
 
     # We got the sum of expenses for each category, now we can add a 'Total'
     # category:
-    first_level_categories["Total"] = account_objects    \
-            .aggregate(Sum('expense'))['expense__sum']
+    first_level_categories["Total"] = sum( first_level_categories.values() )
 
     # And done!
     return render(request, 'account/month.html', locals())
