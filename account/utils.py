@@ -15,6 +15,8 @@ def import_data(data, bank):
         import_oney(data)
     elif bank == 'ingdirect':
         import_ingdirect(data)
+    elif bank == 'banquepopulaire':
+        import_banquepopulaire(data)
 
 def change_description(description):
     """ Renommage du champs description """
@@ -48,6 +50,19 @@ def halve_or_not(bank, description):
 
         try:
             settings_except = settings.ingdirect_except
+        except AttributeError:
+            # Not defined? Use default value.
+            settings_except = []
+            
+    elif bank == 'banquepopulaire':
+        try:
+            settings_halve  = settings.banquepopulaire_halve
+        except AttributeError:
+            # Not defined? Use default value.
+            settings_halve  = False
+
+        try:
+            settings_except = settings.banquepopulaire_except
         except AttributeError:
             # Not defined? Use default value.
             settings_except = []
@@ -294,3 +309,62 @@ def import_ingdirect(data):
 
         # Read next line
         line = buf.readline()
+        
+def import_banquepopulaire(data):
+    """ Parsing des données Banque Populaire au format CSV
+
+        Le format du fichier CSV proposé par la Banque Populaire est le suivant:
+        
+        Le séparateur par défaut est ';' (point virgule)
+        Les champs disponibles sont:
+          - N° du compte
+          - Date de comptabilisation (au format JJ/MM/AAAA)
+          - Date de l'opération (au format JJ/MM/AAAA)
+          - Libellé
+          - Référence
+          - Date valeur (au format JJ/MM/AAAA)
+          - Montant
+    """
+    
+    # Traitement par lignes des données
+    for line in StringIO.StringIO(data):
+
+	# Découpage des champs CSV
+        csvdata = line.split(';')
+        if len(csvdata) < 7:
+            continue
+            
+        # On ignore la ligne d'en-tête du CSV (si il y en a une)
+        if csvdata[0].isdigit() == False:
+            continue
+        
+        # Date de l'opération
+        date = datetime.datetime.strptime(csvdata[2], "%d/%m/%Y").date()
+        
+        # Montant de l'opération
+        try:
+            expense = float(csvdata[6])
+        except ValueError:
+            expense = float(csvdata[6].replace(',', '.'))
+        
+        # Description de l'opération et catégorisation
+        description = csvdata[3]
+        subcategory = settings.subcategory_default
+
+        # Modifications automatiques de la description et de la subcategory
+        description = change_description(description)
+        subcategory = change_subcategory(subcategory, description)
+
+        # halve or not
+        halve = halve_or_not('banquepopulaire', description)
+        if halve is True:
+            expense = expense/2
+            
+        account = Account( date        = date,
+                           description = description,
+                           expense     = expense,
+                           subcategory = subcategory,
+                           bank        = 'banquepopulaire',
+                           check       = False,
+                           halve       = halve )
+        account.save()
