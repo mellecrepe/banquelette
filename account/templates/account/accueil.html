@@ -104,12 +104,35 @@
 	]
 };
 
-	var ctx2 = document.getElementById("barchart").getContext("2d");
+	var elm2 = document.getElementById("barchart")
+	var ctx2 = elm2.getContext("2d");
 	myBar = new Chart(ctx2).Bar(barData, {
-			responsive: true, scaleShowGridLines : true
-	})
+			responsive: true, scaleShowGridLines : true, legendTemplate : '<ul>'
+			+'<% for (var i=0; i<datasets.length;i++) {%>'
+			+'<li>'
+			+'<span style=\"background-color:<%=datasets[i].barColor%>\"></span>'
+			+'<% if (datasets[i].label) {%> <%= datasets[i].label %><% } %>'
+			+'</li>'
+			+'<%} %>'
+			+'</ul>'
+	});
+
+	function getDateFromString(label){
+		d = new Date(Date.parse(label))
+		var month = ("0" + (d.getMonth()+1).toString()).slice(-2)
+		var year = d.getFullYear().toString()
+		return year + "/" + month
+	};
+
+	elm2.onclick = function(evt){
+		var activeBars = myBar.getBarsAtEvent(evt);
+		console.log(activeBars)
+		// => activeBars is an array of bars on the canvas that are at the same position as the click event.
+		window.location = "/" + getDateFromString(activeBars[0].label);
+	};
 
 })();
+
 
 </script>
 {% endblock %}
