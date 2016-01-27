@@ -20,7 +20,6 @@ def home(request):
     year = datetime.now().year
     month = datetime.now().month
     months = year * 12 + month - 1
-    print months
     triples = [{"year": (months - i) // 12, "month" : (months - i) % 12 + 1} for i in reversed(range(12))]
     for t in triples:
 	t["month_word"] = date(t["year"], t["month"], 1).strftime('%B').capitalize()
@@ -68,28 +67,33 @@ def release(request):
     return render(request, 'account/release.html')
     
 
-def month_view(request, year, month):
+def month_view(request, year, month, category=None):
     """ Résumé par mois """
     if not year or not month:
         raise Http404
 
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
+    dict_category={'necessaire': '0', 'achat' : '0', 'sortie': '0', 'vacances': '0', 'autre' : '0', 'gain': '0'}
 
     account_objects = Account.objects.order_by('date').filter(date__year=int(year)).filter(date__month=int(month))
+    if category is not None:
+        if category in dict_category.keys():
+            account_objects = account_objects.filter(category__exact=category) 
+        else:
+            raise Http404
+
     count_comment = account_objects.exclude(comment__exact="").count()
     if count_comment == 0 :
         comment = False
     else: 
         comment = True
 
-    category={'necessaire': '0', 'achat' : '0', 'sortie': '0', 'vacances': '0', 'autre' : '0', 'gain': '0'}
-    for c in category:
+    for c in dict_category:
         category_sum = account_objects.filter(category__exact=c).aggregate(Sum('expense'))
         if category_sum['expense__sum'] is None:
             continue
-        category[c] = category_sum['expense__sum']
-    category["all"] = account_objects.aggregate(Sum('expense'))['expense__sum']
-    category
+        dict_category[c] = category_sum['expense__sum']
+    dict_category["all"] = account_objects.aggregate(Sum('expense'))['expense__sum']
     return render(request, 'account/month.html', locals())
 
 def month_choice(request):
