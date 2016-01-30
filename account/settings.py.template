@@ -2,10 +2,9 @@
 # Fichiers de variables
 ###
 
-
-# Parametrage lié aux categories
-subcategory_default = 'autre'
-
+# The name of the YAML file containing all informations about the user-defined
+# categories.
+CATEGORIES_YAMLFILE = u"account/categories.yaml"
 
 # Parametrage lié aux banques
 BANK_CHOICES = (

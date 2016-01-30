@@ -27,28 +27,34 @@
 
 	// paramètre graphique en ligne
 	var lineData = {
-	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
+	labels : [ "{{triples.0.month_word}} {{triples.0.year}}",
+               "{{triples.1.month_word}} {{triples.1.year}}",
+               "{{triples.2.month_word}} {{triples.2.year}}",
+               "{{triples.3.month_word}} {{triples.3.year}}",
+               "{{triples.4.month_word}} {{triples.4.year}}",
+               "{{triples.5.month_word}} {{triples.5.year}}",
+               "{{triples.6.month_word}} {{triples.6.year}}",
+               "{{triples.7.month_word}} {{triples.7.year}}",
+               "{{triples.8.month_word}} {{triples.8.year}}",
+               "{{triples.9.month_word}} {{triples.9.year}}",
+               "{{triples.10.month_word}} {{triples.10.year}}",
+               "{{triples.11.month_word}} {{triples.11.year}}", ],
+
 	datasets : [
-		{
-		label: "Gain",
-		fillColor: veryLightColors["gain"],
-		strokeColor: lightColors["gain"],
-		pointColor: colors["gain"],
-		pointStrokeColor: "#fff",
-		pointHighlightFill: "#fff",
-		pointHighlightStroke: "rgba(220,220,220,1)",
-		data: [{{total_by_month.gain.0}}, {{total_by_month.gain.1}}, {{total_by_month.gain.2}}, {{total_by_month.gain.3}}, {{total_by_month.gain.4}}, {{total_by_month.gain.5}}, {{total_by_month.gain.6}}, {{total_by_month.gain.7}}, {{total_by_month.gain.8}}, {{total_by_month.gain.9}}, {{total_by_month.gain.10}}, {{total_by_month.gain.11}}]
-		},
-		{
-		label: "Depense",
-		fillColor: veryLightColors["all"],
-		strokeColor: lightColors["all"],
-		pointColor: colors["all"],
-		pointStrokeColor: "#fff",
-		pointHighlightFill: "#fff",
-		pointHighlightStroke: "rgba(220,220,220,1)",
-		data: [{{total_by_month.all.0}}, {{total_by_month.all.1}}, {{total_by_month.all.2}}, {{total_by_month.all.3}}, {{total_by_month.all.4}}, {{total_by_month.all.5}}, {{total_by_month.all.6}}, {{total_by_month.all.7}}, {{total_by_month.all.8}}, {{total_by_month.all.9}}, {{total_by_month.all.10}}, {{total_by_month.all.11}}]
-		}
+    {% for cat, vals in total_by_month.items %}
+    {% if cat.name == "Gain" or cat.name == "Total" %}
+    {
+        label: "{{ cat.name }}",
+        fillColor: "{{ cat.metadata.colors.verylight }}",
+        strokeColor: "{{ cat.metadata.colors.light }}",
+        pointColor: "{{ cat.metadata.colors.normal }}",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)",
+        data: {{ vals }},
+    },
+    {% endif %}
+    {% endfor %}
 	]
 };
 
@@ -59,48 +65,31 @@
 
 	// paramètre graphique en bar
 	var barData = {
-	labels : ["{{triples.0.month_word}} {{triples.0.year}}", "{{triples.1.month_word}} {{triples.1.year}}", "{{triples.2.month_word}} {{triples.2.year}}", "{{triples.3.month_word}} {{triples.3.year}}", "{{triples.4.month_word}} {{triples.4.year}}", "{{triples.5.month_word}} {{triples.5.year}}", "{{triples.6.month_word}} {{triples.6.year}}", "{{triples.7.month_word}} {{triples.7.year}}", "{{triples.8.month_word}} {{triples.8.year}}", "{{triples.9.month_word}} {{triples.9.year}}", "{{triples.10.month_word}} {{triples.10.year}}", "{{triples.11.month_word}} {{triples.11.year}}"],
+	labels : [ "{{triples.0.month_word}} {{triples.0.year}}",
+               "{{triples.1.month_word}} {{triples.1.year}}",
+               "{{triples.2.month_word}} {{triples.2.year}}",
+               "{{triples.3.month_word}} {{triples.3.year}}",
+               "{{triples.4.month_word}} {{triples.4.year}}",
+               "{{triples.5.month_word}} {{triples.5.year}}",
+               "{{triples.6.month_word}} {{triples.6.year}}",
+               "{{triples.7.month_word}} {{triples.7.year}}",
+               "{{triples.8.month_word}} {{triples.8.year}}",
+               "{{triples.9.month_word}} {{triples.9.year}}",
+               "{{triples.10.month_word}} {{triples.10.year}}",
+               "{{triples.11.month_word}} {{triples.11.year}}" ],
 	datasets : [
-		{
-		label: "Necessaire",
-		fillColor: colors["necessaire"],
-		strokeColor: lightColors["necessaire"],
-		highlightFill: lightColors["necessaire"],
-		highlightStroke: veryLightColors["necessaire"],
-		data: [{{total_by_month.necessaire.0}}, {{total_by_month.necessaire.1}}, {{total_by_month.necessaire.2}}, {{total_by_month.necessaire.3}}, {{total_by_month.necessaire.4}}, {{total_by_month.necessaire.5}}, {{total_by_month.necessaire.6}}, {{total_by_month.necessaire.7}}, {{total_by_month.necessaire.8}}, {{total_by_month.necessaire.9}}, {{total_by_month.necessaire.10}}, {{total_by_month.necessaire.11}}]
-		},
-		{
-		label: "Achat",
-		fillColor: colors["achat"],
-		strokeColor: lightColors["achat"],
-		highlightFill: lightColors["achat"],
-		highlightStroke: colors["achat"],
-		data: [{{total_by_month.achat.0}}, {{total_by_month.achat.1}}, {{total_by_month.achat.2}}, {{total_by_month.achat.3}}, {{total_by_month.achat.4}}, {{total_by_month.achat.5}}, {{total_by_month.achat.6}}, {{total_by_month.achat.7}}, {{total_by_month.achat.8}}, {{total_by_month.achat.9}}, {{total_by_month.achat.10}}, {{total_by_month.achat.11}}]
-		},
-		{
-		label: "Sortie",
-		fillColor: colors["sortie"],
-		strokeColor: lightColors["sortie"],
-		highlightFill: lightColors["sortie"],
-		highlightStroke: veryLightColors["sortie"],
-		data: [{{total_by_month.sortie.0}}, {{total_by_month.sortie.1}}, {{total_by_month.sortie.2}}, {{total_by_month.sortie.3}}, {{total_by_month.sortie.4}}, {{total_by_month.sortie.5}}, {{total_by_month.sortie.6}}, {{total_by_month.sortie.7}}, {{total_by_month.sortie.8}}, {{total_by_month.sortie.9}}, {{total_by_month.sortie.10}}, {{total_by_month.sortie.11}}]
-		},
-		{
-		label: "Vacances",
-		fillColor: colors["vacances"],
-		strokeColor: lightColors["vacances"],
-		highlightFill: lightColors["vacances"],
-		highlightStroke: veryLightColors["vacances"],
-		data: [{{total_by_month.vacances.0}}, {{total_by_month.vacances.1}}, {{total_by_month.vacances.2}}, {{total_by_month.vacances.3}}, {{total_by_month.vacances.4}}, {{total_by_month.vacances.5}}, {{total_by_month.vacances.6}}, {{total_by_month.vacances.7}}, {{total_by_month.vacances.8}}, {{total_by_month.vacances.9}}, {{total_by_month.vacances.10}}, {{total_by_month.vacances.11}}]
-		},
-		{
-		label: "Autre",
-		fillColor: colors["autre"],
-		strokeColor: lightColors["autre"],
-		highlightFill: lightColors["autre"],
-		highlightStroke: veryLightColors["autre"],
-		data: [{{total_by_month.autre.0}}, {{total_by_month.autre.1}}, {{total_by_month.autre.2}}, {{total_by_month.autre.3}}, {{total_by_month.autre.4}}, {{total_by_month.autre.5}}, {{total_by_month.autre.6}}, {{total_by_month.autre.7}}, {{total_by_month.autre.8}}, {{total_by_month.autre.9}}, {{total_by_month.autre.10}}, {{total_by_month.autre.11}}]
-		}
+
+    {% for cat, vals in total_by_month.items %}
+    {
+        label           : "{{ cat.name }}",
+        fillColor       : "{{ cat.metadata.colors.normal }}",
+		strokeColor     : "{{ cat.metadata.colors.light }}",
+		highlightFill   : "{{ cat.metadata.colors.light }}",
+		highlightStroke : "{{ cat.metadata.colors.verylight }}",
+        data            : {{ vals }}
+        
+    },
+    {% endfor %}
 	]
 };
 

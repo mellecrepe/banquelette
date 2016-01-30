@@ -32,6 +32,13 @@
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
 			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}
 		</tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">
+                Aucune transaction à afficher. Faites chauffer la carte bleue !
+                ;)
+            </td>
+        </tr>
 	{% endfor %}
 	</tbody> 
 	<!-- Table Body -->
@@ -42,22 +49,14 @@
 	<!-- Table Body -->
 	<tbody>
 		<tr>
-			<td>Nécessaire</td>
-			<td>Achat</td>
-			<td>Sortie</td>
-			<td>Vacances</td>
-			<td>Autre</td>
-			<td>Gains</td>
-			<td>Total</td>
+            	{% for cat in first_level_categories %}
+            		<td>{{ cat }}</td>
+            	{% endfor %}
 		</tr>
 		<tr>
-			<td class="necessaire">{{ dict_category.necessaire }}</td>
-			<td class="achat">{{ dict_category.achat}}</td>
-			<td class="sortie">{{ dict_category.sortie}}</td>
-			<td class="vacances">{{ dict_category.vacances}}</td>
-			<td class="autre">{{ dict_category.autre}}</td>
-			<td class="gain">{{ dict_category.gain}}</td>
-			<td class="">{{ dict_category.all}}</td>
+            	{% for cat, exp in first_level_categories.items %}
+            		<td class="cat">{{ exp }}</td>
+            	{% endfor %}
 		</tr>
 
 	</tbody>
