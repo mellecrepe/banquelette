@@ -57,7 +57,7 @@ def home(request):
             # Append this month total to the total_by_month[category] list
             try:
                 this_month_total = account_filter_month      \
-                        .filter(subcategory__startswith = k) \
+                        .filter(category__startswith = k) \
                         .aggregate( Sum('expense') )         \
                         ['expense__sum']
                 this_month_total = abs(int( this_month_total ))
@@ -76,7 +76,7 @@ def home(request):
             # Save this year category average
             # TODO Put out of the loop
             category_average_year = account_filter_year  \
-                    .filter(subcategory__startswith = k) \
+                    .filter(category__startswith = k) \
                     .aggregate( Avg('expense') )         \
                     ['expense__avg']
 
@@ -87,7 +87,7 @@ def home(request):
 
             # Save this month category average
             category_average_month = account_filter_month \
-                    .filter(subcategory__startswith = k)  \
+                    .filter(category__startswith = k)  \
                     .aggregate( Avg('expense') )          \
                     ['expense__avg']
 
@@ -168,7 +168,7 @@ def month_view(request, year, month, category=None):
 
         # Sum the relevant account object 'expense' property
         category_sum = account_objects               \
-                .filter(subcategory__startswith = c) \
+                .filter(category__startswith = c) \
                 .aggregate(Sum('expense'))
 
         # Save the result
@@ -179,7 +179,6 @@ def month_view(request, year, month, category=None):
     # category:
     first_level_categories["Total"] = sum( first_level_categories.values() )
 
-    print first_level_categories
     # And done!
     return render(request, 'account/month.html', locals())
 
@@ -210,7 +209,7 @@ def db_modify(request, year=None, month=None):
         title = ''.join([month_word, " ", year])
         account_all = Account.objects.filter(date__year=int(year)).filter(date__month=int(month))
 
-    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'subcategory', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, can_delete=True)
+    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, can_delete=True)
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): # Nous vérifions que les données envoyées sont valides
@@ -228,7 +227,7 @@ def db_add(request):
     """ Ajout d'entrées manuelles """
     title = "Ajout d'entrées manuelles"
     n = 5
-    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'subcategory', 'expense', 'halve', 'bank', 'check', 'comment'), extra=n, can_delete=True)
+    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=n, can_delete=True)
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): 

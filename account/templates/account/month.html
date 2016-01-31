@@ -27,7 +27,7 @@
 		<tr class="{{a.category}}">
 			<td> {{ a.date }} </td>
 			<td> {{ a.description }} </td>
-			<td> {{ a.subcategory | title }} </td>
+			<td> {{ a.category | title }} </td>
 			<td> {{ a.expense }} </td>
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
 			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}

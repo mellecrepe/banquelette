@@ -7,7 +7,7 @@
 CATEGORIES_YAMLFILE = u"account/categories.yaml"
 
 # Parametrage lié aux banques
-BANK_CHOICES = (
+BANK_CHOICES = [
     (None, ''),
     ('oney',             'Oney'),
     ('boursorama',       'Boursorama'),
@@ -15,7 +15,7 @@ BANK_CHOICES = (
     ('ingdirect',        'ING Direct'),
     ('banquepopulaire',  'Banque Populaire'),
     ('espece',           'Liquide/Espèce'),
-)
+]
 
 # $bank_halve True si c'est un compte commun et la depense doit être divisé par 2 False sinon
 # Si $bank_halve = True, $bank_except peut contenir une liste d'exception (contenu dans la description de la depense)
