@@ -151,7 +151,7 @@ def month_view(request, year, month, category=None):
             for c in categories.FIRST_LEVEL_CATEGORIES }
 
     if category is not None:
-        if category in dict_category.keys():
+        if category in first_level_categories.keys():
             account_objects = account_objects.filter(category__exact=category) 
         else:
             raise Http404
@@ -179,6 +179,7 @@ def month_view(request, year, month, category=None):
     # category:
     first_level_categories["Total"] = sum( first_level_categories.values() )
 
+    print first_level_categories
     # And done!
     return render(request, 'account/month.html', locals())
 
