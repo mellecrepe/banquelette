@@ -78,7 +78,6 @@
                "{{triples.10.month_word}} {{triples.10.year}}",
                "{{triples.11.month_word}} {{triples.11.year}}" ],
 	datasets : [
-
     {% for cat, vals in total_by_month.items %}
     {% if cat.name != "Gain" and cat.name != "Total" %}
     {
@@ -88,7 +87,6 @@
 	highlightFill   : "{{ cat.metadata.colors.light }}",
 	highlightStroke : "{{ cat.metadata.colors.verylight }}",
         data            : {{ vals }}
-        
     },
     {% endif %}
     {% endfor %}

@@ -53,7 +53,6 @@ def home(request):
 
         # Iterate over each category
         for k,cat in first_level_categories.items():
-
             # Append this month total to the total_by_month[category] list
             try:
                 this_month_total = account_filter_month      \
@@ -138,6 +137,7 @@ def month_view(request, year, month, category=None):
         raise Http404
 
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
+    first_level_categories ={} 
 
     # Get all objects (transactions) with the right date (year+month) and order
     # them by date.
@@ -147,11 +147,11 @@ def month_view(request, year, month, category=None):
             .filter(date__month= int(month))
 
     # Get the first-level categories (those without a parent category)
-    first_level_categories = { c : 0
-            for c in categories.FIRST_LEVEL_CATEGORIES }
-
+    for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+        first_level_categories[cat] = 0
+    
     if category is not None:
-        if category in first_level_categories.keys():
+        if category in first_level_categories:
             account_objects = account_objects.filter(category__exact=category) 
         else:
             raise Http404
@@ -162,6 +162,7 @@ def month_view(request, year, month, category=None):
         comment = False
     else: 
         comment = True
+
     # For each first-level category, we are going to find the relevant objects
     # (transactions) and sum them.
     for c in first_level_categories:

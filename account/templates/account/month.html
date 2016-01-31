@@ -24,7 +24,10 @@
 	<!-- Table Body -->
 	<tbody>
 	{% for a in account_objects %}
-		<tr class="{{a.category}}">
+       	{% for cat, exp in first_level_categories.items %}
+	{% if cat.name in a.category %}
+            		<tr style="color: {{ cat.metadata.colors.normal }}">
+			<td> {{ a.category }} {{ cat.name }} </td>
 			<td> {{ a.date }} </td>
 			<td> {{ a.description }} </td>
 			<td> {{ a.category | title }} </td>
@@ -32,6 +35,8 @@
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
 			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}
 		</tr>
+	{% endif %}
+	{% endfor %}
     {% empty %}
         <tr>
             <td colspan="5">
@@ -50,12 +55,27 @@
 	<tbody>
 		<tr>
             	{% for cat in first_level_categories %}
+		{% if cat != "Total" and cat != "Gain" %}
             		<td>{{ cat }}</td>
+            	{% endif %}
             	{% endfor %}
+			<td>Total</td>
 		</tr>
 		<tr>
             	{% for cat, exp in first_level_categories.items %}
-            		<td class="cat">{{ exp }}</td>
+		{% if cat != "Total" and cat != "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Total" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
             	{% endfor %}
 		</tr>
 
