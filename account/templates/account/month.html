@@ -27,7 +27,6 @@
        	{% for cat, exp in first_level_categories.items %}
 	{% if cat.name in a.category %}
             		<tr style="color: {{ cat.metadata.colors.normal }}">
-			<td> {{ a.category }} {{ cat.name }} </td>
 			<td> {{ a.date }} </td>
 			<td> {{ a.description }} </td>
 			<td> {{ a.category | title }} </td>
