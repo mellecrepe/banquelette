@@ -41,27 +41,30 @@
                "{{triples.11.month_word}} {{triples.11.year}}", ],
 
 	datasets : [
-    {% for cat, vals in total_by_month.items %}
-    {% if cat.name == "Gain" or cat.name == "Total" %}
-    {
-        label: "{{ cat.name }}",
-        fillColor: "{{ cat.metadata.colors.verylight }}",
-        strokeColor: "{{ cat.metadata.colors.light }}",
-        pointColor: "{{ cat.metadata.colors.normal }}",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(220,220,220,1)",
-        data: {{ vals }},
-    },
-    {% endif %}
-    {% endfor %}
+		{% for cat, vals in total_by_month.items %}
+		{% if cat.name == "Gain" or cat.name == "Total" %}
+		{
+		    label: "{{ cat.name }}",
+		    fillColor: "{{ cat.metadata.colors.verylight }}",
+		    strokeColor: "{{ cat.metadata.colors.light }}",
+		    pointColor: "{{ cat.metadata.colors.normal }}",
+		    pointStrokeColor: "#fff",
+		    pointHighlightFill: "#fff",
+		    pointHighlightStroke: "rgba(220,220,220,1)",
+		    data: {{ vals }},
+		},
+		{% endif %}
+		{% endfor %}
 	]
 };
 
+        lineOptions = { 
+		responsive: true, scaleShowGridLines : true,
+		multiTooltipTemplate: "<%= value %> €",
+        };
+
 	var ctx1 = document.getElementById("linechart").getContext("2d");
-	myLine = new Chart(ctx1).Line(lineData, {
-			responsive: true, scaleShowGridLines : true
-	})
+	myLine = new Chart(ctx1).Line(lineData, lineOptions)
 
 	// paramètre graphique en bar
 	var barData = {
@@ -82,7 +85,7 @@
     {% if cat.name != "Gain" and cat.name != "Total" %}
     {
         label           : "{{ cat.name }}",
-        fillColor       : "{{ cat.metadata.colors.verylight }}",
+        fillColor       : "{{ cat.metadata.colors.light }}",
 	strokeColor     : "{{ cat.metadata.colors.light }}",
 	highlightFill   : "{{ cat.metadata.colors.light }}",
 	highlightStroke : "{{ cat.metadata.colors.light }}",
@@ -93,18 +96,14 @@
 	]
 };
 
+        barOptions = { 
+		responsive: true, scaleShowGridLines : true,
+		multiTooltipTemplate: "<%= value %> €",
+        };
+
 	var elm2 = document.getElementById("barchart")
 	var ctx2 = elm2.getContext("2d");
-	myBar = new Chart(ctx2).Bar(barData, {
-			responsive: true, scaleShowGridLines : true, legendTemplate : '<ul>'
-			+'<% for (var i=0; i<datasets.length;i++) {%>'
-			+'<li>'
-			+'<span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>'
-			+'<% if (datasets[i].label) {%> <%= datasets[i].label %><% } %>'
-			+'</li>'
-			+'<%} %>'
-			+'</ul>'
-	});
+	myBar = new Chart(ctx2).Bar(barData, barOptions);
 
 	function getDateFromString(label){
 		d = new Date(Date.parse(label))
