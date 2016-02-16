@@ -39,10 +39,6 @@ def home(request):
 
     # 1e partie : graph des dépenses de l'annee
     total_by_month = {}
-    
-    # 2e partie : variables pour les camemberts
-    average       = {}
-    average_month = {}
 
     # Iterate over each of the 12 last months
     for t in triples :
@@ -71,29 +67,6 @@ def home(request):
             except KeyError:
                 total_by_month[cat] = [ this_month_total ]
 
-
-            # Save this year category average
-            # TODO Put out of the loop
-            category_average_year = account_filter_year  \
-                    .filter(category__startswith = k) \
-                    .aggregate( Avg('expense') )         \
-                    ['expense__avg']
-
-            try :
-                average[cat] = int(category_average_year)
-            except TypeError:
-                average[cat] = 0
-
-            # Save this month category average
-            category_average_month = account_filter_month \
-                    .filter(category__startswith = k)  \
-                    .aggregate( Avg('expense') )          \
-                    ['expense__avg']
-
-            try :
-                average_month[cat] = int(category_average_month)
-            except TypeError:
-                average_month[cat] = 0
 
         # We finished looping over the first-level categories, let's add a
         # 'Total' category:
