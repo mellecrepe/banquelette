@@ -15,7 +15,8 @@ RUN    apk update     \
            sqlite
 
 RUN    pip install      \
-           django
+           django       \
+           PyYAML
 
 RUN    mkdir /home/banquelette/
 

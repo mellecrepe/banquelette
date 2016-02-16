@@ -31,7 +31,7 @@ MONTH_CHOICES = (
 class AccountForm(ModelForm):
     class Meta:
         model = Account
-        fields = [ 'date', 'description', 'subcategory', 'expense', 'halve', 'bank', 'check', 'comment']
+        fields = [ 'date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment']
 
 class UpdateDbForm(forms.Form):
     data = forms.CharField(label='Nouvelles données', widget=forms.Textarea)

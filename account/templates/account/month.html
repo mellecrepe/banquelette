@@ -24,14 +24,26 @@
 	<!-- Table Body -->
 	<tbody>
 	{% for a in account_objects %}
-		<tr class="{{a.category}}">
+       	{% for cat, exp in first_level_categories.items %}
+	{% if cat.name in a.category %}
+            		<tr style="color: {{ cat.metadata.colors.normal }}">
+			<td> {{ a.category }} {{ cat.name }} </td>
 			<td> {{ a.date }} </td>
 			<td> {{ a.description }} </td>
-			<td> {{ a.subcategory | title }} </td>
+			<td> {{ a.category | title }} </td>
 			<td> {{ a.expense }} </td>
 			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
 			{% if comment == True %} <td> {{ a.comment }} </td> {% endif %}
 		</tr>
+	{% endif %}
+	{% endfor %}
+    {% empty %}
+        <tr>
+            <td colspan="5">
+                Aucune transaction à afficher. Faites chauffer la carte bleue !
+                ;)
+            </td>
+        </tr>
 	{% endfor %}
 	</tbody> 
 	<!-- Table Body -->
@@ -42,22 +54,29 @@
 	<!-- Table Body -->
 	<tbody>
 		<tr>
-			<td>Nécessaire</td>
-			<td>Achat</td>
-			<td>Sortie</td>
-			<td>Vacances</td>
-			<td>Autre</td>
-			<td>Gains</td>
+            	{% for cat in first_level_categories %}
+		{% if cat != "Total" and cat != "Gain" %}
+            		<td>{{ cat }}</td>
+            	{% endif %}
+            	{% endfor %}
 			<td>Total</td>
 		</tr>
 		<tr>
-			<td class="necessaire">{{ dict_category.necessaire }}</td>
-			<td class="achat">{{ dict_category.achat}}</td>
-			<td class="sortie">{{ dict_category.sortie}}</td>
-			<td class="vacances">{{ dict_category.vacances}}</td>
-			<td class="autre">{{ dict_category.autre}}</td>
-			<td class="gain">{{ dict_category.gain}}</td>
-			<td class="">{{ dict_category.all}}</td>
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat != "Total" and cat != "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Total" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
 		</tr>
 
 	</tbody>

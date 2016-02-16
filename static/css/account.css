@@ -170,30 +170,6 @@ table tr {
 	text-align: center;
 }
 
-.necessaire {
-	color: #ff9c9c
-}
-
-.achat {
-	color: #ff90d3;
-}
-
-.sortie {
-	color: #c7a8e5;
-}
-
-.vacances {
-	color: #97d4ee;
-}
-
-.autre {
-	color: #ffdf7f;
-}
-
-.gain {
-	color: #5dcca2;
-}
-
 table td:first-child {
 	text-align: center;
 	border-left: 0;
