@@ -98,6 +98,39 @@ def home(request):
     return render(request, 'account/accueil.html', locals())
 
 # =============================================================================
+def statistics(request):
+    """ Statistics """
+
+    # Get the FIRST_LEVEL_CATEGORIES
+    first_level_categories = categories.FIRST_LEVEL_CATEGORIES
+
+    first_year    = 2015
+    current_year  = datetime.now().year
+    total_by_year = {}
+    for i in range(first_year, current_year+1):
+        total_by_year[i] = {}
+
+    for y in total_by_year.keys():
+        account_filter_year  = Account.objects  \
+                .filter( date__year=y )
+
+        # Iterate over each category
+        for k,cat in first_level_categories.items():
+            # Append this month total to the total_by_month[category] list
+            try:
+                this_category_total = account_filter_year    \
+                        .filter(category__startswith = k)    \
+                        .aggregate( Sum('expense') )         \
+                        ['expense__sum']
+            except:
+                this_category_total = 0
+            if this_category_total is None:
+                this_category_total = 0
+            total_by_year[y][cat] = this_category_total 
+    
+    return render(request, 'account/statistics.html', locals())
+
+# =============================================================================
 def release(request):
     """ Release """
     return render(request, 'account/release.html')

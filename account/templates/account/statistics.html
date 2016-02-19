@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block extra_head_content  %}
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}" />
+{% endblock %}
+{% block js %}
+<script src="../../../static/js/Chart.js"></script> 
+{% endblock %}
+
+{% block title_h1 %} Statistiques {% endblock %}
+{% block principal_section %}
+<article>
+<h3> Dépense total par catégories </h3>
+
+<table>
+	<!-- Table Header -->
+	<thead>
+		<tr>
+			<th>  </th>
+		{% for cat in total_by_year.2015.keys %}
+			<th> {{ cat.name }} </th>
+		{% endfor %}
+		</tr>
+	</thead>
+	<!-- Table Header -->
+
+	<!-- Table Body -->
+	<tbody>
+	{% for year, dict in total_by_year.items %}
+		<tr>
+		<td class="double_table"> {{ year }} </td>
+		{% for cat, exp in dict.items %}
+		{% load humanize %}
+            		<td style="color: {{ cat.metadata.colors.normal }}"> {{ exp|intcomma }} </td>
+		{% endfor %}
+        	</tr>
+	{% endfor %}
+	</tbody> 
+	<!-- Table Body -->
+</table> 
+
+</article>
+
+{% endblock %}

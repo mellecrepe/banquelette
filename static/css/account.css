@@ -144,7 +144,7 @@ table {
 	-webkit-box-shadow: 0 1px 2px #d1d1d1;
 	box-shadow: 0 1px 2px #d1d1d1;
 }
-table th {
+table th, .double_table {
 	padding:21px 10px 22px 10px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
