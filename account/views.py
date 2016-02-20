@@ -15,6 +15,15 @@ import locale
 import categories
 
 locale.setlocale(locale.LC_TIME,'')
+totalcat = categories.category.Category(
+        "Total",
+        metadata = {
+            "colors": {
+                "normal"   : "rgba(0,0,0,1)",
+                "light"    : "rgba(0,0,0,0.6)",
+                "verylight": "rgba(0,0,0,0.1)",
+                }
+            } )
 
 # =============================================================================
 def home(request):
@@ -80,18 +89,8 @@ def home(request):
             this_month_total = 0
 
         try:
-            totalcat = [ c for c in total_by_month if c.name == "Total" ][0]
             total_by_month[totalcat].append(this_month_total)
         except:
-            totalcat = categories.category.Category(
-                    "Total",
-                    metadata = {
-                        "colors": {
-                            "normal"   : "rgba(0,0,0,1)",
-                            "light"    : "rgba(0,0,0,0.6)",
-                            "verylight": "rgba(0,0,0,0.1)",
-                            }
-                        } )
             total_by_month[totalcat] = [this_month_total]
 
     # And done!
@@ -127,6 +126,16 @@ def statistics(request):
             if this_category_total is None:
                 this_category_total = 0
             total_by_year[y][cat] = this_category_total 
+    
+        try:
+            this_category_total = account_filter_year    \
+                    .aggregate( Sum('expense') )         \
+                    ['expense__sum']
+        except:
+            this_category_total = 0
+        if this_category_total is None:
+            this_category_total = 0
+        total_by_year[y][totalcat] = this_category_total
     
     return render(request, 'account/statistics.html', locals())
 
