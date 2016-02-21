@@ -106,8 +106,10 @@ def statistics(request):
     first_year    = 2015
     current_year  = datetime.now().year
     total_by_year = {}
+    average_by_year = {}
     for i in range(first_year, current_year+1):
         total_by_year[i] = {}
+        average_by_year[i] = {}
 
     for y in total_by_year.keys():
         account_filter_year  = Account.objects  \
@@ -115,27 +117,39 @@ def statistics(request):
 
         # Iterate over each category
         for k,cat in first_level_categories.items():
-            # Append this month total to the total_by_month[category] list
-            try:
-                this_category_total = account_filter_year    \
-                        .filter(category__startswith = k)    \
-                        .aggregate( Sum('expense') )         \
-                        ['expense__sum']
-            except:
-                this_category_total = 0
+            # Append this total to the total_by_year[year][category] list
+            this_category_total = account_filter_year    \
+                    .filter(category__startswith = k)    \
+                    .aggregate( Sum('expense') )         \
+                    ['expense__sum']
             if this_category_total is None:
                 this_category_total = 0
             total_by_year[y][cat] = this_category_total 
+
+            # Append this average to the average_by_year[year][category] list
+            this_category_average = account_filter_year    \
+                    .filter(category__startswith = k)    \
+                    .aggregate( Avg('expense') )         \
+                    ['expense__avg']
+            if this_category_average is None:
+                this_category_average = 0
+            average_by_year[y][cat] = this_category_average 
     
-        try:
-            this_category_total = account_filter_year    \
-                    .aggregate( Sum('expense') )         \
-                    ['expense__sum']
-        except:
-            this_category_total = 0
+        # We finished looping over the first-level categories, let's add a
+        # 'Total' category:
+        this_category_total = account_filter_year    \
+                .aggregate( Sum('expense') )         \
+                ['expense__sum']
         if this_category_total is None:
             this_category_total = 0
         total_by_year[y][totalcat] = this_category_total
+
+        this_category_average = account_filter_year    \
+                .aggregate( Avg('expense') )         \
+                ['expense__avg']
+        if this_category_average is None:
+            this_category_average = 0
+        average_by_year[y][totalcat] = this_category_average
     
     return render(request, 'account/statistics.html', locals())
 
