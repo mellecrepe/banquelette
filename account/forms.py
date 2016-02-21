@@ -5,6 +5,8 @@ from django.forms import ModelForm
 from account.models import Account
 from account.settings import *
 
+import categories
+
 
 YEAR_CHOICES = (
     ('2015', '2015'),
@@ -27,6 +29,8 @@ MONTH_CHOICES = (
     ('12', 'Décembre'),
 )
 
+CATEGORY_CHOICES = [(k, k) for k,cat in categories.FIRST_LEVEL_CATEGORIES.items()]
+CATEGORY_CHOICES.insert(0, (None, '------'))
 
 class AccountForm(ModelForm):
     class Meta:
@@ -40,3 +44,10 @@ class UpdateDbForm(forms.Form):
 class MonthChoiceForm(forms.Form):
     year = forms.ChoiceField(label='Année', choices=YEAR_CHOICES)
     month = forms.ChoiceField(label='Mois', choices=MONTH_CHOICES)
+
+class SearchForm(forms.Form):
+    date_start = forms.DateField(label='Date de début', required=False)
+    date_end = forms.DateField(label='Date de fin', required=False)
+    category = forms.ChoiceField(label='Catégories', required=False, choices=CATEGORY_CHOICES)
+    bank = forms.ChoiceField(label='Banque', required=False, choices=BANK_CHOICES)
+    description = forms.CharField(label='Description', required=False)

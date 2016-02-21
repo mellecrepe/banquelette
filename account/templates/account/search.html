@@ -8,4 +8,88 @@
 {% block title_h1 %} Recherche {% endblock %}
 {% block principal_section %}
 
+<form method="post">
+	{% csrf_token %}
+	<div>
+		{{ form }} 
+		<input id="submit" type="submit" value="Valider" />
+	</div>
+</form>
+
+{% if account_objects %}
+<table class="month">
+	<!-- Table Header -->
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Catégorie</th>
+			<th>Dépense</th>
+			<th>Bank</th>
+			<th>Check</th>
+			{% if comment == True %} <th>Commentaire</th> {% endif %}
+		</tr>
+	</thead>
+	<!-- Table Header -->
+
+	<!-- Table Body -->
+	<tbody>
+	{% for a in account_objects %}
+       	{% for cat in first_level_categories %}
+	{% if cat.name in a.category %}
+        	<tr style="color: {{ cat.metadata.colors.normal }}">
+			<td> {{ a.date }} </td>
+			<td> {{ a.description }} </td>
+			<td> {{ a.category | title }} </td>
+			<td> {{ a.expense }} </td>
+			<td> {{ a.bank }} </td>
+			<td> {% if a.check == True %} &#x2714; {% else %} &#x2718; {% endif %} </td>
+		</tr>
+	{% endif %}
+	{% endfor %}
+    {% empty %}
+        <tr>
+            <td colspan="5">
+                Aucune transaction ne correspond à votre recherche.
+            </td>
+        </tr>
+	{% endfor %}
+	</tbody> 
+	<!-- Table Body -->
+</table> 
+
+<h2> Total des dépenses </h2>
+<table class="month">
+	<!-- Table Body -->
+	<tbody>
+		<tr>
+            	{% for cat in first_level_categories %}
+		{% if cat != "Total" and cat != "Gain" %}
+            		<td>{{ cat }}</td>
+            	{% endif %}
+            	{% endfor %}
+			<td>Total</td>
+		</tr>
+		<tr>
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat != "Total" and cat != "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Gain" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+            	{% for cat, exp in first_level_categories.items %}
+		{% if cat == "Total" %}
+            		<td style="color: {{ cat.metadata.colors.normal }}">{{ exp }}</td>
+            	{% endif %}
+            	{% endfor %}
+		</tr>
+
+	</tbody>
+	<!-- Table Body -->
+</table> 
+{% endif %}
 {% endblock %}

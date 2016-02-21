@@ -6,7 +6,7 @@ from django.forms import formset_factory
 from django.forms.models import modelformset_factory
 from django.db.models import Sum, Avg
 from account.models import Account
-from account.forms import AccountForm, UpdateDbForm, MonthChoiceForm
+from account.forms import AccountForm, UpdateDbForm, MonthChoiceForm, SearchForm
 from account.utils import import_data 
 from datetime import date, time, datetime
 import calendar
@@ -156,7 +156,63 @@ def statistics(request):
 # =============================================================================
 def search(request):
     """ Search """
-    return render(request, 'account/search.html')
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            # Get all objects (transactions) order them by date.
+            account_objects = Account.objects    \
+                .order_by('date')
+            
+            if form.cleaned_data['date_start'] is not None:
+                date_start = form.cleaned_data['date_start']
+                account_objects = account_objects.filter(date__gte = date_start)
+            if form.cleaned_data['date_end'] is not None:
+                date_end = form.cleaned_data['date_end']
+                account_objects = account_objects.filter(date__gte = date_end)
+            if form.cleaned_data['category'] is not None:
+                category = form.cleaned_data['category']
+                account_objects = account_objects.filter(category__startswith = category)
+            if form.cleaned_data['bank'] is not None:
+                bank = form.cleaned_data['bank']
+                account_objects = account_objects.filter(bank__exact = bank)
+            if form.cleaned_data['description'] is not None:
+                description = form.cleaned_data['description']
+                account_objects = account_objects.filter(description__contains = description) 
+            
+            # Get the first-level categories (those without a parent category)
+            first_level_categories ={} 
+            for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+                first_level_categories[cat] = 0
+            
+            # Si count_comment != 0 une colone est ajouté dans template month.html
+            count_comment = account_objects.exclude(comment__exact="").count()
+            if count_comment == 0 :
+                comment = False
+            else: 
+                comment = True
+
+            # For each first-level category, we are going to find the relevant objects
+            # (transactions) and sum them.
+            for c in first_level_categories:
+
+                # Sum the relevant account object 'expense' property
+                category_sum = account_objects               \
+                        .filter(category__startswith = c) \
+                        .aggregate(Sum('expense'))
+
+                # Save the result
+                if category_sum['expense__sum'] is not None:
+                    first_level_categories[c] = category_sum['expense__sum']
+
+            # We got the sum of expenses for each category, now we can add a 'Total'
+            # category:
+            first_level_categories["Total"] = sum( first_level_categories.values() )
+
+    else:
+        form=SearchForm()
+
+
+    return render(request, 'account/search.html', locals())
 
 
 # =============================================================================
@@ -191,7 +247,7 @@ def month_view(request, year, month, category=None):
         else:
             raise Http404
 
-    # Si ccount_comment != 0 une colone est ajouté dans template month.html
+    # Si count_comment != 0 une colone est ajouté dans template month.html
     count_comment = account_objects.exclude(comment__exact="").count()
     if count_comment == 0 :
         comment = False
