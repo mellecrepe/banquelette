@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^modify/nocheck$', views.db_modify),
     url(r'^modify/bymonth$', views.month_choice),
     url(r'^$', RedirectView.as_view(url='accueil'), name='redirect_home'),
+    url(r'^search$', views.search),
 ]

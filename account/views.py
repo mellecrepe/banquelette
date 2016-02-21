@@ -154,6 +154,12 @@ def statistics(request):
     return render(request, 'account/statistics.html', locals())
 
 # =============================================================================
+def search(request):
+    """ Search """
+    return render(request, 'account/search.html')
+
+
+# =============================================================================
 def release(request):
     """ Release """
     return render(request, 'account/release.html')
