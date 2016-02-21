@@ -7,6 +7,7 @@ from . import views
 
 urlpatterns = [
     url(r'^accueil$', views.home),
+    url(r'^statistics$', views.statistics),
     url(r'^release$', views.release),
     url(r'^add$', views.db_add),
     url(r'^update$', views.db_update),
