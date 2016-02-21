@@ -8,13 +8,13 @@ CATEGORIES_YAMLFILE = u"account/categories.yaml"
 
 # Parametrage lié aux banques
 BANK_CHOICES = [
-    (None, ''),
-    ('oney',             'Oney'),
-    ('boursorama',       'Boursorama'),
-    ('soge',             'Société Générale'),
-    ('ingdirect',        'ING Direct'),
-    ('banquepopulaire',  'Banque Populaire'),
-    ('espece',           'Liquide/Espèce'),
+    (None,               '------'),
+    ('Oney',             'Oney'),
+    ('Boursorama',       'Boursorama'),
+    ('Société Générale', 'Société Générale'),
+    ('ING Direct',       'ING Direct'),
+    ('Banque Populaire', 'Banque Populaire'),
+    ('Argent Liquide',   'Argent Liquide'),
 ]
 
 # $bank_halve True si c'est un compte commun et la depense doit être divisé par 2 False sinon
