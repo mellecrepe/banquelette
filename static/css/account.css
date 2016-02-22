@@ -124,6 +124,15 @@ table .expense{
 	margin-bottom: 10px;
 }
 
+/* search */
+.search input, select {
+	margin: 10px;
+}
+
+.search #submit {
+	position: absolute;
+	right: 5%;
+}
 
 /* Tableaux */
 table {

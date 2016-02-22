@@ -178,6 +178,8 @@ def search(request):
             if form.cleaned_data['description'] is not None:
                 description = form.cleaned_data['description']
                 account_objects = account_objects.filter(description__contains = description) 
+
+            nb_account = len(account_objects)
             
             # Get the first-level categories (those without a parent category)
             first_level_categories ={} 

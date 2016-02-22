@@ -8,7 +8,7 @@
 {% block title_h1 %} Recherche {% endblock %}
 {% block principal_section %}
 
-<form method="post">
+<form method="post" class="search">
 	{% csrf_token %}
 	<div>
 		{{ form }} 
@@ -17,6 +17,7 @@
 </form>
 
 {% if account_objects %}
+<h4> {{ nb_account }} résultats obtenus : </h4>
 {% include "table.html" %}
 {% endif %}
 
