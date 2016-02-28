@@ -157,6 +157,8 @@ def statistics(request):
 def search(request):
     """ Search """
     if request.method == 'POST':
+
+        # On recupere les valeurs de recherche
         form = SearchForm(request.POST)
         if form.is_valid():
             # Get all objects (transactions) order them by date.
@@ -179,20 +181,28 @@ def search(request):
                 description = form.cleaned_data['description']
                 account_objects = account_objects.filter(description__contains = description) 
 
+            # Si on a cliqué sur modifier 
+            # On crée un formulaire avec les objets filtrer par les champs de recherche
+            if 'modify' in request.POST:
+                AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, can_delete=True)
+                formset = AccountFormSet(queryset=account_objects)
+                return render(request, 'account/db_modify.html', locals())
+                
+            # Si on a cliqué sur valider
             nb_account = len(account_objects)
-            
-            # Get the first-level categories (those without a parent category)
-            first_level_categories ={} 
-            for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
-                first_level_categories[cat] = 0
-            
+
             # Si count_comment != 0 une colone est ajouté dans template month.html
             count_comment = account_objects.exclude(comment__exact="").count()
             if count_comment == 0 :
                 comment = False
             else: 
                 comment = True
-
+            
+            # Get the first-level categories (those without a parent category)
+            first_level_categories ={} 
+            for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+                first_level_categories[cat] = 0
+            
             # For each first-level category, we are going to find the relevant objects
             # (transactions) and sum them.
             for c in first_level_categories:

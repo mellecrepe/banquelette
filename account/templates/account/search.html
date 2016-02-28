@@ -12,12 +12,21 @@
 	{% csrf_token %}
 	<div>
 		{{ form }} 
-		<input id="submit" type="submit" value="Valider" />
+		<input id="submit" name="validate" type="submit" value="Valider" />
 	</div>
+	{% if account_objects %}
+	<div>
+		<input id="submit" name="modify" type="submit" value="Modifier" />
+	</div>
+	{% endif %}
 </form>
+
 
 {% if account_objects %}
 <h4> {{ nb_account }} résultats obtenus : </h4>
+<form method="post" class="search">
+	{% csrf_token %}
+</form>
 {% include "table.html" %}
 {% endif %}
 
