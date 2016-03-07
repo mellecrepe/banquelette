@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 import datetime
 from django import forms
-from django.forms import ModelForm
 from account.models import Account
 from account.settings import *
 
@@ -32,10 +31,10 @@ MONTH_CHOICES = (
 CATEGORY_CHOICES = [(k, k) for k,cat in categories.FIRST_LEVEL_CATEGORIES.items()]
 CATEGORY_CHOICES.insert(0, (None, '------'))
 
-class AccountForm(ModelForm):
+class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = [ 'date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment']
+        fields = ('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment')
 
 class UpdateDbForm(forms.Form):
     data = forms.CharField(label='Nouvelles données', widget=forms.Textarea)
