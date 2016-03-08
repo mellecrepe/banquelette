@@ -45,8 +45,8 @@ class MonthChoiceForm(forms.Form):
     month = forms.ChoiceField(label='Mois', choices=MONTH_CHOICES)
 
 class SearchForm(forms.Form):
-    date_start = forms.DateField(label='De', required=False)
-    date_end = forms.DateField(label='A', required=False)
+    date_start = forms.DateField(label='De', required=False, widget=forms.TextInput(attrs={'class': 'date'}))
+    date_end = forms.DateField(label='A', required=False, widget=forms.TextInput(attrs={'class': 'date'}))
     category = forms.ChoiceField(label='Catégories', required=False, choices=CATEGORY_CHOICES)
     bank = forms.ChoiceField(label='Banque', required=False, choices=BANK_CHOICES)
     description = forms.CharField(label='Description', required=False)

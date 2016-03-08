@@ -111,10 +111,10 @@ ul.pie-legend {
 
 
 /* db_modify */
-table .date{
+.date{
 	width: 70px;
 }
-table .expense{
+.expense{
 	width: 80px;
 }
 
