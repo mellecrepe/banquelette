@@ -11,7 +11,7 @@ BANK_CHOICES = [
     (None,               '------'),
     ('Oney',             'Oney'),
     ('Boursorama',       'Boursorama'),
-    ('Société Générale', 'Société Générale'),
+    ('Societe Generale', 'Société Générale'),
     ('ING Direct',       'ING Direct'),
     ('Banque Populaire', 'Banque Populaire'),
     ('Argent Liquide',   'Argent Liquide'),

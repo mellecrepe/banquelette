@@ -25,6 +25,43 @@ totalcat = categories.category.Category(
                 }
             } )
 
+# Helpers
+def get_account_objects(date_start=None, date_end=None, category=None, \
+                        bank=None, description=None, check=None):
+
+    account_objects = Account.objects.order_by('date')
+   
+    if date_start is not None:
+        account_objects = account_objects.filter(date__gte = date_start)
+    if date_end is not None:
+        account_objects = account_objects.filter(date__gte = date_end)
+    if category is not None:
+        account_objects = account_objects.filter(category__startswith = category)
+    if bank is not None :
+        account_objects = account_objects.filter(bank__exact = bank)
+    if description is not None:
+        account_objects = account_objects.filter(description__contains = description) 
+    if check is not None :
+        account_objects = account_objects.filter(check__exact = check)
+    
+    return account_objects 
+
+def get_account_by_month(year=None, month=None, category=None):
+    account_objects = Account.objects.order_by('date')
+
+    try: 
+        account_objects = account_objects.filter(date__year = int(year)) \
+                .filter(date__month=int(month))
+    except:
+        return None
+
+    if category is not None:
+        account_objects = account_objects.filter(category__startswith = category)
+
+    return account_objects 
+        
+
+
 # =============================================================================
 def home(request):
     """ Page d'accueil """
@@ -162,31 +199,22 @@ def search(request):
         form = SearchForm(request.POST)
         if form.is_valid():
             # Get all objects (transactions) order them by date.
-            account_objects = Account.objects    \
-                .order_by('date')
-            
-            if form.cleaned_data['date_start'] is not None:
-                date_start = form.cleaned_data['date_start']
-                account_objects = account_objects.filter(date__gte = date_start)
-            if form.cleaned_data['date_end'] is not None:
-                date_end = form.cleaned_data['date_end']
-                account_objects = account_objects.filter(date__gte = date_end)
-            if form.cleaned_data['category'] is not None:
-                category = form.cleaned_data['category']
-                account_objects = account_objects.filter(category__startswith = category)
-            if form.cleaned_data['bank'] is not None:
-                bank = form.cleaned_data['bank']
-                account_objects = account_objects.filter(bank__exact = bank)
-            if form.cleaned_data['description'] is not None:
-                description = form.cleaned_data['description']
-                account_objects = account_objects.filter(description__contains = description) 
+            date_start = form.cleaned_data['date_start']
+            date_end = form.cleaned_data['date_end']
+            category = form.cleaned_data['category']
+            bank = form.cleaned_data['bank']
+            description = form.cleaned_data['description']
+
+            account_objects = get_account_objects(               \
+                date_start = date_start, date_end = date_end,    \
+                category = category, bank = bank,                \
+                description = description)
 
             # Si on a cliqué sur modifier 
             # On crée un formulaire avec les objets filtrer par les champs de recherche
             if 'modify' in request.POST:
-                AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, can_delete=True)
-                formset = AccountFormSet(queryset=account_objects)
-                return render(request, 'account/db_modify.html', locals())
+                request.method = 'GET'
+                return db_modify_form(request, account_objects)
                 
             # Si on a cliqué sur valider
             nb_account = len(account_objects)
@@ -223,7 +251,6 @@ def search(request):
     else:
         form=SearchForm()
 
-
     return render(request, 'account/search.html', locals())
 
 
@@ -234,30 +261,31 @@ def release(request):
     
 
 # =============================================================================
-def month_view(request, year, month, category=None):
+def view_month(request, year, month, category=None):
     """ Résumé par mois """
     if not year or not month:
         raise Http404
 
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
-    first_level_categories ={} 
 
     # Get all objects (transactions) with the right date (year+month) and order
     # them by date.
-    account_objects = Account.objects        \
-            .order_by('date')                \
-            .filter(date__year = int(year) ) \
-            .filter(date__month= int(month))
+    account_objects = get_account_by_month(year = int(year), month = int(month), \
+                           category = category)
 
+    # Display 
+    return view(request, account_objects)
+
+
+# =============================================================================
+def view(request, account_objects):
+    """ Résumé par account object """
+
+    first_level_categories ={} 
     # Get the first-level categories (those without a parent category)
     for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
         first_level_categories[cat] = 0
     
-    if category is not None:
-        if category in first_level_categories:
-            account_objects = account_objects.filter(category__exact=category) 
-        else:
-            raise Http404
 
     # Si count_comment != 0 une colone est ajouté dans template month.html
     count_comment = account_objects.exclude(comment__exact="").count()
@@ -271,8 +299,7 @@ def month_view(request, year, month, category=None):
     for c in first_level_categories:
 
         # Sum the relevant account object 'expense' property
-        category_sum = account_objects               \
-                .filter(category__startswith = c) \
+        category_sum = account_objects.filter(category__exact = c) \
                 .aggregate(Sum('expense'))
 
         # Save the result
@@ -282,9 +309,10 @@ def month_view(request, year, month, category=None):
     # We got the sum of expenses for each category, now we can add a 'Total'
     # category:
     first_level_categories["Total"] = sum( first_level_categories.values() )
-
+    
     # And done!
     return render(request, 'account/month.html', locals())
+
 
 # =============================================================================
 def month_choice(request):
@@ -295,38 +323,65 @@ def month_choice(request):
         if form.is_valid():
             year = form.cleaned_data['year']
             month = form.cleaned_data['month']
-            return redirect(db_modify, year=year, month=month)
+            return redirect(db_modify_bymonth, year=year, month=month)
     else:
         form=MonthChoiceForm()
 
     return render(request, 'account/month_choice.html', locals())
     
     
-def db_modify(request, year=None, month=None):
-    """ Modification par mois ou les non check"""
-    # definition des variables
-    if year == None:
-        title = "Dépenses non validées"
-        account_all = Account.objects.filter(check__exact=False)
-    else:
-        month_word = date(int(year), int(month), 1).strftime('%B').capitalize().decode('utf-8')
-        title = ''.join([month_word, " ", year])
-        account_all = Account.objects.filter(date__year=int(year)).filter(date__month=int(month))
+# =============================================================================
+def db_modify_nocheck(request):
+    """ Modification d'entréés existantes non check """
 
-    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, can_delete=True)
+    title = "Dépenses non validées"
+    account_all = get_account_objects(check=False)
+    return db_modify_form(request, account_all)
+    
+
+# =============================================================================
+def db_modify_bymonth(request, year=None, month=None):
+    """ Modification d'entréés existantes d'un mois précis """
+    if year is not None and month is None:
+        raise Http404
+
+    month_word = date(int(year), int(month), 1).strftime('%B').capitalize().decode('utf-8')
+    title = ''.join([month_word, " ", year])
+    account_all = get_account_by_month(year=int(year), month=int(month))
+    return db_modify_form(request, account_all)
+
+
+# =============================================================================
+def db_modify(request, date_start=None, date_end=None, \
+            category=None, bank=None, description=None, check=None):
+    """ Modification d'entrées déjà existantes"""
+
+    title = "Modification de données"
+    account_all = get_account_objects(date_start=date_start, date_end=date_end, \
+            category=category, bank=bank, description=description, check=check)
+    return db_modify_form(request, account_all)
+
+
+# =============================================================================
+def db_modify_form(request, account_objects):
+    """ Affiche un formulaire avec les données à modifer """
+    
+    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', \
+            'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, \
+            can_delete=True)
+
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): # Nous vérifions que les données envoyées sont valides
            formset.save()
-           if year == None:
-               return redirect(home)
-           return redirect(month_view, year=year, month=month)
+           return view(request, account_objects=account_objects)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
-        formset = AccountFormSet(queryset=account_all)
+        formset = AccountFormSet(queryset=account_objects)
     return render(request, 'account/db_modify.html', locals())
 
 	
+# =============================================================================
 def db_add(request):
     """ Ajout d'entrées manuelles """
     title = "Ajout d'entrées manuelles"
