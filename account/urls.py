@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^modify/(?P<year>\d{4})/(?P<month>\d{2})$', views.db_modify_bymonth),
     url(r'^modify/nocheck$', views.db_modify_nocheck),
     url(r'^modify/bymonth$', views.month_choice),
+    url(r'^modify/search$', views.db_modify_search, name='db_modify_search'),
     url(r'^$', RedirectView.as_view(url='accueil'), name='redirect_home'),
     url(r'^search$', views.search),
 ]

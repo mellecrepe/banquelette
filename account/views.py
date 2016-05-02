@@ -26,6 +26,7 @@ totalcat = categories.category.Category(
             } )
 
 # Helpers
+##
 def get_account_objects(date_start=None, date_end=None, category=None, \
                         bank=None, description=None, check=None):
 
@@ -46,6 +47,7 @@ def get_account_objects(date_start=None, date_end=None, category=None, \
     
     return account_objects 
 
+# get an exact month
 def get_account_by_month(year=None, month=None, category=None):
     account_objects = Account.objects.order_by('date')
 
@@ -133,6 +135,7 @@ def home(request):
     # And done!
     return render(request, 'account/accueil.html', locals())
 
+
 # =============================================================================
 def statistics(request):
     """ Statistics """
@@ -190,6 +193,7 @@ def statistics(request):
     
     return render(request, 'account/statistics.html', locals())
 
+
 # =============================================================================
 def search(request):
     """ Search """
@@ -205,18 +209,23 @@ def search(request):
             bank = form.cleaned_data['bank']
             description = form.cleaned_data['description']
 
-            account_objects = get_account_objects(               \
-                date_start = date_start, date_end = date_end,    \
-                category = category, bank = bank,                \
-                description = description)
+            data_temp = {'date_start' : date_start, 'date_end' : date_end,    \
+                'category' : category, 'bank' : bank, 'description' : description}
 
             # Si on a cliqué sur modifier 
             # On crée un formulaire avec les objets filtrer par les champs de recherche
             if 'modify' in request.POST:
                 request.method = 'GET'
-                return db_modify_form(request, account_objects)
+                request.session['data_temp'] = data_temp
+                return redirect('db_modify_search')
                 
+
             # Si on a cliqué sur valider
+            account_objects = get_account_objects(               \
+                date_start = date_start, date_end = date_end,    \
+                category = category, bank = bank,                \
+                description = description)
+
             nb_account = len(account_objects)
 
             # Si count_comment != 0 une colone est ajouté dans template month.html
@@ -331,6 +340,23 @@ def month_choice(request):
     
     
 # =============================================================================
+def db_modify_search(request):
+    """ Modification d'entréés selectionees par la page search """
+
+    title = "Données recherchées"
+    if request.session['data_temp'] is None:
+        account_all = None
+    else:
+        data = request.session['data_temp']
+
+    account_all = get_account_objects(date_start=data['date_start'],    \
+            date_end=data['date_end'], category=data['category'],       \
+            bank=data['bank'], description=data['description'])
+
+    return db_modify_form(request, account_all)
+    
+
+# =============================================================================
 def db_modify_nocheck(request):
     """ Modification d'entréés existantes non check """
 
@@ -363,9 +389,12 @@ def db_modify(request, date_start=None, date_end=None, \
 
 
 # =============================================================================
-def db_modify_form(request, account_objects):
+def db_modify_form(request, account_objects=None):
     """ Affiche un formulaire avec les données à modifer """
     
+    if account_objects is None:
+        account_objects = request.session['account_objects']
+
     AccountFormSet = modelformset_factory(Account, fields=('date', 'description', \
             'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=0, \
             can_delete=True)
