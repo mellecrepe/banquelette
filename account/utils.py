@@ -8,6 +8,7 @@ import re
 import StringIO
 
 import categories
+import categories.utils
 
 
 # =============================================================================
