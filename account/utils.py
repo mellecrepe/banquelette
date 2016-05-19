@@ -180,7 +180,7 @@ def import_boursorama(data):
         if halve is True:
             expense = expense/2
                     
-        account = Account(date = date, description = description, expense = expense, subcategory = subcategory, bank = 'boursorama', check = False, halve = halve)  
+        account = Account(date = date, description = description, expense = expense, category    = subcategory, bank = 'boursorama', check = False, halve = halve)  
         account.save()
         
 
@@ -240,7 +240,7 @@ def import_oney(data):
                 date        = date,
                 description = description.decode('utf-8'),
                 expense     = expense,
-                subcategory = subcategory,
+                category    = subcategory,
                 bank        = 'oney',
                 check       = False,
                 halve       = halve
@@ -319,7 +319,7 @@ def import_ingdirect(data):
         account = Account( date        = date,
                            description = description,
                            expense     = expense,
-                           subcategory = subcategory,
+                           category    = subcategory,
                            bank        = 'ingdirect',
                            check       = False,
                            halve       = halve )
@@ -382,7 +382,7 @@ def import_banquepopulaire(data):
         account = Account( date        = date,
                            description = description,
                            expense     = expense,
-                           subcategory = subcategory,
+                           category    = subcategory,
                            bank        = 'banquepopulaire',
                            check       = False,
                            halve       = halve )
