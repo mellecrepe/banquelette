@@ -173,10 +173,7 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        subcategory = categories.utils.autoset_category(description)
 
         # halve or not
         halve = halve_or_not('boursorama', description)
@@ -226,10 +223,7 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        subcategory = categories.utils.autoset_category(description)
 
         # expense : on récupère la dépense positive ou négtive
         if e_list[2] == ' ':
@@ -311,18 +305,10 @@ def import_ingdirect(data):
             raise ValueError("Currency is not EUR in transaction: %s" % line)
 
         # 4 - the description
-        # Last but not least. TODO We could do a lot of parsing here, to auto
-        # select a matching subcategory, to remove useless infos, etc.
-        # Or we could just parse it as is. Heh.
-        description = raw_description
-        subcategory = settings.subcategory_default
-
+        # Last but not least.
         # Modifications automatiques de la description et de la subcategory
-        description = change_description(description)
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        description = change_description(raw_description)
+        subcategory = categories.utils.autoset_category(description)
 
         # halve or not
         halve = halve_or_not('ingdirect', description)
