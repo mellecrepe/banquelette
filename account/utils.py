@@ -13,13 +13,13 @@ import categories.utils
 
 # =============================================================================
 def import_data(data, bank):
-    if bank == 'boursorama':
+    if bank == 'Boursorama':
         import_boursorama(data)
-    elif bank == 'oney':
+    elif bank == 'Oney':
         import_oney(data)
-    elif bank == 'ingdirect':
+    elif bank == 'ING Direct':
         import_ingdirect(data)
-    elif bank == 'banquepopulaire':
+    elif bank == 'Banque Populaire':
         import_banquepopulaire(data)
 
 # =============================================================================
