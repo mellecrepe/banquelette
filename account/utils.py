@@ -40,15 +40,15 @@ def change_subcategory(subcategory, description):
 
 # =============================================================================
 def halve_or_not(bank, description):
-    if bank == 'boursorama':
+    if bank == 'Boursorama':
         settings_halve = settings.bs_halve
         settings_except = settings.bs_except
 
-    elif bank == 'oney':
+    elif bank == 'Oney':
         settings_halve = settings.oney_halve
         settings_except = settings.oney_except
 
-    elif bank == 'ingdirect':
+    elif bank == 'ING Direct':
         try:
             settings_halve  = settings.ingdirect_halve
         except AttributeError:
@@ -61,7 +61,7 @@ def halve_or_not(bank, description):
             # Not defined? Use default value.
             settings_except = []
             
-    elif bank == 'banquepopulaire':
+    elif bank == 'Banque Populaire':
         try:
             settings_halve  = settings.banquepopulaire_halve
         except AttributeError:
@@ -176,11 +176,11 @@ def import_boursorama(data):
         subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not('boursorama', description)
+        halve = halve_or_not('Boursorama', description)
         if halve is True:
             expense = expense/2
                     
-        account = Account(date = date, description = description, expense = expense, category    = subcategory, bank = 'boursorama', check = False, halve = halve)  
+        account = Account(date = date, description = description, expense = expense, category    = subcategory, bank = 'Boursorama', check = False, halve = halve)  
         account.save()
         
 
@@ -232,7 +232,7 @@ def import_oney(data):
             expense = float(e_list[2].replace(',','.'))
 
         # halve or not
-        halve = halve_or_not('oney', description)
+        halve = halve_or_not('Oney', description)
         if halve is True:
             expense = expense/2
                     
@@ -241,7 +241,7 @@ def import_oney(data):
                 description = description.decode('utf-8'),
                 expense     = expense,
                 category    = subcategory,
-                bank        = 'oney',
+                bank        = 'Oney',
                 check       = False,
                 halve       = halve
                 )
@@ -283,7 +283,7 @@ def import_ingdirect(data):
 
         raw_date        = csvline[0]
         raw_description = csvline[1]
-        raw_expense      = csvline[3]
+        raw_expense     = csvline[3]
         raw_currency    = csvline[4]
 
         # 1 - the date
@@ -311,7 +311,7 @@ def import_ingdirect(data):
         subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not('ingdirect', description)
+        halve = halve_or_not('ING Direct', description)
         if halve is True:
             expense = expense/2
 
@@ -320,7 +320,7 @@ def import_ingdirect(data):
                            description = description,
                            expense     = expense,
                            category    = subcategory,
-                           bank        = 'ingdirect',
+                           bank        = 'ING Direct',
                            check       = False,
                            halve       = halve )
         account.save()
@@ -375,7 +375,7 @@ def import_banquepopulaire(data):
         subcategory = change_subcategory(subcategory, description)
 
         # halve or not
-        halve = halve_or_not('banquepopulaire', description)
+        halve = halve_or_not('Banque Populaire', description)
         if halve is True:
             expense = expense/2
             
@@ -383,7 +383,7 @@ def import_banquepopulaire(data):
                            description = description,
                            expense     = expense,
                            category    = subcategory,
-                           bank        = 'banquepopulaire',
+                           bank        = 'Banque Populaire',
                            check       = False,
                            halve       = halve )
         account.save()
