@@ -17,7 +17,10 @@ try:
             yamlloader.load_yaml(settings.CATEGORIES_YAMLFILE)
             )
 except:
-    CATEGORIES = loader.load_categories( yamlloader.load_yaml(sys.argv[1]) )
+    print("Error while loading categories YAML file.")
+    print("You should probably check the CATEGORIES_YAMLFILE setting exists "
+          "and points to an existing and valid file." )
+    sys.exit(1)
 
 # =============================================================================
 try:

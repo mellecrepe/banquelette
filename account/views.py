@@ -437,7 +437,7 @@ def db_update(request):
             bank = form.cleaned_data['bank']
             # Analyse des données stockées dans une liste
             import_data(data, bank)
-            return redirect(db_modify)
+            return redirect(db_modify_nocheck)
     else:
         form=UpdateDbForm()
 

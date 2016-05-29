@@ -90,6 +90,11 @@ if ! [ -e "account/settings.py" ]; then
     cp account/settings.py.template account/settings.py
 fi
 
+if ! [ -e "account/categories.yaml" ]; then
+    echo "Copying account categories template..."
+    cp account/categories.yaml.template account/categories.yaml
+fi
+
 # Initialize database
 # ======================================
 echo "Database initialization..."

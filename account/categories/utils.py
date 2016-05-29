@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from categories import CATEGORIES, DEFAULT_CATEGORY
+from . import CATEGORIES, DEFAULT_CATEGORY
 
 # FUNCTIONS
 # =============================================================================

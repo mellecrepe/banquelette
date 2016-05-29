@@ -8,17 +8,18 @@ import re
 import StringIO
 
 import categories
+import categories.utils
 
 
 # =============================================================================
 def import_data(data, bank):
-    if bank == 'boursorama':
+    if bank == 'Boursorama':
         import_boursorama(data)
-    elif bank == 'oney':
+    elif bank == 'Oney':
         import_oney(data)
-    elif bank == 'ingdirect':
+    elif bank == 'ING Direct':
         import_ingdirect(data)
-    elif bank == 'banquepopulaire':
+    elif bank == 'Banque Populaire':
         import_banquepopulaire(data)
 
 # =============================================================================
@@ -39,15 +40,15 @@ def change_subcategory(subcategory, description):
 
 # =============================================================================
 def halve_or_not(bank, description):
-    if bank == 'boursorama':
+    if bank == 'Boursorama':
         settings_halve = settings.bs_halve
         settings_except = settings.bs_except
 
-    elif bank == 'oney':
+    elif bank == 'Oney':
         settings_halve = settings.oney_halve
         settings_except = settings.oney_except
 
-    elif bank == 'ingdirect':
+    elif bank == 'ING Direct':
         try:
             settings_halve  = settings.ingdirect_halve
         except AttributeError:
@@ -60,7 +61,7 @@ def halve_or_not(bank, description):
             # Not defined? Use default value.
             settings_except = []
             
-    elif bank == 'banquepopulaire':
+    elif bank == 'Banque Populaire':
         try:
             settings_halve  = settings.banquepopulaire_halve
         except AttributeError:
@@ -172,17 +173,14 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not('boursorama', description)
+        halve = halve_or_not('Boursorama', description)
         if halve is True:
             expense = expense/2
                     
-        account = Account(date = date, description = description, expense = expense, subcategory = subcategory, bank = 'boursorama', check = False, halve = halve)  
+        account = Account(date = date, description = description, expense = expense, category    = subcategory, bank = 'Boursorama', check = False, halve = halve)  
         account.save()
         
 
@@ -225,10 +223,7 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        subcategory = categories.utils.autoset_category(description)
 
         # expense : on récupère la dépense positive ou négtive
         if e_list[2] == ' ':
@@ -237,7 +232,7 @@ def import_oney(data):
             expense = float(e_list[2].replace(',','.'))
 
         # halve or not
-        halve = halve_or_not('oney', description)
+        halve = halve_or_not('Oney', description)
         if halve is True:
             expense = expense/2
                     
@@ -245,8 +240,8 @@ def import_oney(data):
                 date        = date,
                 description = description.decode('utf-8'),
                 expense     = expense,
-                subcategory = subcategory,
-                bank        = 'oney',
+                category    = subcategory,
+                bank        = 'Oney',
                 check       = False,
                 halve       = halve
                 )
@@ -288,7 +283,7 @@ def import_ingdirect(data):
 
         raw_date        = csvline[0]
         raw_description = csvline[1]
-        raw_expense      = csvline[3]
+        raw_expense     = csvline[3]
         raw_currency    = csvline[4]
 
         # 1 - the date
@@ -310,21 +305,13 @@ def import_ingdirect(data):
             raise ValueError("Currency is not EUR in transaction: %s" % line)
 
         # 4 - the description
-        # Last but not least. TODO We could do a lot of parsing here, to auto
-        # select a matching subcategory, to remove useless infos, etc.
-        # Or we could just parse it as is. Heh.
-        description = raw_description
-        subcategory = settings.subcategory_default
-
+        # Last but not least.
         # Modifications automatiques de la description et de la subcategory
-        description = change_description(description)
-        subcategory = categories.utils.autoset_category(
-                description,
-                default_category=settings.subcategory_default
-                )
+        description = change_description(raw_description)
+        subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not('ingdirect', description)
+        halve = halve_or_not('ING Direct', description)
         if halve is True:
             expense = expense/2
 
@@ -332,8 +319,8 @@ def import_ingdirect(data):
         account = Account( date        = date,
                            description = description,
                            expense     = expense,
-                           subcategory = subcategory,
-                           bank        = 'ingdirect',
+                           category    = subcategory,
+                           bank        = 'ING Direct',
                            check       = False,
                            halve       = halve )
         account.save()
@@ -388,15 +375,15 @@ def import_banquepopulaire(data):
         subcategory = change_subcategory(subcategory, description)
 
         # halve or not
-        halve = halve_or_not('banquepopulaire', description)
+        halve = halve_or_not('Banque Populaire', description)
         if halve is True:
             expense = expense/2
             
         account = Account( date        = date,
                            description = description,
                            expense     = expense,
-                           subcategory = subcategory,
-                           bank        = 'banquepopulaire',
+                           category    = subcategory,
+                           bank        = 'Banque Populaire',
                            check       = False,
                            halve       = halve )
         account.save()
