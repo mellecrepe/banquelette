@@ -21,6 +21,10 @@ def import_data(data, bank):
         import_ingdirect(data)
     elif bank == u'Banque Populaire':
         import_banquepopulaire(data)
+    elif bank == u'Boobank/Boursorama':
+        import_boobank(data,"Boursorama")
+    elif bank == u'Boobank/Societe Generale':
+        import_boobank(data,"Societe Generale")
 
 # =============================================================================
 def change_description(description):
@@ -385,6 +389,56 @@ def import_banquepopulaire(data):
                            expense     = expense,
                            category    = subcategory,
                            bank        = u'Banque Populaire',
+                           check       = False,
+                           halve       = halve )
+        account.save()
+
+
+def import_boobank(data, bank):
+    """ Parsing des données Boobank
+
+        Le format die boobank est le suivant:
+        
+        Le séparateur par défaut est ' ' (point virgule)
+        Les champs disponibles sont:
+          - Date de l'opération (au format AAAA-MM-JJ) : 1-10 champs
+          - Category : 14-25
+          - Label    : 27-78
+          - Montant  : 80-89
+    """
+     
+    # Traitement par lignes des données
+    for line in StringIO.StringIO(data):
+        print line
+        # Date de l'opération
+        try:
+            date = datetime.datetime.strptime(line[1:10], "%Y-%m-%d").date()
+        except:
+	    continue
+        
+        print line
+        # Montant de l'opération
+        expense = float(line[80:89])
+        
+        # Description de l'opération et catégorisation
+        description = line[27:78]
+        subcategory = categories.DEFAULT_CATEGORY
+
+        # Modifications automatiques de la description et de la subcategory
+        description = change_description(description)
+        subcategory = categories.utils.autoset_category(description)
+        print subcategory
+
+        # halve or not
+        halve = halve_or_not(bank, description)
+        if halve is True:
+            expense = expense/2
+            
+        account = Account( date        = date,
+                           description = description,
+                           expense     = expense,
+                           category    = subcategory,
+                           bank        = bank,
                            check       = False,
                            halve       = halve )
         account.save()

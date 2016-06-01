@@ -28,6 +28,13 @@ MONTH_CHOICES = (
     ('12', 'Décembre'),
 )
 
+
+BANK_MAJ = BANK_CHOICES[:]
+BANK_MAJ.remove(('Argent Liquide', 'Argent Liquide'))
+BANK_MAJ.extend([('Boobank/Boursorama', 'Boobank/Boursorama'),
+                ('Boobank/Societe Generale', 'Boobank/Societe Generale')])
+BANK_MAJ.sort()
+
 CATEGORY_CHOICES = [(k, k) for k,cat in categories.FIRST_LEVEL_CATEGORIES.items()]
 CATEGORY_CHOICES.insert(0, (None, '------'))
 
@@ -38,7 +45,7 @@ class AccountForm(forms.ModelForm):
 
 class UpdateDbForm(forms.Form):
     data = forms.CharField(label='Nouvelles données', widget=forms.Textarea)
-    bank = forms.ChoiceField(label='Banque', choices=BANK_CHOICES)
+    bank = forms.ChoiceField(label='Banque', choices=BANK_MAJ)
 
 class MonthChoiceForm(forms.Form):
     year = forms.ChoiceField(label='Année', choices=YEAR_CHOICES)
