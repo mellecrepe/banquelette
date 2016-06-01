@@ -34,13 +34,6 @@ def change_description(description):
             description = new_d 
     return description
 
-# =============================================================================
-def change_subcategory(subcategory, description):
-    """ Automatisation du choix des sous categorie """
-    for d, c in auto_subcategory.items():
-        if d in description:
-            subcategory = c 
-    return subcategory
 
 # =============================================================================
 def halve_or_not(bank, description):
@@ -373,11 +366,10 @@ def import_banquepopulaire(data):
         
         # Description de l'opération et catégorisation
         description = csvdata[3]
-        subcategory = settings.subcategory_default
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
-        subcategory = change_subcategory(subcategory, description)
+        subcategory = categories.utils.autoset_category(description)
 
         # halve or not
         halve = halve_or_not(u'Banque Populaire', description)
@@ -409,25 +401,21 @@ def import_boobank(data, bank):
      
     # Traitement par lignes des données
     for line in StringIO.StringIO(data):
-        print line
         # Date de l'opération
         try:
             date = datetime.datetime.strptime(line[1:10], "%Y-%m-%d").date()
         except:
 	    continue
         
-        print line
         # Montant de l'opération
         expense = float(line[80:89])
         
         # Description de l'opération et catégorisation
         description = line[27:78]
-        subcategory = categories.DEFAULT_CATEGORY
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
         subcategory = categories.utils.autoset_category(description)
-        print subcategory
 
         # halve or not
         halve = halve_or_not(bank, description)
