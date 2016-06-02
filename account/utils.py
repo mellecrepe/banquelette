@@ -401,21 +401,26 @@ def import_boobank(data, bank):
      
     # Traitement par lignes des données
     for line in StringIO.StringIO(data):
+        print line
         # Date de l'opération
         try:
-            date = datetime.datetime.strptime(line[1:10], "%Y-%m-%d").date()
+            date = datetime.datetime.strptime(line[1:11], "%Y-%m-%d").date()
         except:
 	    continue
+        print date
         
         # Montant de l'opération
-        expense = float(line[80:89])
-        
+        expense = float(line[80:90])
+        print expense
+
         # Description de l'opération et catégorisation
-        description = line[27:78]
+        description = line[27:79]
+        print description
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
         subcategory = categories.utils.autoset_category(description)
+        print subcategory 
 
         # halve or not
         halve = halve_or_not(bank, description)
