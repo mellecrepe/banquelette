@@ -308,7 +308,7 @@ def view(request, account_objects):
     for c in first_level_categories:
 
         # Sum the relevant account object 'expense' property
-        category_sum = account_objects.filter(category__exact = c) \
+        category_sum = account_objects.filter(category__startswith = c) \
                 .aggregate(Sum('expense'))
 
         # Save the result
