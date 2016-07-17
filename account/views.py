@@ -35,7 +35,7 @@ def get_account_objects(date_start=None, date_end=None, category=None, \
     if date_start is not None:
         account_objects = account_objects.filter(date__gte = date_start)
     if date_end is not None:
-        account_objects = account_objects.filter(date__gte = date_end)
+        account_objects = account_objects.filter(date__lte = date_end)
     if category is not None:
         account_objects = account_objects.filter(category__startswith = category)
     if bank is not None :
