@@ -209,7 +209,7 @@ def search(request):
             bank = form.cleaned_data['bank']
             description = form.cleaned_data['description']
 
-            data_temp = {'date_start' : date_start, 'date_end' : date_end,    \
+            data_temp = {'date_start' : str(date_start), 'date_end' : str(date_end),    \
                 'category' : category, 'bank' : bank, 'description' : description}
 
             # Si on a cliqué sur modifier 
