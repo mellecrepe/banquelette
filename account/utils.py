@@ -87,83 +87,99 @@ def import_boursorama(data):
     # mise en forme pour obtenir une liste sans tabulation, espace superflux, ...
     # et ou chaque element de la liste est une depense
 
-    # Une entré boursorama :
-    # 23/03/2015	PAIEMENT CARTE 190315 GB TOUCHNOTE LIMIT	
-    #  Non catégorisé
-    # 9,95 €	
-    # ou
-    # 01/09/2015	01/09/2015
-    # VIR SEPA Safar agence	
-    #  Virements emis
-    # - 1 135,76 €
-    # On obtient une liste avec chaque entree sur 3 ou 4 lignes
-    data = data.split(u" \u20ac")
-    data = [ re.sub(ur"^\t\r\n", u"", d) for d in data ]
+    # Une entrée boursorama :
+    # 19
+    # JUIL.
+    # -26,95 € PAIEMENT CARTE 170716 75 A2PAS Alimentation
+    # 28
+    # JUIL.
+    # 100 € VIR SEPA xxx Virements recus
+    # On obtient une liste avec chaque entree sur 3
+    data = data.split(u"\n")
+    entries = []
+    j = 0
+    for i in range(len(data)):
+        if i % 3 == 0:
+	    entries.append([data[i]])
+        elif i % 3 == 1:
+            entries[j].append(data[i])
+        else: 
+            entries[j].append(data[i])
+            j = j + 1 
+    
+    for entry in entries:
+        for i in range(3):
+            entry[i] = re.sub(ur" $", u"", entry[i])
+            entry[i] = re.sub(ur"\r$", u"", entry[i])
 
-    for entry in data:
-        e = entry.split(u"\r\n")
-
-        if len(e) != 3 and len(e) != 4 :
-            continue
-
-        s = e[0]
-        # suppression des \t et des espaces en fin de lignes
-        s = re.sub(ur"\t", u" ", s)
-        s = re.sub(ur" $", u"", s)
-
+        # analyse de la premiere ligne
+        # 3 formats possibles :
+        # format_retrait/virement :[u'28', u'JUIL.', u'VIR SEPA xxx Virements recus']
+        # format_CB : [u'18', u'JUIL.', '-26,95 PAIEMENT CARTE 170716 75 A2PAS Alimentation']
+        # format_avoir : [u'10', u'']
         # element a ne pas prendre en compte
         re_detail = re.compile(ur"Dépenses carte .* de détails\)")
         re_releve = re.compile(ur"Relevé différé Carte")
 
-        if re.search(re_detail, e[1]) or re.search(re_releve, e[1]):
+        if re.search(re_detail, entry[2]) or re.search(re_releve, entry[2]):
             continue
 
-        # analyse de la premiere ligne
-        # 3 formats possibles :
-        # format_retrait/virement :[u'01/09/2015\t01/09/2015', u'VIR SEPA Safar agence\t', u' Virements emis', u'- 1 135,76 \u20ac ']
-        # format_CB : [u'26/08/2015\tPAIEMENT CARTE 250815 75 MONOPRIX\t', u' Alimentation', u'33,68']
-        # format_avoir : [u'13/08/2015\tAVOIR 120815 75 MONOPRIX\t', u' Remboursements frais de v...', u'-3,09']
 
-        # format_retrait/virement 
-        re_vir = re.compile(ur"[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}/[0-9]{2}/[0-9]{4}")
         # format Paiement / Avoir
-        re_cb = re.compile(ur"[0-9]{2}/[0-9]{2}/[0-9]{4} ")
+        re_cb = re.compile(ur"[0-9]{6} ")
 
 
         # format_retrait/virement 
-        if re.match(re_vir, s) and (len(e) == 4) :
+        if not re.search(re_cb, entry[2]) :
+            # on recupere la date
+            year = datetime.datetime.now().year
+            month = datetime.datetime.strptime(entry[1], '%b').month
+            day = int(entry[0])
+            date = datetime.datetime(year, month, day)
 
-            # on recupere la 1e date
-            date = datetime.datetime.strptime(s[:10], "%d/%m/%Y").date()
-            description = e[1].replace(u'VIR SEPA ', u'Virement ')
-            # on recupere la depense
-            expense = float(e[3].replace(u' ',u'').replace(u',',u'.'))
+        # recherche € _ e[0] depense e[1] description
+        e = entry[2].split(u" \u20ac ")
+        s = e[1]
 
+        # format paiement
+        re_pai = re.compile(ur"PAIEMENT CARTE ")
+        if re.match(re_pai, s):
+            # on supprime le debut de ligne jusqu'a la date DDMMYY
+            s = re.sub(re_pai, u"", s)
+
+        # format avoir
+        re_av = re.compile(ur"AVOIR ")
+        if re.match(re_av, s):
+            # on supprime le debut de ligne jusqu'a la date DDMMYY
+            s = re.sub(re_av, u"", s)
+
+        # on recupere la date et on la supprime de la string   
         # format Paiement / Avoir
-        elif re.match(re_cb, s) and len(e) == 3:
-            # format paiement
-            re_pai = re.compile(ur"[0-9]{2}/[0-9]{2}/[0-9]{4} PAIEMENT CARTE ")
-            if re.match(re_pai, s):
-                # on supprime le debut de ligne jusqu'a la vrai date DDMMYY
-                s = re.sub(re_pai, u"", s)
-
-            # format avoir
-            re_av = re.compile(ur"[0-9]{2}/[0-9]{2}/[0-9]{4} AVOIR ")
-            if re.match(re_av, s):
-                # on supprime le debut de ligne jusqu'a la vrai date DDMMYY
-                s = re.sub(re_av, u"", s)
-
-            # on recupere la date et on la supprime de la string   
+        if re.search(re_cb, s):
             date = datetime.datetime.strptime(s[:6], "%d%m%y").date()
             s = s.replace(s[:6] + u" ", u"")
-            # on recupere la description
-            description = s.replace(u'75 ', u'')
-            # on recupere la depense
-            expense = - float(e[2].replace(u' ',u'').replace(u',',u'.'))
 
-        # format inconnu
-        else:
-            continue
+        # on recupere la description
+        s = s.replace(u'75 ', u'')
+        s = s.replace(u' Alimentation', u'')
+        s = s.replace(u' Non catégorisé', u'')
+        s = s.replace(u' Electronique et informatique', u'')
+        s = s.replace(u' Transports quotidiens (métro, bus,...)', u'')
+        s = s.replace(u' Transports longue distance (avions, trains,...)', u'')
+        s = s.replace(u' Loisirs', u'')
+        s = s.replace(u' Mobilier, électroménager, décoration', u'')
+        s = s.replace(u' Restaurants, bars, discothèques...', u'')
+        s = s.replace(u' Frais bancaires et de gestion (dont agios)', u'')
+        s = s.replace(u' Bricolage et jardinage', u'')
+        s = s.replace(u' Retraits cash', u'')
+        s = s.replace(u' Equipements sportifs et artistiques', u'')
+        s = s.replace(u' Vêtements et accessoires', u'')
+        s = s.replace(u' Virements recus', u'')
+        s = s.replace(u'VIR SEPA ', u'Virement ')
+        description = s
+
+        # on recupere la depense
+        expense = float(e[0].replace(u' ',u'').replace(u',',u'.'))
 
         # element recupéré pour chacun des format
         # modification description
