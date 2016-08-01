@@ -91,6 +91,7 @@ def import_boursorama(data):
     # 19
     # JUIL.
     # -26,95 € PAIEMENT CARTE 170716 75 A2PAS Alimentation
+    # ou
     # 28
     # JUIL.
     # 100 € VIR SEPA xxx Virements recus
@@ -153,6 +154,18 @@ def import_boursorama(data):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
             s = re.sub(re_av, u"", s)
 
+        # format retrait
+        re_av = re.compile(ur"RETRAIT DAB ")
+        if re.match(re_av, s):
+            # on supprime le debut de ligne jusqu'a la date DDMMYY
+            s = re.sub(re_av, u"", s)
+
+        # format frais
+        re_av = re.compile(ur"CION OP.ETR ")
+        if re.match(re_av, s):
+            # on supprime le debut de ligne jusqu'a la date DDMMYY
+            s = re.sub(re_av, u"", s)
+
         # on recupere la date et on la supprime de la string   
         # format Paiement / Avoir
         if re.search(re_cb, s):
@@ -169,9 +182,9 @@ def import_boursorama(data):
         s = s.replace(u' Loisirs', u'')
         s = s.replace(u' Mobilier, électroménager, décoration', u'')
         s = s.replace(u' Restaurants, bars, discothèques...', u'')
-        s = s.replace(u' Frais bancaires et de gestion (dont agios)', u'')
+        s = s.replace(u' Frais bancaires et de gestion (dont agios)', \
+                          u' Frais bancaires')
         s = s.replace(u' Bricolage et jardinage', u'')
-        s = s.replace(u' Retraits cash', u'')
         s = s.replace(u' Equipements sportifs et artistiques', u'')
         s = s.replace(u' Vêtements et accessoires', u'')
         s = s.replace(u' Virements recus', u'')
