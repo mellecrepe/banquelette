@@ -38,7 +38,7 @@ def get_account_objects(date_start=None, date_end=None, category=None, \
         account_objects = account_objects.filter(date__lte = date_end)
     if category is not None:
         account_objects = account_objects.filter(category__startswith = category)
-    if bank is not None :
+    if bank :
         account_objects = account_objects.filter(bank__exact = bank)
     if description is not None:
         account_objects = account_objects.filter(description__contains = description) 
@@ -227,35 +227,37 @@ def search(request):
                 description = description)
 
             nb_account = len(account_objects)
-
-            # Si count_comment != 0 une colone est ajouté dans template month.html
-            count_comment = account_objects.exclude(comment__exact="").count()
-            if count_comment == 0 :
-                comment = False
-            else: 
-                comment = True
             
-            # Get the first-level categories (those without a parent category)
-            first_level_categories ={} 
-            for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
-                first_level_categories[cat] = 0
-            
-            # For each first-level category, we are going to find the relevant objects
-            # (transactions) and sum them.
-            for c in first_level_categories:
+            if nb_account != 0:
 
-                # Sum the relevant account object 'expense' property
-                category_sum = account_objects               \
-                        .filter(category__startswith = c) \
-                        .aggregate(Sum('expense'))
+                # Si count_comment != 0 une colone est ajouté dans template month.html
+                count_comment = account_objects.exclude(comment__exact="").count()
+                if count_comment == 0 :
+                    comment = False
+                else: 
+                    comment = True
+                
+                # Get the first-level categories (those without a parent category)
+                first_level_categories ={} 
+                for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+                    first_level_categories[cat] = 0
+                
+                # For each first-level category, we are going to find the relevant objects
+                # (transactions) and sum them.
+                for c in first_level_categories:
 
-                # Save the result
-                if category_sum['expense__sum'] is not None:
-                    first_level_categories[c] = category_sum['expense__sum']
+                    # Sum the relevant account object 'expense' property
+                    category_sum = account_objects               \
+                            .filter(category__startswith = c) \
+                            .aggregate(Sum('expense'))
 
-            # We got the sum of expenses for each category, now we can add a 'Total'
-            # category:
-            first_level_categories["Total"] = sum( first_level_categories.values() )
+                    # Save the result
+                    if category_sum['expense__sum'] is not None:
+                        first_level_categories[c] = category_sum['expense__sum']
+
+                # We got the sum of expenses for each category, now we can add a 'Total'
+                # category:
+                first_level_categories["Total"] = sum( first_level_categories.values() )
 
     else:
         form=SearchForm()

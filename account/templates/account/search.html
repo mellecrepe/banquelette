@@ -22,12 +22,16 @@
 </form>
 
 
+{% if nb_account == 0 %}
+<h4 style="text-align:center;"> Aucun résultat trouvé. </h4>
+{% else %}
 {% if account_objects %}
 <h4> {{ nb_account }} résultats obtenus : </h4>
 <form method="post" class="search">
 	{% csrf_token %}
 </form>
 {% include "table.html" %}
+{% endif %}
 {% endif %}
 
 {% endblock %}
