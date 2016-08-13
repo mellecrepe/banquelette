@@ -352,6 +352,11 @@ def db_modify_search(request):
     else:
         data = request.session['data_temp']
 
+    data_key = ['date_start', 'date_end', 'category', 'bank', 'description']
+    for k in data:
+        if data[k] == 'None':
+            data[k] = None
+
     account_all = get_account_objects(date_start=data['date_start'],    \
             date_end=data['date_end'], category=data['category'],       \
             bank=data['bank'], description=data['description'])
