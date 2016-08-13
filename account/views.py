@@ -278,6 +278,7 @@ def view_month(request, year, month, category=None):
         raise Http404
 
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
+    title = "{} {}".format(month_word,str(year))
 
     # Get all objects (transactions) with the right date (year+month) and order
     # them by date.
@@ -285,11 +286,11 @@ def view_month(request, year, month, category=None):
                            category = category)
 
     # Display 
-    return view(request, account_objects)
+    return view(request, account_objects, title)
 
 
 # =============================================================================
-def view(request, account_objects):
+def view(request, account_objects, title=''):
     """ Résumé par account object """
 
     first_level_categories ={} 
