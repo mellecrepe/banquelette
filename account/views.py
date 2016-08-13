@@ -365,7 +365,7 @@ def db_modify_nocheck(request):
 
     title = "Dépenses non validées"
     account_all = get_account_objects(check=False)
-    return db_modify_form(request, account_all)
+    return db_modify_form(request, account_all, title)
     
 
 # =============================================================================
@@ -377,7 +377,7 @@ def db_modify_bymonth(request, year=None, month=None):
     month_word = date(int(year), int(month), 1).strftime('%B').capitalize().decode('utf-8')
     title = ''.join([month_word, " ", year])
     account_all = get_account_by_month(year=int(year), month=int(month))
-    return db_modify_form(request, account_all)
+    return db_modify_form(request, account_all, title)
 
 
 # =============================================================================
@@ -392,7 +392,7 @@ def db_modify(request, date_start=None, date_end=None, \
 
 
 # =============================================================================
-def db_modify_form(request, account_objects=None):
+def db_modify_form(request, account_objects=None, title=''):
     """ Affiche un formulaire avec les données à modifer """
     
     if account_objects is None:
@@ -406,7 +406,7 @@ def db_modify_form(request, account_objects=None):
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): # Nous vérifions que les données envoyées sont valides
            formset.save()
-           return view(request, account_objects=account_objects)
+           return view(request, account_objects, view_title)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         formset = AccountFormSet(queryset=account_objects)
@@ -418,7 +418,9 @@ def db_add(request):
     """ Ajout d'entrées manuelles """
     title = "Ajout d'entrées manuelles"
     n = 5
-    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', 'category', 'expense', 'halve', 'bank', 'check', 'comment'), extra=n, can_delete=True)
+    AccountFormSet = modelformset_factory(Account, fields=('date', 'description', \
+		'category', 'expense', 'halve', 'bank', 'check', 'comment'), \
+		extra=n, can_delete=True)
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): 
