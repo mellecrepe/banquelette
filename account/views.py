@@ -7,7 +7,7 @@ from django.forms.models import modelformset_factory
 from django.db.models import Sum, Avg
 from account.models import Account
 from account.forms import AccountForm, UpdateDbForm, MonthChoiceForm, SearchForm
-from account.utils import import_data 
+from account.utils import import_data
 from datetime import date, time, datetime
 import calendar
 import locale
@@ -31,7 +31,7 @@ def get_account_objects(date_start=None, date_end=None, category=None, \
                         bank=None, description=None, check=None):
 
     account_objects = Account.objects.order_by('date')
-   
+
     if date_start is not None:
         account_objects = account_objects.filter(date__gte = date_start)
     if date_end is not None:
@@ -41,17 +41,17 @@ def get_account_objects(date_start=None, date_end=None, category=None, \
     if bank :
         account_objects = account_objects.filter(bank__exact = bank)
     if description is not None:
-        account_objects = account_objects.filter(description__contains = description) 
+        account_objects = account_objects.filter(description__contains = description)
     if check is not None :
         account_objects = account_objects.filter(check__exact = check)
-    
-    return account_objects 
+
+    return account_objects
 
 # get an exact month
 def get_account_by_month(year=None, month=None, category=None):
     account_objects = Account.objects.order_by('date')
 
-    try: 
+    try:
         account_objects = account_objects.filter(date__year = int(year)) \
                 .filter(date__month=int(month))
     except:
@@ -60,8 +60,8 @@ def get_account_by_month(year=None, month=None, category=None):
     if category is not None:
         account_objects = account_objects.filter(category__startswith = category)
 
-    return account_objects 
-        
+    return account_objects
+
 
 
 # =============================================================================
@@ -164,7 +164,7 @@ def statistics(request):
                     ['expense__sum']
             if this_category_total is None:
                 this_category_total = 0
-            total_by_year[y][cat] = this_category_total 
+            total_by_year[y][cat] = this_category_total
 
             # Append this average to the average_by_year[year][category] list
             this_category_average = account_filter_year    \
@@ -173,8 +173,8 @@ def statistics(request):
                     ['expense__avg']
             if this_category_average is None:
                 this_category_average = 0
-            average_by_year[y][cat] = this_category_average 
-    
+            average_by_year[y][cat] = this_category_average
+
         # We finished looping over the first-level categories, let's add a
         # 'Total' category:
         this_category_total = account_filter_year    \
@@ -190,7 +190,7 @@ def statistics(request):
         if this_category_average is None:
             this_category_average = 0
         average_by_year[y][totalcat] = this_category_average
-    
+
     return render(request, 'account/statistics.html', locals())
 
 
@@ -212,13 +212,13 @@ def search(request):
             data_temp = {'date_start' : str(date_start), 'date_end' : str(date_end),    \
                 'category' : category, 'bank' : bank, 'description' : description}
 
-            # Si on a cliqué sur modifier 
+            # Si on a cliqué sur modifier
             # On crée un formulaire avec les objets filtrer par les champs de recherche
             if 'modify' in request.POST:
                 request.method = 'GET'
                 request.session['data_temp'] = data_temp
                 return redirect('db_modify_search')
-                
+
 
             # Si on a cliqué sur valider
             account_objects = get_account_objects(               \
@@ -227,21 +227,21 @@ def search(request):
                 description = description)
 
             nb_account = len(account_objects)
-            
+
             if nb_account != 0:
 
                 # Si count_comment != 0 une colone est ajouté dans template month.html
                 count_comment = account_objects.exclude(comment__exact="").count()
                 if count_comment == 0 :
                     comment = False
-                else: 
+                else:
                     comment = True
-                
+
                 # Get the first-level categories (those without a parent category)
-                first_level_categories ={} 
+                first_level_categories ={}
                 for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
                     first_level_categories[cat] = 0
-                
+
                 # For each first-level category, we are going to find the relevant objects
                 # (transactions) and sum them.
                 for c in first_level_categories:
@@ -269,7 +269,7 @@ def search(request):
 def release(request):
     """ Release """
     return render(request, 'account/release.html')
-    
+
 
 # =============================================================================
 def view_month(request, year, month, category=None):
@@ -285,7 +285,7 @@ def view_month(request, year, month, category=None):
     account_objects = get_account_by_month(year = int(year), month = int(month), \
                            category = category)
 
-    # Display 
+    # Display
     return view(request, account_objects, title)
 
 
@@ -293,17 +293,17 @@ def view_month(request, year, month, category=None):
 def view(request, account_objects, title=''):
     """ Résumé par account object """
 
-    first_level_categories ={} 
+    first_level_categories ={}
     # Get the first-level categories (those without a parent category)
     for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
         first_level_categories[cat] = 0
-    
+
 
     # Si count_comment != 0 une colone est ajouté dans template month.html
     count_comment = account_objects.exclude(comment__exact="").count()
     if count_comment == 0 :
         comment = False
-    else: 
+    else:
         comment = True
 
     # For each first-level category, we are going to find the relevant objects
@@ -321,7 +321,7 @@ def view(request, account_objects, title=''):
     # We got the sum of expenses for each category, now we can add a 'Total'
     # category:
     first_level_categories["Total"] = sum( first_level_categories.values() )
-    
+
     # And done!
     return render(request, 'account/month.html', locals())
 
@@ -340,8 +340,8 @@ def month_choice(request):
         form=MonthChoiceForm()
 
     return render(request, 'account/month_choice.html', locals())
-    
-    
+
+
 # =============================================================================
 def db_modify_search(request):
     """ Modification d'entréés selectionees par la page search """
@@ -362,7 +362,7 @@ def db_modify_search(request):
             bank=data['bank'], description=data['description'])
 
     return db_modify_form(request, account_all)
-    
+
 
 # =============================================================================
 def db_modify_nocheck(request):
@@ -371,7 +371,7 @@ def db_modify_nocheck(request):
     title = "Dépenses non validées"
     account_all = get_account_objects(check=False)
     return db_modify_form(request, account_all, title)
-    
+
 
 # =============================================================================
 def db_modify_bymonth(request, year=None, month=None):
@@ -399,7 +399,7 @@ def db_modify(request, date_start=None, date_end=None, \
 # =============================================================================
 def db_modify_form(request, account_objects=None, title=''):
     """ Affiche un formulaire avec les données à modifer """
-    
+
     if account_objects is None:
         account_objects = request.session['account_objects']
 
@@ -417,7 +417,7 @@ def db_modify_form(request, account_objects=None, title=''):
         formset = AccountFormSet(queryset=account_objects)
     return render(request, 'account/db_modify.html', locals())
 
-	
+
 # =============================================================================
 def db_add(request):
     """ Ajout d'entrées manuelles """
@@ -428,7 +428,7 @@ def db_add(request):
 		extra=n, can_delete=True)
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         formset = AccountFormSet(request.POST)
-        if formset.is_valid(): 
+        if formset.is_valid():
             formset.save()
             return redirect(home)
 
@@ -436,7 +436,7 @@ def db_add(request):
         formset = AccountFormSet(queryset=Account.objects.none())
 
     return render(request, 'account/db_add.html', locals())
-    
+
 
 def db_update(request):
     """ Mise à jour de la base de donnée avec de nouvelles données """

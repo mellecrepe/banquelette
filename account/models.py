@@ -18,4 +18,3 @@ class Account(models.Model):
     check = models.BooleanField(default=False)
     halve = models.BooleanField(default=False)
     comment = models.CharField(max_length=200, blank=True)
-    

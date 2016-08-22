@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-# Ce script permet de modifier la base sqlite afin d'utiliser 
+# Ce script permet de modifier la base sqlite afin d'utiliser
 # la nouvelle gestion de categories
 #
 # La liste categories peut être adapté au besoin
@@ -14,7 +14,7 @@ import sqlite3
 sqlite_file = 'db.sqlite3.account'
 
 categories = [
-    { 'old_category' : 'necessaire', 
+    { 'old_category' : 'necessaire',
       'old_subcategory' : 'courses',
       'new_category' : 'Nécessaire/Courses' },
     { 'old_category' : 'necessaire',
@@ -114,10 +114,10 @@ categories = [
       'old_subcategory' : 'autre',
       'new_category' : 'Autre' },
     { 'old_category' : 'autre',
-      'old_subcategory' : 'retrait', 
+      'old_subcategory' : 'retrait',
       'new_category' : 'Autre/Retrait'},
     { 'old_category' : 'autre',
-      'old_subcategory' : 'nicolas', 
+      'old_subcategory' : 'nicolas',
       'new_category' : 'Autre/Nicolas'}
 ]
 

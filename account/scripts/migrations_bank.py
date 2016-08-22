@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-# Ce script permet de modifier la base sqlite afin d'utiliser 
+# Ce script permet de modifier la base sqlite afin d'utiliser
 # la nouvelle gestion de categories
 #
 # La liste categories peut être adapté au besoin
@@ -14,7 +14,7 @@ import sqlite3
 sqlite_file = 'db.sqlite3.account'
 
 banks = [
-    { 'old_bank' : 'oney', 
+    { 'old_bank' : 'oney',
       'new_bank' : 'Oney' },
     { 'old_bank' : 'boursorama',
       'new_bank' : 'Boursorama' },

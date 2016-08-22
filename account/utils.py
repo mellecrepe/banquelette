@@ -31,7 +31,7 @@ def change_description(description):
     """ Renommage du champs description """
     for old_d, new_d in auto_description.items():
         if old_d in description:
-            description = new_d 
+            description = new_d
     return description
 
 
@@ -57,7 +57,7 @@ def halve_or_not(bank, description):
         except AttributeError:
             # Not defined? Use default value.
             settings_except = []
-            
+
     elif bank == u'Banque Populaire':
         try:
             settings_halve  = settings.banquepopulaire_halve
@@ -101,13 +101,13 @@ def import_boursorama(data):
     j = 0
     for i in range(len(data)):
         if i % 3 == 0:
-	    entries.append([data[i]])
+            entries.append([data[i]])
         elif i % 3 == 1:
             entries[j].append(data[i])
-        else: 
+        else:
             entries[j].append(data[i])
-            j = j + 1 
-    
+            j = j + 1
+
     for entry in entries:
         for i in range(3):
             entry[i] = re.sub(ur" $", u"", entry[i])
@@ -130,7 +130,7 @@ def import_boursorama(data):
         re_cb = re.compile(ur"[0-9]{6} ")
 
 
-        # format_retrait/virement 
+        # format_retrait/virement
         if not re.search(re_cb, entry[2]) :
             # on recupere la date
             year = datetime.datetime.now().year
@@ -166,7 +166,7 @@ def import_boursorama(data):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
             s = re.sub(re_av, u"", s)
 
-        # on recupere la date et on la supprime de la string   
+        # on recupere la date et on la supprime de la string
         # format Paiement / Avoir
         if re.search(re_cb, s):
             date = datetime.datetime.strptime(s[:6], "%d%m%y").date()
@@ -205,11 +205,11 @@ def import_boursorama(data):
         halve = halve_or_not(u'Boursorama', description)
         if halve is True:
             expense = expense/2
-                    
+
         account = Account(date = date, description = description, expense = expense, \
-              category = subcategory, bank = u'Boursorama', check = False, halve = halve)  
+              category = subcategory, bank = u'Boursorama', check = False, halve = halve)
         account.save()
-        
+
 
 # =============================================================================
 def import_oney(data):
@@ -226,7 +226,7 @@ def import_oney(data):
         #   u'PAYPAL - 0800 942 890 - traite le 27/02',
         #   u' ',
         #   u'45,80',
-        #   u' \r' ] 
+        #   u' \r' ]
 
         if len(e_list) < 4: # si e_list a moins de 4 éléments dernier élément
             continue
@@ -262,7 +262,7 @@ def import_oney(data):
         halve = halve_or_not(u'Oney', description)
         if halve is True:
             expense = expense/2
-                    
+
         account = Account(
                 date        = date,
                 description = description,
@@ -355,12 +355,12 @@ def import_ingdirect(data):
 
         # Read next line
         line = buf.readline()
-        
+
 def import_banquepopulaire(data):
     """ Parsing des données Banque Populaire au format CSV
 
         Le format du fichier CSV proposé par la Banque Populaire est le suivant:
-        
+
         Le séparateur par défaut est ';' (point virgule)
         Les champs disponibles sont:
           - N° du compte
@@ -371,7 +371,7 @@ def import_banquepopulaire(data):
           - Date valeur (au format JJ/MM/AAAA)
           - Montant
     """
-    
+
     # Traitement par lignes des données
     for line in StringIO.StringIO(data):
 
@@ -379,20 +379,20 @@ def import_banquepopulaire(data):
         csvdata = line.split(';')
         if len(csvdata) < 7:
             continue
-            
+
         # On ignore la ligne d'en-tête du CSV (si il y en a une)
         if csvdata[0].isdigit() == False:
             continue
-        
+
         # Date de l'opération
         date = datetime.datetime.strptime(csvdata[2], "%d/%m/%Y").date()
-        
+
         # Montant de l'opération
         try:
             expense = float(csvdata[6])
         except ValueError:
             expense = float(csvdata[6].replace(u',', u'.'))
-        
+
         # Description de l'opération et catégorisation
         description = csvdata[3]
 
@@ -404,7 +404,7 @@ def import_banquepopulaire(data):
         halve = halve_or_not(u'Banque Populaire', description)
         if halve is True:
             expense = expense/2
-            
+
         account = Account( date        = date,
                            description = description,
                            expense     = expense,
@@ -419,7 +419,7 @@ def import_boobank(data, bank):
     """ Parsing des données Boobank
 
         Le format die boobank est le suivant:
-        
+
         Le séparateur par défaut est ' ' (point virgule)
         Les champs disponibles sont:
           - Date de l'opération (au format AAAA-MM-JJ) : 1-10 champs
@@ -427,15 +427,15 @@ def import_boobank(data, bank):
           - Label    : 27-78
           - Montant  : 80-89
     """
-     
+
     # Traitement par lignes des données
     for line in StringIO.StringIO(data):
         # Date de l'opération
         try:
             date = datetime.datetime.strptime(line[1:11], "%Y-%m-%d").date()
         except:
-	    continue
-        
+            continue
+
         # Montant de l'opération
         expense = float(line[80:90])
 
@@ -450,7 +450,7 @@ def import_boobank(data, bank):
         halve = halve_or_not(bank, description)
         if halve is True:
             expense = expense/2
-            
+
         account = Account( date        = date,
                            description = description,
                            expense     = expense,

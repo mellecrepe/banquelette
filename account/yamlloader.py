@@ -13,7 +13,7 @@ def load_yaml(filename):
         data = yaml.load( f.read() )
 
     return data
- 
+
 # =============================================================================
 if __name__ == '__main__':
     yaml_dict = load_yaml( sys.argv[1] )
