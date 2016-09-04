@@ -411,7 +411,7 @@ def db_modify_form(request, account_objects=None, title=''):
         formset = AccountFormSet(request.POST)
         if formset.is_valid(): # Nous vérifions que les données envoyées sont valides
            formset.save()
-           return view(request, account_objects, view_title)
+           return view(request, account_objects, title)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         formset = AccountFormSet(queryset=account_objects)
