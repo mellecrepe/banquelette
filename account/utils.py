@@ -174,20 +174,20 @@ def import_boursorama(data):
 
         # on recupere la description
         s = s.replace(u'75 ', u'')
-        s = s.replace(u' Alimentation', u'')
-        s = s.replace(u' Non catégorisé', u'')
-        s = s.replace(u' Electronique et informatique', u'')
-        s = s.replace(u' Transports quotidiens (métro, bus,...)', u'')
-        s = s.replace(u' Transports longue distance (avions, trains,...)', u'')
-        s = s.replace(u' Loisirs', u'')
-        s = s.replace(u' Mobilier, électroménager, décoration', u'')
-        s = s.replace(u' Restaurants, bars, discothèques...', u'')
-        s = s.replace(u' Frais bancaires et de gestion (dont agios)', \
-                          u' Frais bancaires')
-        s = s.replace(u' Bricolage et jardinage', u'')
-        s = s.replace(u' Equipements sportifs et artistiques', u'')
-        s = s.replace(u' Vêtements et accessoires', u'')
-        s = s.replace(u' Virements recus', u'')
+        s = s.replace(u'Alimentation', u'')
+        s = s.replace(u'Non catégorisé', u'')
+        s = s.replace(u'Electronique et informatique', u'')
+        s = s.replace(u'Transports quotidiens (métro, bus,...)', u'')
+        s = s.replace(u'Transports longue distance (avions, trains,...)', u'')
+        s = s.replace(u'Loisirs', u'')
+        s = s.replace(u'Mobilier, électroménager, décoration', u'')
+        s = s.replace(u'Restaurants, bars, discothèques...', u'')
+        s = s.replace(u'Frais bancaires et de gestion (dont agios)', \
+                          u'Frais bancaires')
+        s = s.replace(u'Bricolage et jardinage', u'')
+        s = s.replace(u'Equipements sportifs et artistiques', u'')
+        s = s.replace(u'Vêtements et accessoires', u'')
+        s = s.replace(u'Virements recus', u'')
         s = s.replace(u'VIR SEPA ', u'Virement ')
         description = s
 
