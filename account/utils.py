@@ -84,6 +84,22 @@ def halve_or_not(bank, description):
 # =============================================================================
 def import_boursorama(data):
     """ Parsing des données pour Boursorama """
+
+    month_boursorama = {
+        'JANV.' : '01',
+        'FÉVR.' : '02',
+        'MARS' : '03',
+        'AVR.' : '04',
+        'MAI' : '05',
+        'JUIN' : '06',
+        'JUIL.' : '07',
+        'AOÛT' : '08',
+        'SEPT.' : '09',
+        'OCT.' : '10',
+        'NOV.' : '11',
+        'DÉC.' : '12'
+    }
+
     # mise en forme pour obtenir une liste sans tabulation, espace superflux, ...
     # et ou chaque element de la liste est une depense
 
@@ -134,7 +150,9 @@ def import_boursorama(data):
         if not re.search(re_cb, entry[2]) :
             # on recupere la date
             year = datetime.datetime.now().year
-            month = datetime.datetime.strptime(entry[1], '%b').month
+            month_num = month_boursorama[entry[1].encode('utf-8')]
+            month = datetime.datetime.strptime(month_num , 
+                                               '%m').month
             day = int(entry[0])
             date = datetime.datetime(year, month, day)
 
