@@ -1,34 +1,18 @@
-FROM alpine
+FROM python:2.7
 
-MAINTAINER Lertsenem <lertsenem@lertsenem.com>
+MAINTAINER mellecrepe
 
-RUN    apk update     \
-    && apk add        \
-           bash       \
-           sed        \
-           gcc        \
-           git        \
-           libc-dev   \
-           python     \
-           python-dev \
-           py-pip     \
-           sqlite
+ENV PYTHONUNBUFFERED 1
 
-RUN    pip install      \
-           django       \
-           PyYAML
+RUN mkdir /home/banquelette
 
-RUN    mkdir /home/banquelette/
+WORKDIR /home/banquelette
 
-COPY   account       /home/banquelette/account
-COPY   projet        /home/banquelette/projet
-COPY   static        /home/banquelette/static
-COPY   templates     /home/banquelette/templates
-COPY   manage.py     /home/banquelette/manage.py
-COPY   docker_run.sh /docker_run.sh
+RUN apt-get update; \
+    apt-get install -y bsdmainutils
 
-ENV    SECRET_KEY=""
+ADD requirements.txt /home/banquelette/
+RUN pip install -r requirements.txt
+ADD . /home/banquelette/
 
-EXPOSE 80
-
-CMD [ "/docker_run.sh" ]
+CMD [ "/home/banquelette/docker_run.sh" ]
