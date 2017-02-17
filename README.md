@@ -17,15 +17,17 @@ l'image:
 ### Image docker préconstruite
 
 L'image à télécharger sur le Docker Hub est
-[lertsenem/banquelette](https://hub.docker.com/r/lertsenem/banquelette).
+[mellecrepe/banquelette](https://hub.docker.com/r/mellecrepe/banquelette).
 
 ```
-	docker pull lertsenem/banquelette
+	docker pull mellecrepe/banquelette
 
 	docker run \
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
-		lertsenem/banquelette
+		-p 8000:8000
+		-v /path/ou/stocker/db/sur/host:/home/banquelette/db
+		mellecrepe/banquelette
 ```
 
 
@@ -44,6 +46,8 @@ vous falloir cloner.
 	docker run \
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
+		-p 8000:8000
+		-v /path/ou/stocker/db/sur/host:/home/banquelette/db
 		test/banquelette
 ```
 

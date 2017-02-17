@@ -102,4 +102,4 @@ echo "Database initialization..."
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
-./manage.py runserver 0.0.0.0:80
+./manage.py runserver 0.0.0.0:8000
