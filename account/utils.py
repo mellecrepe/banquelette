@@ -7,8 +7,8 @@ import datetime
 import re
 from io import StringIO
 
-import account.categories
-import account.categories.utils
+from account.categories import *
+from account.categories.utils import *
 
 
 # =============================================================================
@@ -150,7 +150,7 @@ def import_boursorama(data):
         if not re.search(re_cb, entry[2]) :
             # on recupere la date
             year = datetime.datetime.now().year
-            month_num = month_boursorama[entry[1].encode('utf-8')]
+            month_num = month_boursorama[entry[1]]
             month = datetime.datetime.strptime(month_num , 
                                                '%m').month
             day = int(entry[0])
@@ -217,7 +217,7 @@ def import_boursorama(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(description)
+        subcategory = autoset_category(description)
 
         # halve or not
         halve = halve_or_not('Boursorama', description)
@@ -268,7 +268,7 @@ def import_oney(data):
         description = change_description(description)
 
         # definition de subcategory
-        subcategory = categories.utils.autoset_category(description)
+        subcategory = autoset_category(description)
 
         # expense : on récupère la dépense positive ou négtive
         if e_list[2] == ' ':
@@ -353,7 +353,7 @@ def import_ingdirect(data):
         # Last but not least.
         # Modifications automatiques de la description et de la subcategory
         description = change_description(raw_description)
-        subcategory = categories.utils.autoset_category(description)
+        subcategory = autoset_category(description)
 
         # halve or not
         halve = halve_or_not('ING Direct', description)
@@ -416,7 +416,7 @@ def import_banquepopulaire(data):
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
-        subcategory = categories.utils.autoset_category(description)
+        subcategory = autoset_category(description)
 
         # halve or not
         halve = halve_or_not('Banque Populaire', description)
@@ -462,7 +462,7 @@ def import_boobank(data, bank):
 
         # Modifications automatiques de la description et de la subcategory
         description = change_description(description)
-        subcategory = categories.utils.autoset_category(description)
+        subcategory = autoset_category(description)
 
         # halve or not
         halve = halve_or_not(bank, description)
