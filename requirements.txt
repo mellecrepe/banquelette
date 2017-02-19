@@ -1,2 +1,2 @@
-django==1.8.6
+django
 PyYAML

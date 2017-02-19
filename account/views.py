@@ -12,10 +12,10 @@ from datetime import date, time, datetime
 import calendar
 import locale
 
-import categories
+from account.categories import *
 
 locale.setlocale(locale.LC_TIME,'')
-totalcat = categories.category.Category(
+totalcat = category.Category(
         "Total",
         metadata = {
             "colors": {
@@ -78,12 +78,12 @@ def home(request):
                     for i in reversed(range(12))      ]
 
     for t in triples:
-	t["month_word"] = date( t["year"],
+        t["month_word"] = date( t["year"],
                                 t["month"],
-                                1           ).strftime('%B').capitalize()
+                                1).strftime('%B').capitalize()
 
     # Get the FIRST_LEVEL_CATEGORIES
-    first_level_categories = categories.FIRST_LEVEL_CATEGORIES
+    first_level_categories = FIRST_LEVEL_CATEGORIES
 
     # 1e partie : graph des dépenses de l'annee
     total_by_month = {}
@@ -141,7 +141,7 @@ def statistics(request):
     """ Statistics """
 
     # Get the FIRST_LEVEL_CATEGORIES
-    first_level_categories = categories.FIRST_LEVEL_CATEGORIES
+    first_level_categories = FIRST_LEVEL_CATEGORIES
 
     first_year    = 2015
     current_year  = datetime.now().year
@@ -239,7 +239,7 @@ def search(request):
 
                 # Get the first-level categories (those without a parent category)
                 first_level_categories ={}
-                for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+                for k,cat in FIRST_LEVEL_CATEGORIES.items():
                     first_level_categories[cat] = 0
 
                 # For each first-level category, we are going to find the relevant objects
@@ -295,7 +295,7 @@ def view(request, account_objects, title=''):
 
     first_level_categories ={}
     # Get the first-level categories (those without a parent category)
-    for k,cat in categories.FIRST_LEVEL_CATEGORIES.items():
+    for k,cat in FIRST_LEVEL_CATEGORIES.items():
         first_level_categories[cat] = 0
 
 

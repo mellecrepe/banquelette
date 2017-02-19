@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #-*- coding: utf-8 -*-
 
 # Ce script permet de modifier la base sqlite afin d'utiliser

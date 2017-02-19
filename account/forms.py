@@ -4,7 +4,7 @@ from django import forms
 from account.models import Account
 from account.settings import *
 
-import categories
+from account.categories import *
 
 
 YEAR_CHOICES = (
@@ -33,9 +33,9 @@ BANK_MAJ = BANK_CHOICES[:]
 BANK_MAJ.remove(('Argent Liquide', 'Argent Liquide'))
 BANK_MAJ.extend([('Boobank/Boursorama', 'Boobank/Boursorama'),
                 ('Boobank/Societe Generale', 'Boobank/Societe Generale')])
-BANK_MAJ.sort()
+BANK_MAJ = sorted(BANK_MAJ, key=lambda x: x[1])
 
-CATEGORY_CHOICES = [(k, k) for k,cat in categories.FIRST_LEVEL_CATEGORIES.items()]
+CATEGORY_CHOICES = [(k, k) for k,cat in FIRST_LEVEL_CATEGORIES.items()]
 CATEGORY_CHOICES.insert(0, (None, '------'))
 
 class AccountForm(forms.ModelForm):

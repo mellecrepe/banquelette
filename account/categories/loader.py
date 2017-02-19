@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 import sys
@@ -6,7 +6,7 @@ import pprint
 
 import account.yamlloader as yamlloader
 
-from category import Category, SeparatorUsedInCategoryNameError
+from account.categories.category import Category, SeparatorUsedInCategoryNameError
 
 # FUNCTIONS
 # =============================================================================
@@ -38,12 +38,12 @@ def load_categories(
             continue
 
         # Check for a malformed category name
-        if Category.SEPARATOR in unicode(category):
+        if Category.SEPARATOR in category:
             raise SeparatorUsedInCategoryNameError(category)
 
         # Create category !
         cat = Category(name=category, parent=parent)
-        categories_dict[ unicode(cat) ] = cat
+        categories_dict[ str(cat) ] = cat
 
         # Decide what to do next depending on category type
         if   type(data[category]) is type(dict()):
@@ -57,12 +57,12 @@ def load_categories(
 
             for subcategory in data[category]:
                 subcat = Category(name=subcategory, parent=cat)
-                categories_dict[ unicode(subcat) ] = subcat
+                categories_dict[ str(subcat) ] = subcat
 
         elif type(data[category]) is type(str()):
 
             subcat = Category( name=data[category], parent=cat )
-            categories_dict[ unicode(subcat) ] = subcat
+            categories_dict[ str(subcat) ] = subcat
 
         elif type(data[category]) is type(None):
             pass

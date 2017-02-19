@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 import sys
@@ -7,7 +7,7 @@ import os
 import account.settings   as settings
 import account.yamlloader as yamlloader
 
-import loader
+import account.categories.loader
 
 # VARIABLES
 # =============================================================================
@@ -16,7 +16,8 @@ try:
     CATEGORIES = loader.load_categories(
             yamlloader.load_yaml(settings.CATEGORIES_YAMLFILE)
             )
-except:
+except Exception as e:
+    print(e)
     print("Error while loading categories YAML file.")
     print("You should probably check the CATEGORIES_YAMLFILE setting exists "
           "and points to an existing and valid file." )

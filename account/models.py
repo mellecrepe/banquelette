@@ -2,12 +2,12 @@
 from django.db import models
 from account.settings import *
 
-import categories
+from account.categories import *
 
-CATEGORY_CHOICES = [ (c,c) for c in categories.CATEGORIES ]
+CATEGORY_CHOICES = [ (c,c) for c in CATEGORIES ]
 CATEGORY_CHOICES.sort()
 
-BANK_CHOICES.sort()
+BANK_CHOICES = sorted(BANK_CHOICES, key=lambda x: x[1])
 
 class Account(models.Model):
     date = models.DateField()

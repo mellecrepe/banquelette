@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.views.generic import ListView
 from account.models import Account
 from django.views.generic import RedirectView

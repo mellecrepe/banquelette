@@ -5,25 +5,25 @@ from account.data import auto_subcategory,auto_description
 from account import settings
 import datetime
 import re
-import StringIO
+from io import StringIO
 
-import categories
-import categories.utils
+import account.categories
+import account.categories.utils
 
 
 # =============================================================================
 def import_data(data, bank):
-    if bank == u'Boursorama':
+    if bank == 'Boursorama':
         import_boursorama(data)
-    elif bank == u'Oney':
+    elif bank == 'Oney':
         import_oney(data)
-    elif bank == u'ING Direct':
+    elif bank == 'ING Direct':
         import_ingdirect(data)
-    elif bank == u'Banque Populaire':
+    elif bank == 'Banque Populaire':
         import_banquepopulaire(data)
-    elif bank == u'Boobank/Boursorama':
+    elif bank == 'Boobank/Boursorama':
         import_boobank(data,"Boursorama")
-    elif bank == u'Boobank/Societe Generale':
+    elif bank == 'Boobank/Societe Generale':
         import_boobank(data,"Societe Generale")
 
 # =============================================================================
@@ -37,15 +37,15 @@ def change_description(description):
 
 # =============================================================================
 def halve_or_not(bank, description):
-    if bank == u'Boursorama':
+    if bank == 'Boursorama':
         settings_halve = settings.bs_halve
         settings_except = settings.bs_except
 
-    elif bank == u'Oney':
+    elif bank == 'Oney':
         settings_halve = settings.oney_halve
         settings_except = settings.oney_except
 
-    elif bank == u'ING Direct':
+    elif bank == 'ING Direct':
         try:
             settings_halve  = settings.ingdirect_halve
         except AttributeError:
@@ -58,7 +58,7 @@ def halve_or_not(bank, description):
             # Not defined? Use default value.
             settings_except = []
 
-    elif bank == u'Banque Populaire':
+    elif bank == 'Banque Populaire':
         try:
             settings_halve  = settings.banquepopulaire_halve
         except AttributeError:
@@ -112,7 +112,7 @@ def import_boursorama(data):
     # JUIL.
     # 100 € VIR SEPA xxx Virements recus
     # On obtient une liste avec chaque entree sur 3
-    data = data.split(u"\n")
+    data = data.split("\n")
     entries = []
     j = 0
     for i in range(len(data)):
@@ -126,24 +126,24 @@ def import_boursorama(data):
 
     for entry in entries:
         for i in range(3):
-            entry[i] = re.sub(ur" $", u"", entry[i])
-            entry[i] = re.sub(ur"\r$", u"", entry[i])
+            entry[i] = re.sub(r" $", "", entry[i])
+            entry[i] = re.sub(r"\r$", "", entry[i])
 
         # analyse de la premiere ligne
         # 3 formats possibles :
-        # format_retrait/virement :[u'28', u'JUIL.', u'VIR SEPA xxx Virements recus']
-        # format_CB : [u'18', u'JUIL.', '-26,95 PAIEMENT CARTE 170716 75 A2PAS Alimentation']
-        # format_avoir : [u'10', u'']
+        # format_retrait/virement :['28', 'JUIL.', 'VIR SEPA xxx Virements recus']
+        # format_CB : ['18', 'JUIL.', '-26,95 PAIEMENT CARTE 170716 75 A2PAS Alimentation']
+        # format_avoir : ['10', '']
         # element a ne pas prendre en compte
-        re_detail = re.compile(ur"Dépenses carte .* de détails\)")
-        re_releve = re.compile(ur"Relevé différé Carte")
+        re_detail = re.compile(r"Dépenses carte .* de détails\)")
+        re_releve = re.compile(r"Relevé différé Carte")
 
         if re.search(re_detail, entry[2]) or re.search(re_releve, entry[2]):
             continue
 
 
         # format Paiement / Avoir
-        re_cb = re.compile(ur"[0-9]{6} ")
+        re_cb = re.compile(r"[0-9]{6} ")
 
 
         # format_retrait/virement
@@ -157,60 +157,60 @@ def import_boursorama(data):
             date = datetime.datetime(year, month, day)
 
         # recherche € _ e[0] depense e[1] description
-        e = entry[2].split(u" \u20ac ")
+        e = entry[2].split(" \u20ac ")
         s = e[1]
 
         # format paiement
-        re_pai = re.compile(ur"PAIEMENT CARTE ")
+        re_pai = re.compile(r"PAIEMENT CARTE ")
         if re.match(re_pai, s):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
-            s = re.sub(re_pai, u"", s)
+            s = re.sub(re_pai, "", s)
 
         # format avoir
-        re_av = re.compile(ur"AVOIR ")
+        re_av = re.compile(r"AVOIR ")
         if re.match(re_av, s):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
-            s = re.sub(re_av, u"", s)
+            s = re.sub(re_av, "", s)
 
         # format retrait
-        re_av = re.compile(ur"RETRAIT DAB ")
+        re_av = re.compile(r"RETRAIT DAB ")
         if re.match(re_av, s):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
-            s = re.sub(re_av, u"", s)
+            s = re.sub(re_av, "", s)
 
         # format frais
-        re_av = re.compile(ur"CION OP.ETR ")
+        re_av = re.compile(r"CION OP.ETR ")
         if re.match(re_av, s):
             # on supprime le debut de ligne jusqu'a la date DDMMYY
-            s = re.sub(re_av, u"", s)
+            s = re.sub(re_av, "", s)
 
         # on recupere la date et on la supprime de la string
         # format Paiement / Avoir
         if re.search(re_cb, s):
             date = datetime.datetime.strptime(s[:6], "%d%m%y").date()
-            s = s.replace(s[:6] + u" ", u"")
+            s = s.replace(s[:6] + " ", "")
 
         # on recupere la description
-        s = s.replace(u'75 ', u'')
-        s = s.replace(u'Alimentation', u'')
-        s = s.replace(u'Non catégorisé', u'')
-        s = s.replace(u'Electronique et informatique', u'')
-        s = s.replace(u'Transports quotidiens (métro, bus,...)', u'')
-        s = s.replace(u'Transports longue distance (avions, trains,...)', u'')
-        s = s.replace(u'Loisirs', u'')
-        s = s.replace(u'Mobilier, électroménager, décoration', u'')
-        s = s.replace(u'Restaurants, bars, discothèques...', u'')
-        s = s.replace(u'Frais bancaires et de gestion (dont agios)', \
-                          u'Frais bancaires')
-        s = s.replace(u'Bricolage et jardinage', u'')
-        s = s.replace(u'Equipements sportifs et artistiques', u'')
-        s = s.replace(u'Vêtements et accessoires', u'')
-        s = s.replace(u'Virements recus', u'')
-        s = s.replace(u'VIR SEPA ', u'Virement ')
+        s = s.replace('75 ', '')
+        s = s.replace('Alimentation', '')
+        s = s.replace('Non catégorisé', '')
+        s = s.replace('Electronique et informatique', '')
+        s = s.replace('Transports quotidiens (métro, bus,...)', '')
+        s = s.replace('Transports longue distance (avions, trains,...)', '')
+        s = s.replace('Loisirs', '')
+        s = s.replace('Mobilier, électroménager, décoration', '')
+        s = s.replace('Restaurants, bars, discothèques...', '')
+        s = s.replace('Frais bancaires et de gestion (dont agios)', \
+                          'Frais bancaires')
+        s = s.replace('Bricolage et jardinage', '')
+        s = s.replace('Equipements sportifs et artistiques', '')
+        s = s.replace('Vêtements et accessoires', '')
+        s = s.replace('Virements recus', '')
+        s = s.replace('VIR SEPA ', 'Virement ')
         description = s
 
         # on recupere la depense
-        expense = float(e[0].replace(u' ',u'').replace(u',',u'.'))
+        expense = float(e[0].replace(' ','').replace(',','.'))
 
         # element recupéré pour chacun des format
         # modification description
@@ -220,12 +220,12 @@ def import_boursorama(data):
         subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not(u'Boursorama', description)
+        halve = halve_or_not('Boursorama', description)
         if halve is True:
             expense = expense/2
 
         account = Account(date = date, description = description, expense = expense, \
-              category = subcategory, bank = u'Boursorama', check = False, halve = halve)
+              category = subcategory, bank = 'Boursorama', check = False, halve = halve)
         account.save()
 
 
@@ -240,20 +240,20 @@ def import_oney(data):
         e_list = e.split('\t')
 
         # format_ex :
-        # [ u'26/02/2015',
-        #   u'PAYPAL - 0800 942 890 - traite le 27/02',
-        #   u' ',
-        #   u'45,80',
-        #   u' \r' ]
+        # [ '26/02/2015',
+        #   'PAYPAL - 0800 942 890 - traite le 27/02',
+        #   ' ',
+        #   '45,80',
+        #   ' \r' ]
 
         if len(e_list) < 4: # si e_list a moins de 4 éléments dernier élément
             continue
         description = e_list[1]
-        if u"Solde initial" in description :
+        if "Solde initial" in description :
             continue
-        if u"Prélèvement mensualité" in description :
+        if "Prélèvement mensualité" in description :
             continue
-        if u"Intérêts" in description :
+        if "Intérêts" in description :
             continue
 
         # on definit chaque valeur d'un objet Account
@@ -262,8 +262,8 @@ def import_oney(data):
 	# l'id = la date + la depense ex: 201502264580
 
         # description
-        description = re.sub(ur" - traité le .*$", "", description)
-        description = re.sub(ur" - [0-9 ]*PARIS[0-9 ]*$", "", description)
+        description = re.sub(r" - traité le .*$", "", description)
+        description = re.sub(r" - [0-9 ]*PARIS[0-9 ]*$", "", description)
         # modification description
         description = change_description(description)
 
@@ -271,13 +271,13 @@ def import_oney(data):
         subcategory = categories.utils.autoset_category(description)
 
         # expense : on récupère la dépense positive ou négtive
-        if e_list[2] == u' ':
-            expense = float(u'-' + e_list[3].replace(u',',u'.'))
+        if e_list[2] == ' ':
+            expense = float('-' + e_list[3].replace(',','.'))
         elif e_list[3] == ' ':
-            expense = float(e_list[2].replace(u',',u'.'))
+            expense = float(e_list[2].replace(',','.'))
 
         # halve or not
-        halve = halve_or_not(u'Oney', description)
+        halve = halve_or_not('Oney', description)
         if halve is True:
             expense = expense/2
 
@@ -286,7 +286,7 @@ def import_oney(data):
                 description = description,
                 expense     = expense,
                 category    = subcategory,
-                bank        = u'Oney',
+                bank        = 'Oney',
                 check       = False,
                 halve       = halve
                 )
@@ -321,7 +321,7 @@ def import_ingdirect(data):
 
     # Start by reading the first line and loop
     line = buf.readline()
-    while line != u"":
+    while line != "":
 
         # We parse the line here !
         csvline = line.split(';')
@@ -346,8 +346,8 @@ def import_ingdirect(data):
         # 3 - the currency
         # For now we suppose it is always in €, and raise an exception
         # otherwise. TODO But maybe we could do better?
-        if raw_currency != u"EUR":
-            raise ValueError(u"Currency is not EUR in transaction: %s" % line)
+        if raw_currency != "EUR":
+            raise ValueError("Currency is not EUR in transaction: %s" % line)
 
         # 4 - the description
         # Last but not least.
@@ -356,7 +356,7 @@ def import_ingdirect(data):
         subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not(u'ING Direct', description)
+        halve = halve_or_not('ING Direct', description)
         if halve is True:
             expense = expense/2
 
@@ -365,7 +365,7 @@ def import_ingdirect(data):
                            description = description,
                            expense     = expense,
                            category    = subcategory,
-                           bank        = u'ING Direct',
+                           bank        = 'ING Direct',
                            check       = False,
                            halve       = halve )
         account.save()
@@ -409,7 +409,7 @@ def import_banquepopulaire(data):
         try:
             expense = float(csvdata[6])
         except ValueError:
-            expense = float(csvdata[6].replace(u',', u'.'))
+            expense = float(csvdata[6].replace(',', '.'))
 
         # Description de l'opération et catégorisation
         description = csvdata[3]
@@ -419,7 +419,7 @@ def import_banquepopulaire(data):
         subcategory = categories.utils.autoset_category(description)
 
         # halve or not
-        halve = halve_or_not(u'Banque Populaire', description)
+        halve = halve_or_not('Banque Populaire', description)
         if halve is True:
             expense = expense/2
 
@@ -427,7 +427,7 @@ def import_banquepopulaire(data):
                            description = description,
                            expense     = expense,
                            category    = subcategory,
-                           bank        = u'Banque Populaire',
+                           bank        = 'Banque Populaire',
                            check       = False,
                            halve       = halve )
         account.save()

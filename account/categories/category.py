@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
 # =============================================================================
 class Category():
     """Une étiquette permettant de classer une dépense"""
 
-    SEPARATOR = u'/'
+    SEPARATOR = '/'
 
-    MDKW_STARTCHAR = u'_'
-    MDKW_PATTERN   = u'pattern'
-    MDKW_DEFAULT   = u'default'
-    MDKW_COLORS    = u'colors'
+    MDKW_STARTCHAR = '_'
+    MDKW_PATTERN   = 'pattern'
+    MDKW_DEFAULT   = 'default'
+    MDKW_COLORS    = 'colors'
 
     # -------------------------------------------------------------------------
     def __init__(self, name, parent=None, metadata=None):
@@ -18,7 +18,7 @@ class Category():
         sous-catégorie."""
 
         self.parent = parent
-        
+
         self.name = name
 
         if metadata is None:
@@ -56,19 +56,13 @@ class Category():
 
     # -------------------------------------------------------------------------
     def __str__(self):
-        return unicode(self).encode('utf8')
-
-
-    # -------------------------------------------------------------------------
-    def __unicode__(self):
-
-        rv = u'' 
+        rv = '' 
 
         if self.parent is not None:
-            rv = unicode(self.parent)
+            rv = str(self.parent)
             rv += Category.SEPARATOR
 
-        rv += unicode(self.name)
+        rv += str(self.name)
 
         return rv
 
