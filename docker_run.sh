@@ -85,21 +85,32 @@ else
           "projet/settings.py"
 fi
 
+# Custom config if volume docker is use
+if [ -e "config/settings.py" ]; then
+    echo "Copying account settings..."
+    ln -s config/settings.py account/settings.py
+fi
+    
 if ! [ -e "account/settings.py" ]; then
     echo "Copying account settings template..."
     cp account/settings.py.template account/settings.py
 fi
 
-if ! [ -e "account/categories.yaml" ]; then
+if [ -e "config/categories.yaml" ]; then
     echo "Copying account categories template..."
+    ln -s config/categories.yaml account/categories.yaml
+fi
+if ! [ -e "account/categories.yaml" ]; then
+    echo "Copying account categories..."
     cp account/categories.yaml.template account/categories.yaml
 fi
 
 # Initialize database
 # ======================================
 echo "Database initialization..."
-./manage.py migrate
+python manage.py migrate
+
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
-./manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000

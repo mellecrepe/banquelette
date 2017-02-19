@@ -26,9 +26,12 @@ L'image à télécharger sur le Docker Hub est
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
 		-p 8000:8000
-		-v /path/ou/stocker/db/sur/host:/home/banquelette/db
+		-v /path/ou/stocker/db/sur/host:/home/banquelette/config
 		mellecrepe/banquelette
 ```
+Deux fichiers de configuration : settings.py et categories.yaml peuvent être
+personnaliser. Il suffit de les placer dans le dossier de volume 
+'/path/ou/stocker/db/sur/host' sur votre host.
 
 
 ### Construire votre image Docker
@@ -47,19 +50,19 @@ vous falloir cloner.
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
 		-p 8000:8000
-		-v /path/ou/stocker/db/sur/host:/home/banquelette/db
+		-v /path/ou/stocker/db/sur/host:/home/banquelette/config
 		test/banquelette
 ```
 
 ## Lancement manuel
 ### Installation 
-Paquets à installer : *python2.7*, *django*, *sqlite*"
+Paquets à installer : *python3.5*, *django*, *sqlite*"
 Par exemple, sous debian/ubuntu :
 ```
-	apt-get install python-django sqlite
+	apt-get install python3-django sqlite
 ```
 
-NOTE: Banquelette a été testé avec django v1.9. Vous pouvez vérifier la
+NOTE: Banquelette a été testé avec django v1.10. Vous pouvez vérifier la
 version de django grâce à cette commande :
 ```
 	django-admin --version
@@ -80,7 +83,7 @@ Il existe trois fichiers de configuration :
 - *projet/settings.py*  définit les paramètres génériques, notamment la clef
   secrète Django et la connexion à CouchDB ;
 - *account/settings.py* definit les parametres liés aux banques ;
-- *account/data.py* permet d'automatiser la modification de certains
+- *account/categories.yaml* permet d'automatiser la modification de certains
   descriptifs ou de definir à quel categorie appartient la depense.
  
 

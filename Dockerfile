@@ -13,6 +13,7 @@ RUN apt-get update; \
 
 ADD requirements.txt /home/banquelette/
 RUN pip install -r requirements.txt
+RUN rm requirements.txt
 ADD . /home/banquelette/
 
 RUN useradd -d /home/banquelette -m -s /bin/bash banquelette
