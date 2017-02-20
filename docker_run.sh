@@ -83,12 +83,18 @@ else
    # server
    sed -i "s/DEBUG *=.*/DEBUG = True/"                       \
           "projet/settings.py"
+
+fi
+
+if [ -n "$VIRTUAL_HOST" ]; then
+    echo "Add acces for vhost"
+    sed -i "s/localhost/$VIRTUAL_HOST/" "projet/settings.py"
 fi
 
 # Custom config if volume docker is use
 if [ -e "config/settings.py" ]; then
     echo "Copying account settings..."
-    ln -s config/settings.py account/settings.py
+    cp config/settings.py account/settings.py
 fi
     
 if ! [ -e "account/settings.py" ]; then
@@ -98,7 +104,7 @@ fi
 
 if [ -e "config/categories.yaml" ]; then
     echo "Copying account categories template..."
-    ln -s config/categories.yaml account/categories.yaml
+    cp config/categories.yaml account/categories.yaml
 fi
 if ! [ -e "account/categories.yaml" ]; then
     echo "Copying account categories..."

@@ -8,11 +8,12 @@ Banquelette est packagée pour Docker. Vous pouvez directement télécharger une
 image Docker fonctionnelle ou construire vous-même votre image (si vous
 souhaitez être certain d'avoir les tous derniers commits, par exemple).
 
-Une variables d'environnement principales peut être définie au moment de lancer
+Des variables d'environnement principales peut être définies au moment de lancer
 l'image:
 
 - ***SECRET_KEY*** est la clef secrète Django. Si vous ne la définissez pas
-  elle sera générée aléatoirement.
+  elle sera générée aléatoirement ;
+- ***VIRTUAL_HOST*** est le virtual host par le quel on accède à banquelette. Par défaut, localhost est autorisé.
 
 ### Image docker préconstruite
 
@@ -25,6 +26,7 @@ L'image à télécharger sur le Docker Hub est
 	docker run \
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
+		-e "VIRTUAL_HOST=banquelette.test.com" \
 		-p 8000:8000
 		-v /path/ou/stocker/db/sur/host:/home/banquelette/config
 		mellecrepe/banquelette
@@ -49,6 +51,7 @@ vous falloir cloner.
 	docker run \
 		--name banquelette \
 		-e "SECRET_KEY=12345678abcdef" \
+		-e "VIRTUAL_HOST=banquelette.test.com" \
 		-p 8000:8000
 		-v /path/ou/stocker/db/sur/host:/home/banquelette/config
 		test/banquelette
