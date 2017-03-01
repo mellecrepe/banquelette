@@ -379,7 +379,7 @@ def db_modify_bymonth(request, year=None, month=None):
     if year is not None and month is None:
         raise Http404
 
-    month_word = date(int(year), int(month), 1).strftime('%B').capitalize().decode('utf-8')
+    month_word = date(int(year), int(month), 1).strftime('%B').capitalize()
     title = ''.join([month_word, " ", year])
     account_all = get_account_by_month(year=int(year), month=int(month))
     return db_modify_form(request, account_all, title)
