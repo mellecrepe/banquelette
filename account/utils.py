@@ -104,42 +104,52 @@ def import_boursorama(data):
     # et ou chaque element de la liste est une depense
 
     # Une entrée boursorama :
-    # 19
-    # JUIL.
-    # -26,95 € PAIEMENT CARTE 170716 75 A2PAS Alimentation
+    # -26,95 € PAIEMENT CARTE 170716 75 A2PASAlimentation
     # ou
     # 28
     # JUIL.
     # 100 € VIR SEPA xxx Virements recus
-    # On obtient une liste avec chaque entree sur 3
     data = data.split("\n")
     entries = []
+
+    i = 0
     j = 0
-    for i in range(len(data)):
-        if i % 3 == 0:
-            entries.append([data[i]])
-        elif i % 3 == 1:
-            entries[j].append(data[i])
+    one_line = False
+    for d in data:
+        if '€' in d and one_line is False:
+            entries.append([d])
         else:
-            entries[j].append(data[i])
-            j = j + 1
+            if i % 3 == 0:
+                entries.append([d])
+                one_line = True
+            elif i % 3 == 1:
+                entries[j].append(d)
+                one_line = True
+            else:
+                entries[j].append(d)
+                j = j + 1
+                one_line = False
+            i = i + 1
 
     for entry in entries:
-        for i in range(3):
-            entry[i] = re.sub(r" $", "", entry[i])
-            entry[i] = re.sub(r"\r$", "", entry[i])
+        print(entry)
+        if len(entry) == 3:
+            for i in range(3):
+                entry[i] = re.sub(r" $", "", entry[i])
+                entry[i] = re.sub(r"\r$", "", entry[i])
 
         # analyse de la premiere ligne
         # 3 formats possibles :
         # format_retrait/virement :['28', 'JUIL.', 'VIR SEPA xxx Virements recus']
-        # format_CB : ['18', 'JUIL.', '-26,95 PAIEMENT CARTE 170716 75 A2PAS Alimentation']
+        # format_CB : ['-26,95 PAIEMENT CARTE 170716 75 A2PASAlimentation']
         # format_avoir : ['10', '']
         # element a ne pas prendre en compte
         re_detail = re.compile(r"Dépenses carte .* de détails\)")
         re_releve = re.compile(r"Relevé différé Carte")
 
-        if re.search(re_detail, entry[2]) or re.search(re_releve, entry[2]):
-            continue
+        if len(entry) == 3:
+            if re.search(re_detail, entry[2]) or re.search(re_releve, entry[2]):
+                continue
 
 
         # format Paiement / Avoir
@@ -147,7 +157,7 @@ def import_boursorama(data):
 
 
         # format_retrait/virement
-        if not re.search(re_cb, entry[2]) :
+        if len(entry) == 3 :
             # on recupere la date
             year = datetime.datetime.now().year
             month_num = month_boursorama[entry[1]]
@@ -156,8 +166,13 @@ def import_boursorama(data):
             day = int(entry[0])
             date = datetime.datetime(year, month, day)
 
-        # recherche € _ e[0] depense e[1] description
-        e = entry[2].split(" \u20ac ")
+        if len(entry) == 3:
+            data = entry[2]
+        else:
+            data = entry[0]
+
+        # recherche € : e[0] depense e[1] description
+        e = data.split(" \u20ac ")
         s = e[1]
 
         # format paiement
@@ -187,8 +202,8 @@ def import_boursorama(data):
         # on recupere la date et on la supprime de la string
         # format Paiement / Avoir
         if re.search(re_cb, s):
-            date = datetime.datetime.strptime(s[:6], "%d%m%y").date()
-            s = s.replace(s[:6] + " ", "")
+            date = datetime.datetime.strptime(s[:8], "%d%m%Y").date()
+            s = s.replace(s[:8] + " ", "")
 
         # on recupere la description
         s = s.replace('75 ', '')
