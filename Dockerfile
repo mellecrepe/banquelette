@@ -3,6 +3,7 @@ FROM python:3.5
 MAINTAINER mellecrepe
 
 ENV PYTHONUNBUFFERED 1
+ENV ADMIN_PORT="${BANQUELETTE_PORT:-8000}"
 
 RUN mkdir /home/banquelette
 
@@ -21,4 +22,6 @@ RUN chown -R banquelette:banquelette /home/banquelette
 
 USER banquelette
 
-CMD [ "/home/banquelette/docker_run.sh" ]
+EXPOSE $BANQUELETTE_PORT
+
+CMD [ "/home/banquelette/docker_run.sh" "BANQUELETTE_PORT"]

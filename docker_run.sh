@@ -119,4 +119,4 @@ python manage.py migrate
 
 # Start banquelette !
 # TODO Use something better than the Django test webserver...
-python manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:$1
